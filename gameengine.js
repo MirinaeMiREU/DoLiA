@@ -94,6 +94,12 @@ GameEngine.prototype.addEntity = function (entity) {
     this.entities.push(entity);
 }
 
+GameEngine.prototype.removeEntity = function(entity) {
+	console.log('Removed entity.');
+	var index = this.entities.indexOf(entity);
+	this.entities.splice(index, 1);
+}
+
 GameEngine.prototype.draw = function () {
     this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
     this.ctx.save();
@@ -121,12 +127,12 @@ GameEngine.prototype.loop = function () {
 	}
 	if (!this.isPaused) {
 		this.clockTick = this.timer.tick();
-		if (this.timer.gameTime % 0.3 > 0.15 && !this.ticked) {
+		if (this.timer.gameTime % 0.05 > 0.025 && !this.ticked) {
 			this.update();
 			this.draw();
 			this.ticked = true;
 			//console.log("tick");
-		} else if (this.timer.gameTime % 0.3 <= 0.15 && this.ticked){
+		} else if (this.timer.gameTime % 0.05 <= 0.025 && this.ticked){
 			this.ticked = false;
 			//console.log("tock");
 		}
