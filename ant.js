@@ -9,7 +9,8 @@ const EAST = 1;
 const SOUTH = 2;
 const WEST = 3;
 
-function Ant(game, xPos, yPos, role, tiles, peers) {
+
+function Ant(game, xPos, yPos, tiles) {
 	this.xPos = xPos;
 	this.yPos = yPos;
 	this.dir = Math.floor(Math.random() * 4);
