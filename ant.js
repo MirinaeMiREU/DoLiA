@@ -9,7 +9,7 @@ const EAST = 1;
 const SOUTH = 2;
 const WEST = 3;
 
-function Ant(game, xPos, yPos, tiles) {
+function Ant(game, xPos, yPos, tiles, peers) {
 	this.xPos = xPos;
 	this.yPos = yPos;
 	this.dir = Math.floor(Math.random() * 4);
@@ -19,6 +19,7 @@ function Ant(game, xPos, yPos, tiles) {
 	this.ctx = game.ctx;
 	this.role = EXPLORE;
 	this.tiles = tiles;	
+	this.peers = peers;
 	Entity.call(this, game, xPos * 10, yPos * 10);
 }
 
@@ -28,6 +29,21 @@ Ant.prototype.constructor = Ant;
 Ant.prototype.update = function() {
 	var curTile = this.tiles[this.yPos][this.xPos];
 	var tileFood = curTile.foodLevel;
+	
+	for (var i = 0; i < this.peers.length; i++) {
+		var peer = this.peers[i];
+		if (peer !== this && 
+			this.xPos === peer.xPos &&
+			this.yPos === peer.yPos &&
+			this.action === OUTBOUND &&
+			peer.action === OUTBOUND ) {
+			if (Math.random() > 0.5) {
+				this.turnRight();
+			} else {
+				this.turnLeft();
+			}
+		}
+	}
 	
 	if (curTile.isHome && this.action === INBOUND) {
 		this.food = 0;
@@ -39,6 +55,7 @@ Ant.prototype.update = function() {
 	} else if (tileFood > 0 && this.action === OUTBOUND) {
 		curTile.foodLevel--;
 		this.food++;
+		curTile.inPheromone += 50;
 	} else if (this.action === OUTBOUND) {
 		var rand = Math.random();
 		this.move();
@@ -59,11 +76,14 @@ Ant.prototype.update = function() {
 				}
 			}
 		}
+		/*
 		if (curTile.outPheromone < 500) {
 			curTile.outPheromone += 150;
 		} else {
 			curTile.outPheromone += 50;
 		}
+		*/
+		curTile.outPheromone += 100;
 	} else if (this.action === INBOUND) { // Going back home
 		var rand = Math.random();
 		this.move();
@@ -85,11 +105,14 @@ Ant.prototype.update = function() {
 			}
 		}
 
+		/*
 		if (curTile.inPheromone < 500) {
 			curTile.inPheromone += 150;
 		} else {
 			curTile.inPheromone += 50;
 		}
+		*/
+		curTile.inPheromone += 100;
 	}
 	
 	if (this.yPos <= 1) {
@@ -117,53 +140,19 @@ Ant.prototype.update = function() {
 		}
 			
 	}
-	/*
-	if (this.yPos <= 1) {
-		if (this.xPos <= 1) {
-			while (this.dir === NORTH || this.dir === WEST) {
-				this.dir = Math.floor(Math.random() * 4);
-			}
-		} else if (this.xPos >= 78) {
-			while (this.dir === NORTH || this.dir === EAST) {
-				this.dir = Math.floor(Math.random() * 4);
-			}
-		} else {
-			while (this.dir === NORTH) {
-				this.dir = Math.floor(Math.random() * 4);
-			}
-		}
-	}
-	if (this.yPos >= 58) {
-		if (this.xPos <= 1) {
-			while (this.dir === SOUTH || this.dir === WEST) {
-				this.dir = Math.floor(Math.random() * 4);
-			}
-		} else if (this.xPos >= 78) {
-			while (this.dir === SOUTH || this.dir === EAST) {
-				this.dir = Math.floor(Math.random() * 4);
-			}
-		} else {
-			while (this.dir === SOUTH) {
-				this.dir = Math.floor(Math.random() * 4);
-			}
-		}
-	}
-	if (this.xPos <= 1) {
-		while (this.dir === WEST) {
-			this.dir = Math.floor(Math.random() * 4);
-		}
-	}
-	if (this.xPos >= 78) {
-		while (this.dir === EAST) {
-			this.dir = Math.floor(Math.random() * 4);
-		}
-	}*/
 	
 	this.draw();
 }
 
 Ant.prototype.draw = function() {
-	this.ctx.fillStyle = "#00FF00";
+	if (this.food >= 5) {
+		this.ctx.fillStyle = "#005500";
+	} else if (this.food > 0) {
+		this.ctx.fillStyle = "#00AA00";
+	} else {
+		this.ctx.fillStyle = "#00FF00";
+	}
+	
 	
 	this.ctx.fillRect(this.x+2, this.y+2, 6, 6);
 }
