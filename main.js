@@ -24,16 +24,14 @@ AM.downloadAll(function () {
 		}
 	}
 	
-	/*
 	for (var i = 0; i < 60; i++) {
 		for (var j = 0; j < 80; j++) {
 			
-			if ((i < 40 && i > 20) && (j > 25 && j < 55)) {
+			if ((i < 45 && i > 15) && (j > 20 && j < 60)) {
 				squares[i][j].foodLevel = 0;
 			}
 		}
 	}
-	*/
 	
 	for (var i = 0; i < YSIZE; i++) {
 		for (var j = 0; j < XSIZE; j++) {

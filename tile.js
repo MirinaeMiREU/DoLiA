@@ -14,9 +14,9 @@ function Tile(game, xPos, yPos) {
 	
 	var rand = Math.random();
 	if (rand > 0.99) {
-		this.foodLevel = 1000;
+		this.foodLevel = 100;
 	} else if (rand > 0.95) {
-		this.foodLevel = 250;
+		this.foodLevel = 25;
 	} else {
 		this.foodLevel = 0;
 	}
@@ -51,7 +51,17 @@ Tile.prototype.update = function() {
 	if (this.outPheromone > 1000)
 		this.outPheromone = 1000;
 	
-	this.pheremoneDecay();		
+	if (this.inPheromone > 0) {
+		this.inPheromone -= DECAY_RATE;
+		if (this.inPheromone < 0)
+			this.inPheromone = 0;
+	}
+	if (this.outPheromone > 0) {
+		this.outPheromone -= DECAY_RATE;
+		if (this.outPheromone < 0)
+			this.outPheromone = 0;
+	}
+		
 	
 	this.draw();
 }
@@ -127,17 +137,4 @@ Tile.prototype.setHome = function() {
 	this.isHome = true;
 	this.game.addEntity(mound);
 	return mound;
-}
-
-Tile.prototype.pheremoneDecay = function() {
-	if (this.inPheromone > 0) {
-		this.inPheromone -= DECAY_RATE;//Math.ceil(this.inPheromone/100);
-		if (this.inPheromone < 0)
-			this.inPheromone = 0;
-	}
-	if (this.outPheromone > 0) {
-		this.outPheromone -= DECAY_RATE;//Math.ceil(this.outPheromone/100);
-		if (this.outPheromone < 0)
-			this.outPheromone = 0;
-	}
 }
