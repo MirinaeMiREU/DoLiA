@@ -1,3 +1,5 @@
+const XSIZE = 80;
+const YSIZE = 60;
 var AM = new AssetManager();
 
 AM.queueDownload("./img/knight/IDLE.png");
@@ -33,48 +35,56 @@ AM.downloadAll(function () {
 	}
 	*/
 	
-	for (var i = 0; i < 60; i++) {
-		for (var j = 0; j < 80; j++) {
+	for (var i = 0; i < YSIZE; i++) {
+		for (var j = 0; j < XSIZE; j++) {
 			console.log(i + ", " + j);
 			gameEngine.addEntity(squares[i][j]);
 		}
 	}
 	
-	for (var i = 0; i < 60; i++) {
-		for (var j = 0; j < 80; j++) {
+	for (var i = 0; i < YSIZE; i++) {
+		for (var j = 0; j < XSIZE; j++) {
 			var neighbors = [];
 			if (i === 0) {
+				neighbors.push(squares[YSIZE-1][j]);
 				if (j === 0) {
-					neighbors.push(squares[i+1][j]);
 					neighbors.push(squares[i][j+1]);
+					neighbors.push(squares[i+1][j]);
+					neighbors.push(squares[i][XSIZE-1]);
 				} else if (j === 79) {
+					neighbors.push(squares[i][0]);
 					neighbors.push(squares[i+1][j]);
 					neighbors.push(squares[i][j-1]);
 				} else {
-					neighbors.push(squares[i+1][j]);
 					neighbors.push(squares[i][j+1]);
+					neighbors.push(squares[i+1][j]);
 					neighbors.push(squares[i][j-1]);
 				}
 			} else if (i === 59) {
+				neighbors.push(squares[i-1][j]);
 				if (j === 0) {
-					neighbors.push(squares[i-1][j]);
 					neighbors.push(squares[i][j+1]);
+					neighbors.push(squares[0][j]);
+					neighbors.push(squares[i][XSIZE-1]);
 				} else if (j === 79) {
-					neighbors.push(squares[i-1][j]);
+					neighbors.push(squares[i][0]);
+					neighbors.push(squares[0][j]);
 					neighbors.push(squares[i][j-1]);
 				} else {
-					neighbors.push(squares[i-1][j]);
 					neighbors.push(squares[i][j+1]);
+					neighbors.push(squares[0][j]);
 					neighbors.push(squares[i][j-1]);
 				}
 			} else if (j === 0) {
 				neighbors.push(squares[i-1][j]);
 				neighbors.push(squares[i][j+1]);
 				neighbors.push(squares[i+1][j]);
+				neighbors.push(squares[i][XSIZE-1]);
 			} else if (j === 79) {
 				neighbors.push(squares[i-1][j]);
-				neighbors.push(squares[i][j-1]);
+				neighbors.push(squares[i][0]);
 				neighbors.push(squares[i+1][j]);
+				neighbors.push(squares[i][j-1]);
 			} else {
 				neighbors.push(squares[i-1][j]);
 				neighbors.push(squares[i][j-1]);

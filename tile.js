@@ -1,19 +1,18 @@
 const MULT = 100;
-const DECAY_RATE = 1;
+const DECAY_RATE = 2;
 
 function Tile(game, xPos, yPos) {
-	var rand = Math.random();
 	this.game = game;
 	this.ctx = game.ctx;
 	this.xPos = xPos;
 	this.yPos = yPos;
 	this.outPheromone = 0;
-	this.isHome = false;
-	rand = Math.random();
 	this.inPheromone = 0;
+	this.isHome = false;
 	this.foodLevel = 0;
 	this.neighbors = [];	
 	
+	var rand = Math.random();
 	if (rand > 0.99) {
 		this.foodLevel = 1000;
 	} else if (rand > 0.95) {
@@ -33,10 +32,10 @@ Tile.prototype.update = function() {
 	
 	
 	for (var i = 0; i < this.neighbors.length; i++) {
-		if (this.neighbors[i].outPheromone-200 > maxOut)
-			maxOut = this.neighbors[i].outPheromone-200;
-		if (this.neighbors[i].inPheromone-200 > maxIn)
-			maxIn = this.neighbors[i].inPheromone-200;
+		if (this.neighbors[i].outPheromone-180 > maxOut)
+			maxOut = this.neighbors[i].outPheromone-180;
+		if (this.neighbors[i].inPheromone-180 > maxIn)
+			maxIn = this.neighbors[i].inPheromone-180;
 	}
 	
 	
