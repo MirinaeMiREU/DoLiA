@@ -1,5 +1,4 @@
-
-const MAX_ANTS = 25;
+const MAX_ANTS = 1;
 const COUNT_TIL = 10;
 
 function Mound(game, xPos, yPos) {
@@ -9,6 +8,7 @@ function Mound(game, xPos, yPos) {
 	this.yPos = yPos;
 	this.counter = 0;	
 	this.antsOut = 0;
+	this.colony = [];
 	Entity.call(this, game, xPos * 10, yPos * 10);
 }
 
@@ -19,7 +19,9 @@ Mound.prototype.update = function() {
 	this.tiles[this.yPos][this.xPos].outPheromone+=100;
 	this.counter++;
 	if (this.counter > COUNT_TIL && this.antsOut < MAX_ANTS) {
-		this.game.addEntity(new Ant(this.game, 39, 29, this.tiles));
+		var ant = new Ant(this.game, 39, 29, this.colony, this.tiles);
+		this.colony.push(ant);
+		this.game.addEntity(ant);
 		this.counter = 0;
 		this.antsOut++;
 	}
