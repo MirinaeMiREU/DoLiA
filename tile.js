@@ -33,10 +33,10 @@ Tile.prototype.update = function() {
 	
 	for (var i = 0; i < this.neighbors.length; i++) {
 		var tile = this.neighbors[i];
-		if ((tile.outPheromone - 120) > maxOut)
-			maxOut = tile.outPheromone - 120;
-		if ((tile.inPheromone - 120) > maxIn)
-			maxIn = tile.inPheromone - 120;
+		if ((tile.outPheromone - 150) > maxOut)
+			maxOut = tile.outPheromone - 150;
+		if ((tile.inPheromone - 150) > maxIn)
+			maxIn = tile.inPheromone - 150;
 	}
 	
 	

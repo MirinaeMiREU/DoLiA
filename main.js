@@ -1,5 +1,5 @@
-const XSIZE = 80;
-const YSIZE = 60;
+//const XSIZE = 80;
+//const YSIZE = 60;
 var AM = new AssetManager();
 
 AM.queueDownload("./img/knight/IDLE.png");
@@ -85,9 +85,9 @@ AM.downloadAll(function () {
 				neighbors.push(squares[i][j-1]);
 			} else {
 				neighbors.push(squares[i-1][j]);
-				neighbors.push(squares[i][j-1]);
 				neighbors.push(squares[i][j+1]);
 				neighbors.push(squares[i+1][j]);
+				neighbors.push(squares[i][j-1]);
 			}
 			squares[i][j].setNeighbors(neighbors);
 		}
