@@ -1,28 +1,16 @@
-const EXPLORE = 0;
-const EXPLOIT = 1;
-
-const OUTBOUND = 0;
-const INBOUND = 1;
-
-const NORTH = 0;
-const EAST = 1;
-const SOUTH = 2;
-const WEST = 3;
-
-
 function Ant(game, xPos, yPos, peers, tiles) {
 	this.xPos = xPos;
 	this.yPos = yPos;
 	this.dir = Math.floor(Math.random() * 4);
 	this.food = 0;
-	this.energy = 100;
+	this.energy = MAX_ENERGY;
 	this.action = OUTBOUND;
 	this.game = game;
 	this.ctx = game.ctx;
 	this.role = EXPLORE;
 	this.tiles = tiles;	
 	this.peers = peers;
-	Entity.call(this, game, xPos * 10, yPos * 10);
+	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
 Ant.prototype = new Entity();
@@ -36,7 +24,6 @@ Ant.prototype.update = function() {
 	if (this.energy > 0) {
 		this.energy--;
 	}
-	console.log("out:" + curTile.outPheromone + " in:" + curTile.inPheromone);
 	this.draw();
 }
 
@@ -88,19 +75,19 @@ Ant.prototype.move = function() {
 	switch (this.dir) {
 		case NORTH:
 			this.yPos--;
-			this.y -= 10;
+			this.y -= CELL_SIZE;
 			break;
 		case WEST:
 			this.xPos--;
-			this.x -= 10;
+			this.x -= CELL_SIZE;
 			break;
 		case EAST:
 			this.xPos++;
-			this.x += 10;
+			this.x += CELL_SIZE;
 			break;
 		case SOUTH:
 			this.yPos++;
-			this.y += 10;
+			this.y += CELL_SIZE;
 	}
 }
 
@@ -176,13 +163,13 @@ Ant.prototype.decide = function() {
 	}
 	*/
 	if (curTile.isHome && this.action === INBOUND) {
-		this.energy = 150;
+		this.energy = MAX_ENERGY;
 		this.food = 0;
 		this.action = OUTBOUND;
 		this.turnAround();
 	} else if (this.food >= 10 && this.action === OUTBOUND) {
 		this.action = INBOUND;
-		this.energy = 100;
+		this.energy = MAX_ENERGY;
 		this.turnAround();
 	} else if (tileFood > 0 && this.action === OUTBOUND) {
 		curTile.foodLevel--;
@@ -200,26 +187,26 @@ Ant.prototype.decide = function() {
 	
 	if (this.yPos <= 0) {
 		if (this.dir === NORTH) {
-			this.yPos = 59;
-			this.y = this.yPos * 10;
+			this.yPos = YSIZE-1;
+			this.y = this.yPos * CELL_SIZE;
 		}
 			
-	} else if (this.yPos >= 59) {
+	} else if (this.yPos >= YSIZE-1) {
 		if (this.dir === SOUTH) {
 			this.yPos = 0;
-			this.y = this.yPos * 10;
+			this.y = this.yPos * CELL_SIZE;
 		}
 			
 	}
 	if (this.xPos <= 0) {
 		if (this.dir === WEST) {
-			this.xPos = 79;
-			this.x = this.xPos * 10;
+			this.xPos = XSIZE-1;
+			this.x = this.xPos * CELL_SIZE;
 		}
-	} else if (this.xPos >= 79) {
+	} else if (this.xPos >= XSIZE-1) {
 		if (this.dir === EAST) {
 			this.xPos = 0;
-			this.x = this.xPos * 10;
+			this.x = this.xPos * CELL_SIZE;
 		}
 			
 	}
@@ -231,18 +218,10 @@ Ant.prototype.decideDir = function(action) {
 		if (this.lookAhead().outPheromone > 0) {
 			if (this.lookRight().outPheromone > (this.lookLeft().outPheromone + 10) &&
 				this.lookRight().outPheromone > (this.lookAhead().outPheromone + 10)) {
-				console.log("r:" + this.lookRight().outPheromone +
-							" a:" + this.lookAhead().outPheromone +
-							" l:" + this.lookLeft().outPheromone);
 				this.turnRight();
-				console.log("r");
 			} else if (this.lookLeft().outPheromone > (this.lookRight().outPheromone + 10) &&
 					   this.lookLeft().outPheromone > (this.lookAhead().outPheromone + 10)) {
-				console.log("r:" + this.lookRight().outPheromone +
-							" a:" + this.lookAhead().outPheromone +
-							" l:" + this.lookLeft().outPheromone);
 				this.turnLeft();
-				console.log("l");
 			}
 		} else {
 			var rand = Math.random();

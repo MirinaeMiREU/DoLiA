@@ -24,6 +24,7 @@ AM.downloadAll(function () {
 		}
 	}
 	
+	/*
 	for (var i = 0; i < 60; i++) {
 		for (var j = 0; j < 80; j++) {
 			
@@ -32,6 +33,7 @@ AM.downloadAll(function () {
 			}
 		}
 	}
+	*/
 	
 	for (var i = 0; i < YSIZE; i++) {
 		for (var j = 0; j < XSIZE; j++) {

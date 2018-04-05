@@ -1,6 +1,3 @@
-const MULT = 100;
-const DECAY_RATE = 2;
-
 function Tile(game, xPos, yPos) {
 	this.game = game;
 	this.ctx = game.ctx;
@@ -33,10 +30,10 @@ Tile.prototype.update = function() {
 	
 	for (var i = 0; i < this.neighbors.length; i++) {
 		var tile = this.neighbors[i];
-		if ((tile.outPheromone - 150) > maxOut)
-			maxOut = tile.outPheromone - 150;
-		if ((tile.inPheromone - 150) > maxIn)
-			maxIn = tile.inPheromone - 150;
+		if (Math.floor(tile.outPheromone/2) > maxOut)
+			maxOut = Math.floor(tile.outPheromone/2);
+		if (Math.floor(tile.inPheromone/2) > maxIn)
+			maxIn = Math.floor(tile.inPheromone/2);
 	}
 	
 	
@@ -47,10 +44,10 @@ Tile.prototype.update = function() {
 		this.inPheromone < maxIn ?
 		maxIn : this.inPheromone;
 	
-	if (this.inPheromone > 1000) 
-		this.inPheromone = 1000;
-	if (this.outPheromone > 1000)
-		this.outPheromone = 1000;
+	if (this.inPheromone > MAX_PHEROMONE) 
+		this.inPheromone = MAX_PHEROMONE;
+	if (this.outPheromone > MAX_PHEROMONE)
+		this.outPheromone = MAX_PHEROMONE;
 	
 	if (this.inPheromone > 0) {
 		this.inPheromone -= DECAY_RATE;

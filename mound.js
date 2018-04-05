@@ -1,6 +1,3 @@
-const MAX_ANTS = 1;
-const COUNT_TIL = 10;
-
 function Mound(game, xPos, yPos) {
 	this.game = game;
 	this.ctx = game.ctx;
