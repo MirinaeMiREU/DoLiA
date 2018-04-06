@@ -15,7 +15,7 @@ const SOUTH = 2;
 const WEST = 3;
 
 const CELL_SIZE = 10;
-const MAX_ENERGY = 50;
+const MAX_ENERGY = 200;
 
 //mound
 const MAX_ANTS = 10;
