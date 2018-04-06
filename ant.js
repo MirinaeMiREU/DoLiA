@@ -7,7 +7,7 @@ function Ant(game, xPos, yPos, peers, tiles) {
 	this.action = OUTBOUND;
 	this.game = game;
 	this.ctx = game.ctx;
-	this.role = EXPLORE;
+	this.role = EXPLOIT;
 	this.tiles = tiles;	
 	this.peers = peers;
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
@@ -169,7 +169,7 @@ Ant.prototype.decide = function() {
 		} else if (this.food >= 10 && this.action === OUTBOUND) {
 			this.action = INBOUND;
 			this.energy = MAX_ENERGY;
-			curTile.inPheromone = MAX_PHEROMONE;
+			curTile.inPheromone = this.energy;
 			this.turnAround();
 		} else if (tileFood > 0 && this.action === OUTBOUND) {
 			curTile.foodLevel--;
@@ -178,13 +178,13 @@ Ant.prototype.decide = function() {
 		} else if (this.action === OUTBOUND) {
 			this.decideDir(OUTBOUND);
 			this.move();
-			curTile.outPheromone = this.energy > curTile.outPheromone ? 
-								   curTile.outPheromone + this.energy/2 : curTile.outPheromone;
+			curTile.outPheromone = curTile.outPheromone = this.energy > curTile.outPheromone ?
+								   this.energy : curTile.outPheromone;
 		} else if (this.action === INBOUND) { // Going back home
 			this.decideDir(INBOUND);
 			this.move();
-			curTile.inPheromone = this.energy > curTile.inPheromone ? 
-								  curTile.inPheromone + this.energy/2 : curTile.inPheromone;
+			curTile.inPheromone = curTile.inPheromone = this.energy > curTile.inPheromone ?
+							      this.energy : curTile.inPheromone;
 		}
 	} else if (this.role === EXPLORE) {
 		if (curTile.isHome && this.action === INBOUND) {
@@ -195,7 +195,7 @@ Ant.prototype.decide = function() {
 		} else if (this.food >= 10 && this.action === OUTBOUND) {
 			this.action = INBOUND;
 			this.energy = MAX_ENERGY;
-			curTile.inPheromone = MAX_PHEROMONE;
+			curTile.inPheromone = this.energy;
 			this.turnAround();
 		} else if (tileFood > 0 && this.action === OUTBOUND) {
 			curTile.foodLevel--;
@@ -211,13 +211,13 @@ Ant.prototype.decide = function() {
 				}
 			}
 			this.move();
-			curTile.outPheromone = this.energy > curTile.outPheromone ? 
-								   curTile.outPheromone + this.energy/2 : curTile.outPheromone;
+			curTile.outPheromone = curTile.outPheromone = this.energy > curTile.outPheromone ?
+								   this.energy : curTile.outPheromone;
 		} else if (this.action === INBOUND) { // Going back home
 			this.decideDir(INBOUND);
 			this.move();
-			curTile.inPheromone = this.energy > curTile.inPheromone ? 
-								  curTile.inPheromone + this.energy/2 : curTile.inPheromone;
+			curTile.inPheromone = curTile.inPheromone = this.energy > curTile.inPheromone ?
+							      this.energy : curTile.inPheromone;
 		}
 	}
 	
