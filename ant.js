@@ -174,15 +174,20 @@ Ant.prototype.decide = function() {
 	} else if (tileFood > 0 && this.action === OUTBOUND) {
 		curTile.foodLevel--;
 		this.food++;
-		curTile.inPheromone += this.energy;
+		curTile.inPheromone = this.energy > curTile.inPheromone ?
+							  this.energy : curTile.inPheromone;
 	} else if (this.action === OUTBOUND) {
 		this.decideDir(OUTBOUND);
 		this.move();
-		curTile.outPheromone += this.energy;
+		curTile.outPheromone = this.energy > curTile.outPheromone ?
+							   this.energy : curTile.outPheromone;
+	} else if (this.action === OUTBOUND) {
 	} else if (this.action === INBOUND) { // Going back home
 		this.decideDir(INBOUND);
 		this.move();
-		curTile.inPheromone += this.energy;
+		curTile.inPheromone = this.energy > curTile.inPheromone ?
+							  this.energy : curTile.inPheromone;
+	} else if (this.action === OUTBOUND) {
 	}
 	
 	if (this.yPos <= 0) {
@@ -216,11 +221,11 @@ Ant.prototype.decideDir = function(action) {
 	var curTile = this.tiles[this.yPos][this.xPos];
 	if (action === INBOUND) {
 		if (this.lookAhead().outPheromone > 0) {
-			if (this.lookRight().outPheromone > (this.lookLeft().outPheromone + 10) &&
-				this.lookRight().outPheromone > (this.lookAhead().outPheromone + 10)) {
+			if (this.lookRight().outPheromone > (this.lookLeft().outPheromone) &&
+				this.lookRight().outPheromone > (this.lookAhead().outPheromone)) {
 				this.turnRight();
-			} else if (this.lookLeft().outPheromone > (this.lookRight().outPheromone + 10) &&
-					   this.lookLeft().outPheromone > (this.lookAhead().outPheromone + 10)) {
+			} else if (this.lookLeft().outPheromone > (this.lookRight().outPheromone) &&
+					   this.lookLeft().outPheromone > (this.lookAhead().outPheromone)) {
 				this.turnLeft();
 			}
 		} else {
@@ -234,11 +239,11 @@ Ant.prototype.decideDir = function(action) {
 			}
 		}
 	} else {
-		if (this.lookRight().inPheromone > (this.lookLeft().inPheromone + 10) &&
-			this.lookRight().inPheromone > (this.lookAhead().inPheromone + 10)) {
+		if (this.lookRight().inPheromone > (this.lookLeft().inPheromone) &&
+			this.lookRight().inPheromone > (this.lookAhead().inPheromone)) {
 			this.turnRight();
-		} else if (this.lookLeft().inPheromone > (this.lookRight().inPheromone + 10) &&
-				   this.lookLeft().inPheromone > (this.lookAhead().inPheromone + 10)) {
+		} else if (this.lookLeft().inPheromone > (this.lookRight().inPheromone) &&
+				   this.lookLeft().inPheromone > (this.lookAhead().inPheromone)) {
 			this.turnLeft();
 		} else {
 			var rand = Math.random();

@@ -13,7 +13,7 @@ Mound.prototype = new Entity();
 Mound.prototype.constructor = Mound;
 
 Mound.prototype.update = function() {
-	this.tiles[this.yPos][this.xPos].outPheromone+=100;
+	this.tiles[this.yPos][this.xPos].outPheromone=500;
 	this.counter++;
 	if (this.counter > COUNT_TIL && this.antsOut < MAX_ANTS) {
 		var ant = new Ant(this.game, 39, 29, this.colony, this.tiles);

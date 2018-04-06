@@ -15,7 +15,7 @@ const SOUTH = 2;
 const WEST = 3;
 
 const CELL_SIZE = 10;
-const MAX_ENERGY = 50;
+const MAX_ENERGY = 100;
 
 //mound
 const MAX_ANTS = 10;
@@ -23,5 +23,5 @@ const COUNT_TIL = 10;
 
 //tile
 const MAX_PHEROMONE = 500;
-const MULT = 50;
+const MULT = 10;
 const DECAY_RATE = 1;

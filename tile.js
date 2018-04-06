@@ -24,25 +24,31 @@ Tile.prototype = new Entity();
 Tile.prototype.constructor = Tile;
 
 Tile.prototype.update = function() {
+	/*
 	var maxOut = this.outPheromone;
 	var maxIn = this.inPheromone;
-	
-	
 	for (var i = 0; i < this.neighbors.length; i++) {
 		var tile = this.neighbors[i];
 		if (Math.floor(tile.outPheromone/2) > maxOut)
 			maxOut = Math.floor(tile.outPheromone/2);
 		if (Math.floor(tile.inPheromone/2) > maxIn)
 			maxIn = Math.floor(tile.inPheromone/2);
-	}
-	
-	
+	}	
 	this.outPheromone = 
 		this.outPheromone < maxOut ?
 		maxOut : this.outPheromone;
 	this.inPheromone = 
 		this.inPheromone < maxIn ?
 		maxIn : this.inPheromone;
+	*/
+	
+	for (var i = 0; i < this.neighbors.length; i++) {
+		var tile = this.neighbors[i];
+		tile.outPheromone = (Math.floor(this.outPheromone/2)) > tile.outPheromone ?
+							Math.floor(this.outPheromone/2) : tile.outPheromone;
+		tile.inPheromone = (Math.floor(this.inPheromone/2)) > tile.inPheromone ?
+						   Math.floor(this.inPheromone/2) : tile.inPheromone;
+	}
 	
 	if (this.inPheromone > MAX_PHEROMONE) 
 		this.inPheromone = MAX_PHEROMONE;
