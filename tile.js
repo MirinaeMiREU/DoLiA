@@ -11,13 +11,15 @@ function Tile(game, xPos, yPos) {
 	
 	var rand = Math.random();
 	if (rand > 0.99) {
-		this.foodLevel = 100;
-	} else if (rand > 0.95) {
-		this.foodLevel = 25;
+		this.foodLevel = MAX_TILE_FOOD;
+	} else if (rand > 0.96) {
+		this.foodLevel = Math.round(MAX_TILE_FOOD/2);
+	} else if (rand > 0.9) {
+		this.foodLevel = Math.round(MAX_TILE_FOOD/4);
 	} else {
 		this.foodLevel = 0;
 	}
-	Entity.call(this, game, xPos * 10, yPos * 10);
+	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
 Tile.prototype = new Entity();
@@ -53,65 +55,84 @@ Tile.prototype.update = function() {
 }
 
 Tile.prototype.draw = function() {
-	if (this.foodLevel > 0) {
-		this.ctx.fillStyle = "#444444";
+	if (this.foodLevel >= MAX_TILE_FOOD) {
+		this.ctx.fillStyle = "#111111";
+	} else if (this.foodLevel >= Math.round(MAX_TILE_FOOD*4/5)) {
+		this.ctx.fillStyle = "#333333";
+	} else if (this.foodLevel >= Math.round(MAX_TILE_FOOD*3/5)) {
+		this.ctx.fillStyle = "#555555";
+	} else if (this.foodLevel >= Math.round(MAX_TILE_FOOD*2/5)) {
+		this.ctx.fillStyle = "#777777";
+	} else if (this.foodLevel >= Math.round(MAX_TILE_FOOD*1/5)) {
+		this.ctx.fillStyle = "#999999";
+	} else if (this.foodLevel > 0) {
+		this.ctx.fillStyle = "#AAAAAA";
 	} else {
 		this.ctx.fillStyle = "#FFFFFF";
 	}
-	this.ctx.fillRect(this.x, this.y, 5, 5);
+	this.ctx.fillRect(this.x, 
+					  this.y, 
+					  Math.round(CELL_SIZE/2), 
+					  Math.round(CELL_SIZE/2));
 	
 	if (this.outPheromone <= 0) {
 		this.ctx.fillStyle = "#FFFFFF";
 	} else if (this.outPheromone <= MULT) {
-		this.ctx.fillStyle = "#FFE6E6";
+		this.ctx.fillStyle = "#FFEEEE";
 	} else if (this.outPheromone <= MULT*2) {
-		this.ctx.fillStyle = "#FFCDCD";
+		this.ctx.fillStyle = "#FFDDDD";
 	} else if (this.outPheromone <= MULT*3) {
-		this.ctx.fillStyle = "#FFB4B4";
+		this.ctx.fillStyle = "#FFCCCC";
 	} else if (this.outPheromone <= MULT*4) {
-		this.ctx.fillStyle = "#FF9B9B";
+		this.ctx.fillStyle = "#FFBBBB";
 	} else if (this.outPheromone <= MULT*5) {
-		this.ctx.fillStyle = "#FF8282";
+		this.ctx.fillStyle = "#FFAAAA";
 	} else if (this.outPheromone <= MULT*6) {
-		this.ctx.fillStyle = "#FF6969";
+		this.ctx.fillStyle = "#FF9999";
 	} else if (this.outPheromone <= MULT*7) {
-		this.ctx.fillStyle = "#FF5050";
+		this.ctx.fillStyle = "#FF8888";
 	} else if (this.outPheromone <= MULT*8) {
-		this.ctx.fillStyle = "#FF3737";
+		this.ctx.fillStyle = "#FF7777";
 	} else if (this.outPheromone <= MULT*9) {
-		this.ctx.fillStyle = "#FF1E1E";
+		this.ctx.fillStyle = "#FF6666";
 	} else {
-		this.ctx.fillStyle = "#FF0000";
+		this.ctx.fillStyle = "#FF5555";
 	}
 
-	this.ctx.fillRect(this.x+5, this.y, 5, 5);
+	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/2), 
+					  this.y, 
+					  Math.round(CELL_SIZE/2), 
+					  Math.round(CELL_SIZE/2));
 	if (this.inPheromone <= 0) {
 		this.ctx.fillStyle = "#FFFFFF";
 	} else if (this.inPheromone <= MULT) {
-		this.ctx.fillStyle = "#E6E6FF";
+		this.ctx.fillStyle = "#EEEEFF";
 	} else if (this.inPheromone <= MULT*2) {
-		this.ctx.fillStyle = "#CDCDFF";
+		this.ctx.fillStyle = "#DDDDFF";
 	} else if (this.inPheromone <= MULT*3) {
-		this.ctx.fillStyle = "#B4B4FF";
+		this.ctx.fillStyle = "#CCCCFF";
 	} else if (this.inPheromone <= MULT*4) {
-		this.ctx.fillStyle = "#9B9BFF";
+		this.ctx.fillStyle = "#BBBBFF";
 	} else if (this.inPheromone <= MULT*5) {
-		this.ctx.fillStyle = "#8282FF";
+		this.ctx.fillStyle = "#AAAAFF";
 	} else if (this.inPheromone <= MULT*6) {
-		this.ctx.fillStyle = "#6969FF";
+		this.ctx.fillStyle = "#9999FF";
 	} else if (this.inPheromone <= MULT*7) {
-		this.ctx.fillStyle = "#5050FF";
+		this.ctx.fillStyle = "#8888FF";
 	} else if (this.inPheromone <= MULT*8) {
-		this.ctx.fillStyle = "#3737FF";
+		this.ctx.fillStyle = "#7777FF";
 	} else if (this.inPheromone <= MULT*9) {
-		this.ctx.fillStyle = "#1E1EFF";
+		this.ctx.fillStyle = "#6666FF";
 	} else {
-		this.ctx.fillStyle = "#0000FF";
+		this.ctx.fillStyle = "#5555FF";
 	}
-	this.ctx.fillRect(this.x+5, this.y+5, 5, 5);
+	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/2), 
+					  this.y+Math.round(CELL_SIZE/2), 
+					  Math.round(CELL_SIZE/2), 
+					  Math.round(CELL_SIZE/2));
 
 	this.ctx.fillStyle = "black";
-	this.ctx.strokeRect(this.x, this.y, 10, 10);	
+	this.ctx.strokeRect(this.x, this.y, CELL_SIZE, CELL_SIZE);	
 }
 
 Tile.prototype.setNeighbors = function(neighbors) {
@@ -119,8 +140,12 @@ Tile.prototype.setNeighbors = function(neighbors) {
 }
 
 Tile.prototype.setHome = function() {
-	var mound = new Mound(this.game, 39, 29);
+	var mound = new Mound(this.game, 
+						  Math.round(XSIZE/2)-1, 
+						  Math.round(YSIZE/2)-1);
 	this.isHome = true;
+	this.foodLevel = 0;
 	this.game.addEntity(mound);
+	
 	return mound;
 }

@@ -6,17 +6,21 @@ function Mound(game, xPos, yPos) {
 	this.counter = 0;	
 	this.antsOut = 0;
 	this.colony = [];
-	Entity.call(this, game, xPos * 10, yPos * 10);
+	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
 Mound.prototype = new Entity();
 Mound.prototype.constructor = Mound;
 
 Mound.prototype.update = function() {
-	this.tiles[this.yPos][this.xPos].outPheromone=500;
+	this.tiles[this.yPos][this.xPos].outPheromone=MAX_PHEROMONE;
 	this.counter++;
 	if (this.counter > COUNT_TIL && this.antsOut < MAX_ANTS) {
-		var ant = new Ant(this.game, 39, 29, this.colony, this.tiles);
+		var ant = new Ant(this.game, 
+						  Math.round(XSIZE/2)-1, 
+						  Math.round(YSIZE/2)-1, 
+						  this.colony, 
+						  this.tiles);
 		this.colony.push(ant);
 		this.game.addEntity(ant);
 		this.counter = 0;
@@ -28,9 +32,9 @@ Mound.prototype.update = function() {
 Mound.prototype.draw = function() {
 	this.ctx.fillStyle = "green";
 	
-	this.ctx.fillRect(this.x, this.y, 10, 10);
+	this.ctx.fillRect(this.x, this.y, CELL_SIZE, CELL_SIZE);
 	this.ctx.fillStyle = "black";
-	this.ctx.strokeRect(this.x, this.y, 10, 10);
+	this.ctx.strokeRect(this.x, this.y, CELL_SIZE, CELL_SIZE);
 }
 
 Mound.prototype.setTiles = function(tiles) {

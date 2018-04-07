@@ -30,9 +30,9 @@ Ant.prototype.update = function() {
 }
 
 Ant.prototype.draw = function() {
-	if (this.food >= 10) {
+	if (this.food >= MAX_ANT_FOOD) {
 		this.ctx.fillStyle = "#004400";
-	} else if (this.food > 5) {
+	} else if (this.food > Math.round(MAX_ANT_FOOD/2)) {
 		this.ctx.fillStyle = "#008800";
 	} else if (this.food > 0) {
 		this.ctx.fillStyle = "#00BB00";
@@ -40,20 +40,32 @@ Ant.prototype.draw = function() {
 		this.ctx.fillStyle = "#00FF00";
 	}
 	
-	this.ctx.fillRect(this.x+2, this.y+2, 6, 6);
+	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5), this.y+Math.round(CELL_SIZE/5), Math.round(CELL_SIZE*3/5), Math.round(CELL_SIZE*3/5));
 	
 	switch(this.dir) {
 		case NORTH:
-			this.ctx.fillRect(this.x+4, this.y-5, 2, 6);
+			this.ctx.fillRect(this.x+Math.round(CELL_SIZE*2/5), 
+							  this.y-Math.round(CELL_SIZE*2/5), 
+							  Math.round(CELL_SIZE/5), 
+							  Math.round(CELL_SIZE*3/5));
 			break;
 		case EAST:
-			this.ctx.fillRect(this.x+9, this.y+4, 6, 2);
+			this.ctx.fillRect(this.x+Math.round(CELL_SIZE*4/5), 
+							  this.y+Math.round(CELL_SIZE*2/5), 
+							  Math.round(CELL_SIZE*3/5), 
+							  Math.round(CELL_SIZE/5));
 			break;
 		case SOUTH:
-			this.ctx.fillRect(this.x+4, this.y+9, 2, 6);
+			this.ctx.fillRect(this.x+Math.round(CELL_SIZE*2/5), 
+							  this.y+Math.round(CELL_SIZE*4/5), 
+							  Math.round(CELL_SIZE/5), 
+							  Math.round(CELL_SIZE*3/5));
 			break;
 		case WEST:
-			this.ctx.fillRect(this.x-5, this.y+4, 6, 2);
+			this.ctx.fillRect(this.x-Math.round(CELL_SIZE*2/5), 
+							  this.y+Math.round(CELL_SIZE*2/5), 
+							  Math.round(CELL_SIZE*3/5), 
+							  Math.round(CELL_SIZE/5));
 	}
 }
 
@@ -162,8 +174,9 @@ Ant.prototype.decide = function() {
 	var curTile = this.tiles[this.yPos][this.xPos];
 	var tileFood = curTile.foodLevel;
 	
-	if (this.energy === 0) {
+	if (this.energy === 0 && this.action === OUTBOUND) {
 		this.action = INBOUND;
+		this.turnAround();
 	}
 	if (this.role === EXPLOIT) {
 		if (curTile.isHome && this.action === INBOUND) {
@@ -171,14 +184,29 @@ Ant.prototype.decide = function() {
 			this.food = 0;
 			this.action = OUTBOUND;
 			this.turnAround();
-		} else if (this.food >= 10 && this.action === OUTBOUND) {
+		} else if (this.food >= MAX_ANT_FOOD && this.action === OUTBOUND) {
 			this.action = INBOUND;
 			this.energy = MAX_ENERGY;
 			curTile.inPheromone = this.energy;
 			this.turnAround();
-		} else if (tileFood > 0 && this.food < 10) {
-			curTile.foodLevel--;
-			this.food++;
+		} else if (tileFood > 0 && this.food < MAX_ANT_FOOD) {
+			if (tileFood >= FOOD_COLLECT_RATE) {
+				if ((this.food + FOOD_COLLECT_RATE) <= MAX_ANT_FOOD) {
+					curTile.foodLevel -= FOOD_COLLECT_RATE;
+					this.food += FOOD_COLLECT_RATE;
+				} else {
+					curTile.foodLevel -= MAX_ANT_FOOD - this.food;
+					this.food = MAX_ANT_FOOD;
+				}
+			} else {
+				if ((this.food + tileFood) <= MAX_ANT_FOOD) {
+					curTile.foodLevel = 0;
+					this.food += tileFood;
+				} else {
+					curTile.foodLevel -= MAX_ANT_FOOD - this.food;
+					this.food = MAX_ANT_FOOD;
+				}
+			}
 		} else if (this.action === OUTBOUND) {
 			this.decideDir(OUTBOUND);
 			this.move();
@@ -283,70 +311,4 @@ Ant.prototype.decideDir = function(action) {
 			}
 		}
 	}
-	/*
-	if (action === INBOUND) {
-		var a = this.lookAhead().outPheromone;
-		var r = this.lookRight().outPheromone;
-		var l = this.lookLeft().outPheromone;
-		var max = Math.max(a, r, l);
-		
-		if (max > 0) {
-			if (r === max) {
-				this.turnRight();
-			} else if (l === max) {
-				this.turnLeft();
-			}
-		} else {
-			var rand = Math.random();
-			if (rand > 0.85) {
-				if (rand > 0.925) {
-					this.turnRight();
-				} else {
-					this.turnLeft();
-				}
-			}
-		}
-		if (this.lookAhead().outPheromone > 0 ||
-			this.lookRight().outPheromone > 0 ||
-			this.lookLeft().outPheromone > 0) {
-			if (this.lookRight().outPheromone > (this.lookLeft().outPheromone) &&
-				this.lookRight().outPheromone > (this.lookAhead().outPheromone)) {
-				this.turnRight();
-			} else if (this.lookLeft().outPheromone > (this.lookRight().outPheromone) &&
-					   this.lookLeft().outPheromone > (this.lookAhead().outPheromone)) {
-				this.turnLeft();
-			}
-		} else {
-			var rand = Math.random();
-			if (rand > 0.85) {
-				if (rand > 0.925) {
-					this.turnRight();
-				} else {
-					this.turnLeft();
-				}
-			}
-		} 
-	} else {
-		if (this.lookAhead().inPheromone > 0 ||
-			this.lookRight().inPheromone > 0 ||
-			this.lookLeft().inPheromone > 0) {
-			if (this.lookRight().inPheromone > (this.lookLeft().inPheromone) &&
-				this.lookRight().inPheromone > (this.lookAhead().inPheromone)) {
-				this.turnRight();
-			} else if (this.lookLeft().inPheromone > (this.lookRight().inPheromone) &&
-					   this.lookLeft().inPheromone > (this.lookAhead().inPheromone)) {
-				this.turnLeft();
-			}
-		} else {
-			var rand = Math.random();
-			if (rand > 0.85) {
-				if (rand > 0.925) {
-					this.turnRight();
-				} else {
-					this.turnLeft();
-				}
-			}
-		}
-	}
-	*/
 }
