@@ -3,9 +3,9 @@ function Ant(game, xPos, yPos, peers, tiles) {
 	this.yPos = yPos;
 	this.dir = Math.floor(Math.random() * 4);
 	this.food = 0;
+	this.consecutiveTurns = 0;
 	this.energy = MAX_ENERGY;
 	this.action = OUTBOUND;
-	this.game = game;
 	this.ctx = game.ctx;
 	this.role = EXPLOIT;
 	this.tiles = tiles;	
@@ -23,7 +23,7 @@ Ant.prototype.update = function() {
 	this.decide();
 	
 	if (this.energy > 0) {
-		this.energy--;
+		this.energy -= ENERGY_DECAY;
 	}
 	
 	this.draw();
@@ -63,10 +63,12 @@ Ant.prototype.setNeighbors = function(neighbors) {
 
 Ant.prototype.turnRight = function() {
 	this.dir = this.dir + 1 > 3 ? 0 : this.dir + 1;
+	this.consecutiveTurns++;
 }
 
 Ant.prototype.turnLeft = function() {
 	this.dir = this.dir - 1 < 0 ? 3 : this.dir - 1;	
+	this.consecutiveTurns++;
 }
 
 Ant.prototype.turnAround = function() {
@@ -145,8 +147,8 @@ Ant.prototype.diverge = function() {
 		if (peer !== this && 
 			this.xPos === peer.xPos &&
 			this.yPos === peer.yPos &&
-			this.action === OUTBOUND &&
-			peer.action === OUTBOUND ) {
+			((this.action === OUTBOUND && peer.action === OUTBOUND) ||
+			(this.action === INBOUND && peer.action === INBOUND)) ) {
 			if (Math.random() > 0.5) {
 				this.turnRight();
 			} else {
@@ -160,6 +162,9 @@ Ant.prototype.decide = function() {
 	var curTile = this.tiles[this.yPos][this.xPos];
 	var tileFood = curTile.foodLevel;
 	
+	if (this.energy === 0) {
+		this.action = INBOUND;
+	}
 	if (this.role === EXPLOIT) {
 		if (curTile.isHome && this.action === INBOUND) {
 			this.energy = MAX_ENERGY;
@@ -171,19 +176,18 @@ Ant.prototype.decide = function() {
 			this.energy = MAX_ENERGY;
 			curTile.inPheromone = this.energy;
 			this.turnAround();
-		} else if (tileFood > 0 && this.action === OUTBOUND) {
+		} else if (tileFood > 0 && this.food < 10) {
 			curTile.foodLevel--;
 			this.food++;
-			this.energy = MAX_ENERGY;
 		} else if (this.action === OUTBOUND) {
 			this.decideDir(OUTBOUND);
 			this.move();
-			curTile.outPheromone = curTile.outPheromone = this.energy > curTile.outPheromone ?
+			curTile.outPheromone = this.energy > curTile.outPheromone ?
 								   this.energy : curTile.outPheromone;
 		} else if (this.action === INBOUND) { // Going back home
 			this.decideDir(INBOUND);
 			this.move();
-			curTile.inPheromone = curTile.inPheromone = this.energy > curTile.inPheromone ?
+			curTile.inPheromone = this.energy > curTile.inPheromone ?
 							      this.energy : curTile.inPheromone;
 		}
 	} else if (this.role === EXPLORE) {
@@ -211,12 +215,12 @@ Ant.prototype.decide = function() {
 				}
 			}
 			this.move();
-			curTile.outPheromone = curTile.outPheromone = this.energy > curTile.outPheromone ?
+			curTile.outPheromone = this.energy > curTile.outPheromone ?
 								   this.energy : curTile.outPheromone;
 		} else if (this.action === INBOUND) { // Going back home
 			this.decideDir(INBOUND);
 			this.move();
-			curTile.inPheromone = curTile.inPheromone = this.energy > curTile.inPheromone ?
+			curTile.inPheromone = this.energy > curTile.inPheromone ?
 							      this.energy : curTile.inPheromone;
 		}
 	}
@@ -250,7 +254,58 @@ Ant.prototype.decide = function() {
 
 Ant.prototype.decideDir = function(action) {
 	var curTile = this.tiles[this.yPos][this.xPos];
+	var a = action === INBOUND ? 
+	        this.lookAhead().outPheromone :
+			this.lookAhead().inPheromone;
+	var r = action === INBOUND ? 
+	        this.lookRight().outPheromone :
+			this.lookRight().inPheromone;
+	var l = action === INBOUND ? 
+	        this.lookLeft().outPheromone :
+			this.lookLeft().inPheromone;
+	var max = Math.max(a, r, l);
+	
+	if (max > 0) {
+		if (r === max && this.consecutiveTurns < 3) {
+			this.turnRight();
+		} else if (l === max && this.consecutiveTurns < 3) {
+			this.turnLeft();
+		} else {
+			this.consecutiveTurns = 0;
+		}
+	} else {
+		var rand = Math.random();
+		if (rand > 0.85) {
+			if (rand > 0.925) {
+				this.turnRight();
+			} else {
+				this.turnLeft();
+			}
+		}
+	}
+	/*
 	if (action === INBOUND) {
+		var a = this.lookAhead().outPheromone;
+		var r = this.lookRight().outPheromone;
+		var l = this.lookLeft().outPheromone;
+		var max = Math.max(a, r, l);
+		
+		if (max > 0) {
+			if (r === max) {
+				this.turnRight();
+			} else if (l === max) {
+				this.turnLeft();
+			}
+		} else {
+			var rand = Math.random();
+			if (rand > 0.85) {
+				if (rand > 0.925) {
+					this.turnRight();
+				} else {
+					this.turnLeft();
+				}
+			}
+		}
 		if (this.lookAhead().outPheromone > 0 ||
 			this.lookRight().outPheromone > 0 ||
 			this.lookLeft().outPheromone > 0) {
@@ -270,7 +325,7 @@ Ant.prototype.decideDir = function(action) {
 					this.turnLeft();
 				}
 			}
-		}
+		} 
 	} else {
 		if (this.lookAhead().inPheromone > 0 ||
 			this.lookRight().inPheromone > 0 ||
@@ -293,4 +348,5 @@ Ant.prototype.decideDir = function(action) {
 			}
 		}
 	}
+	*/
 }
