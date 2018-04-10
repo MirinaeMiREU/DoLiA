@@ -23,16 +23,15 @@ AM.downloadAll(function () {
 			gameEngine.addEntity(tile);
 		}
 	}
-	/*
-	for (var i = 0; i < 60; i++) {
-		for (var j = 0; j < 80; j++) {
-			
-			if ((i < 45 && i > 15) && (j > 20 && j < 60)) {
+	
+	for (var i = 0; i < YSIZE; i++) {
+		for (var j = 0; j < XSIZE; j++) {
+			if (i == 0 || i == YSIZE-1 || j == 0 || j == XSIZE-1) {
 				squares[i][j].foodLevel = 0;
 			}
 		}
 	}
-	*/
+	
 	
 	for (var i = 0; i < YSIZE; i++) {
 		for (var j = 0; j < XSIZE; j++) {
@@ -86,7 +85,9 @@ AM.downloadAll(function () {
 			squares[i][j].setNeighbors(neighbors);
 		}
 	}
-	squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome().setTiles(squares);
+	var mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
+	mound.setTiles(squares);
+	mound.spawnAnt();
 	
 	gameEngine.start();
 	

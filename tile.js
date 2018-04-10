@@ -10,12 +10,14 @@ function Tile(game, xPos, yPos) {
 	this.neighbors = [];	
 	
 	var rand = Math.random();
-	if (rand > 0.99) {
-		this.foodLevel = MAX_TILE_FOOD;
-	} else if (rand > 0.96) {
-		this.foodLevel = Math.round(MAX_TILE_FOOD/2);
-	} else if (rand > 0.9) {
-		this.foodLevel = Math.round(MAX_TILE_FOOD/4);
+	if (rand < FOOD_ABUNDANCE) {
+		if (rand < FOOD_ABUNDANCE/10) {
+			this.foodLevel = MAX_TILE_FOOD;
+		} else if (rand < FOOD_ABUNDANCE/4) {
+			this.foodLevel = Math.round(MAX_TILE_FOOD/2);
+		} else {
+			this.foodLevel = Math.round(MAX_TILE_FOOD/4);
+		}
 	} else {
 		this.foodLevel = 0;
 	}
@@ -58,15 +60,15 @@ Tile.prototype.draw = function() {
 	if (this.foodLevel >= MAX_TILE_FOOD) {
 		this.ctx.fillStyle = "#111111";
 	} else if (this.foodLevel >= Math.round(MAX_TILE_FOOD*4/5)) {
-		this.ctx.fillStyle = "#333333";
+		this.ctx.fillStyle = "#222222";
 	} else if (this.foodLevel >= Math.round(MAX_TILE_FOOD*3/5)) {
-		this.ctx.fillStyle = "#555555";
+		this.ctx.fillStyle = "#444444";
 	} else if (this.foodLevel >= Math.round(MAX_TILE_FOOD*2/5)) {
-		this.ctx.fillStyle = "#777777";
+		this.ctx.fillStyle = "#666666";
 	} else if (this.foodLevel >= Math.round(MAX_TILE_FOOD*1/5)) {
 		this.ctx.fillStyle = "#999999";
 	} else if (this.foodLevel > 0) {
-		this.ctx.fillStyle = "#AAAAAA";
+		this.ctx.fillStyle = "#BBBBBB";
 	} else {
 		this.ctx.fillStyle = "#FFFFFF";
 	}

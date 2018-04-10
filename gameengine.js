@@ -90,12 +90,12 @@ GameEngine.prototype.startInput = function () {
 }
 
 GameEngine.prototype.addEntity = function (entity) {
-    console.log('added entity');
+    //console.log('added entity');
     this.entities.push(entity);
 }
 
 GameEngine.prototype.removeEntity = function(entity) {
-	console.log('Removed entity.');
+	//console.log('Removed entity.');
 	var index = this.entities.indexOf(entity);
 	this.entities.splice(index, 1);
 }
@@ -114,8 +114,9 @@ GameEngine.prototype.update = function () {
 
     for (var i = 0; i < entitiesCount; i++) {
         var entity = this.entities[i];
-
-        entity.update();
+		if (entity != undefined) {
+			entity.update();
+		}
     }
 }
 
