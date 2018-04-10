@@ -1,5 +1,5 @@
 // main
-const CELL_SIZE = 40;
+const CELL_SIZE = 20;
 const XSIZE = Math.floor(800/CELL_SIZE);
 const YSIZE = Math.floor(600/CELL_SIZE);
 
