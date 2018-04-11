@@ -16,7 +16,10 @@ Mound.prototype.constructor = Mound;
 
 Mound.prototype.update = function() {
 	this.tiles[this.yPos][this.xPos].outPheromone=MAX_PHEROMONE;
-
+	if (this.colony.length <= 0) {
+		console.log(this.foodStorage);
+		this.game.pauseGame();
+	}
 	this.draw();
 }
 

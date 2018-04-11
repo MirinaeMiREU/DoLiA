@@ -1,5 +1,5 @@
 // main
-var CELL_SIZE = 10;
+var CELL_SIZE = 20;
 var XSIZE = Math.floor(800/CELL_SIZE);
 var YSIZE = Math.floor(600/CELL_SIZE);
 
@@ -13,7 +13,7 @@ var MAX_PHEROMONE = XSIZE*5;
 var MULT = Math.round(MAX_PHEROMONE/10);
 var DECAY_RATE = 2;
 var MAX_TILE_FOOD = 1000;
-var FOOD_ABUNDANCE = 0.2;
+var FOOD_ABUNDANCE = 0.002;
 
 // mound
 var MAX_ANTS = 10;
