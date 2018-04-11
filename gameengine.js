@@ -128,6 +128,11 @@ GameEngine.prototype.loop = function () {
 	}
 	if (!this.isPaused) {
 		this.clockTick = this.timer.tick();
+		
+		this.update();
+		this.draw();
+		
+		/*
 		if (this.timer.gameTime % 0.05 > 0.025 && !this.ticked) {
 			this.update();
 			this.draw();
@@ -137,6 +142,7 @@ GameEngine.prototype.loop = function () {
 			this.ticked = false;
 			//console.log("tock");
 		}
+		*/
 	}
 }
 

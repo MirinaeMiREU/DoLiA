@@ -1,4 +1,4 @@
-function Ant(game, xPos, yPos, peers, tiles, mound) {
+function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.xPos = xPos;
 	this.yPos = yPos;
 	this.ctx = game.ctx;
@@ -13,8 +13,11 @@ function Ant(game, xPos, yPos, peers, tiles, mound) {
 	this.tiles = tiles;
 	this.peers = peers;
 	this.mound = mound;
+	this.geneRole = geneRole > 1 ? 1 : geneRole;
+	this.geneForage = geneForage > 1 ? 1 : geneForage;
 	this.layTimer = 0;
 	this.careTimer = 0;
+	//console.log(geneRole + " " + geneForage);
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -27,7 +30,7 @@ Ant.prototype.update = function() {
 	} else if (this.role === LAY_EGG) {
 		if (this.layTimer >= LAY_TIME) {
 			this.eggLay();
-			this.role = Math.floor(Math.random() * 3);
+			this.chooseRole();
 			this.layTimer = 0;
 		} else {
 			this.layTimer++;
@@ -42,7 +45,6 @@ Ant.prototype.update = function() {
 			this.energy -= ENERGY_DECAY;
 		}
 	}
-	
 	this.age++;
 	this.hunger++;
 	this.draw();
@@ -212,17 +214,7 @@ Ant.prototype.decide = function() {
 				this.hunger = 0;
 				//console.log(this.mound.foodStorage);
 			}
-			if (Math.random() > 0.7 && this.mound.canGrow()) {
-				this.role = LAY_EGG;
-			} else {
-				if (Math.random() > 0.5) {
-					this.role = EXPLOIT;
-				} else {
-					this.role = EXPLORE;
-				}
-				this.action = OUTBOUND;
-				this.turnAround();		
-			}
+			this.chooseRole();
 			this.food = 0;
 			this.energy = MAX_ENERGY;
 		}
@@ -291,7 +283,10 @@ Ant.prototype.decide = function() {
 							      this.energy : curTile.inPheromone;
 		}
 	}
-	
+	this.wrapAround();
+}
+
+Ant.prototype.wrapAround = function() {
 	if (this.yPos <= 0) {
 		if (this.dir === NORTH) {
 			this.yPos = YSIZE-1;
@@ -302,8 +297,7 @@ Ant.prototype.decide = function() {
 		if (this.dir === SOUTH) {
 			this.yPos = 0;
 			this.y = this.yPos * CELL_SIZE;
-		}
-			
+		}	
 	}
 	if (this.xPos <= 0) {
 		if (this.dir === WEST) {
@@ -315,7 +309,6 @@ Ant.prototype.decide = function() {
 			this.xPos = 0;
 			this.x = this.xPos * CELL_SIZE;
 		}
-			
 	}
 }
 
@@ -357,7 +350,8 @@ Ant.prototype.eat = function() {
 }
 
 Ant.prototype.eggLay = function() {
-	this.mound.spawnLarva();
+	this.mound.spawnLarva(this);
+	//console.log("laid");
 }
 
 Ant.prototype.eggCare = function() {
@@ -366,4 +360,19 @@ Ant.prototype.eggCare = function() {
 
 Ant.prototype.die = function(reason) {
 	this.mound.removeAnt(this, reason);
+}
+
+Ant.prototype.chooseRole = function() {
+	// if over threshold for egg laying, lay egg
+	if (Math.random() > this.geneRole && this.mound.canGrow()) {
+		this.role = LAY_EGG;
+	} else { // forage otherwise
+		if (Math.random() > this.geneForage) {
+			this.role = EXPLOIT;
+		} else {
+			this.role = EXPLORE;
+		}
+		this.action = OUTBOUND;
+		this.turnAround();		
+	}	
 }

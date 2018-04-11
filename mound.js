@@ -3,6 +3,7 @@ function Mound(game, xPos, yPos) {
 	this.ctx = game.ctx;
 	this.xPos = xPos;
 	this.yPos = yPos;
+	this.updateCounter = 0;
 	this.antCount = 0;
 	this.larvaCount = 0;
 	this.foodStorage = 0;
@@ -20,6 +21,13 @@ Mound.prototype.update = function() {
 		console.log(this.foodStorage);
 		this.game.pauseGame();
 	}
+	if (this.updateCounter >= 100) {
+		console.log("Ant:" + this.antCount + 
+					" Larva:" + this.larvaCount + 
+					" Food:" + this.foodStorage);
+		this.updateCounter = 0;
+	}
+	this.updateCounter++;
 	this.draw();
 }
 
@@ -35,13 +43,32 @@ Mound.prototype.setTiles = function(tiles) {
 	this.tiles = tiles;
 }
 
-Mound.prototype.spawnAnt = function() {
-	var ant = new Ant(this.game, 
+Mound.prototype.spawnAnt = function(parent) {
+	var dev = Math.random() * MAX_DEVIATION;
+	dev = Math.random() > 0.5 ? dev : -dev;
+	var dev2 = Math.random() * MAX_DEVIATION;
+	dev2 = Math.random() > 0.5 ? dev2 : -dev2;
+	var ant;
+	if (parent !== undefined) {
+		ant = new Ant(this.game, 
 					  Math.round(XSIZE/2)-1, 
-					  Math.round(YSIZE/2)-1, 
+				  	  Math.round(YSIZE/2)-1, 
 					  this.colony, 
 					  this.tiles,
-					  this);
+					  this,
+					  parent.geneRole + dev,
+					  parent.geneForage + dev2);
+	} else {
+		ant = new Ant(this.game, 
+					  Math.round(XSIZE/2)-1, 
+				  	  Math.round(YSIZE/2)-1, 
+					  this.colony, 
+					  this.tiles,
+					  this,
+					  0.5,
+					  0.5);
+	}
+	
 	this.colony.push(ant);
 	this.game.addEntity(ant);
 	this.antCount++;
@@ -59,8 +86,8 @@ Mound.prototype.removeAnt = function(ant, reason) {
 	this.antCount--;
 }
 
-Mound.prototype.spawnLarva = function() {
-	var larva = new Larva(this.game, this);
+Mound.prototype.spawnLarva = function(parent) {
+	var larva = new Larva(this.game, this, parent);
 	this.larvae.push(larva);
 	this.game.addEntity(larva);
 	this.larvaCount++;
@@ -73,5 +100,5 @@ Mound.prototype.removeLarva = function(larva) {
 }
 
 Mound.prototype.canGrow = function() {
-	return this.foodStorage >= ((this.larvaCount+this.antCount)*EAT_AMOUNT);
+	return this.foodStorage > ((this.larvaCount+this.antCount)*EAT_AMOUNT);
 }
