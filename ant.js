@@ -6,7 +6,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.food = 0;
 	this.age = 0;
 	this.consecutiveTurns = 0;
-	this.energy = MAX_ENERGY;
+	
 	this.hunger = 0;
 	this.action = OUTBOUND;
 	this.role = EXPLOIT;
@@ -17,6 +17,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.geneRole = geneRole < 0 ? 0 : geneRole;
 	this.geneForage = geneForage > 1 ? 1 : geneForage;
 	this.geneForage = geneForage < 0 ? 0 : geneForage;
+	this.energy = (Math.ceil(MAX_ENERGY*this.geneRole)-MIN_ENERGY) + MIN_ENERGY;
 	this.layTime = (Math.ceil(LAY_TIME*this.geneRole*2)-MIN_LAY_TIME) + MIN_LAY_TIME;
 	this.maxFood = (Math.ceil(MAX_ANT_FOOD*this.geneRole*2)-MIN_ANT_FOOD) + MIN_ANT_FOOD;
 	this.layTimer = 0;
