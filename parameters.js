@@ -8,7 +8,7 @@ var EAST = 1;
 var SOUTH = 2;
 var WEST = 3;
 
-var GAME_LIFE_TIME = 100000;
+var GAME_LIFE_TIME = 1000000;
 
 //tile
 var MAX_PHEROMONE = XSIZE*10;
