@@ -14,7 +14,11 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.peers = peers;
 	this.mound = mound;
 	this.geneRole = geneRole > 1 ? 1 : geneRole;
+	this.geneRole = geneRole < 0 ? 0 : geneRole;
 	this.geneForage = geneForage > 1 ? 1 : geneForage;
+	this.geneForage = geneForage < 0 ? 0 : geneForage;
+	this.layTime = (Math.ceil(LAY_TIME*this.geneRole*2)-MIN_LAY_TIME) + MIN_LAY_TIME;
+	this.maxFood = (Math.ceil(MAX_ANT_FOOD*this.geneRole*2)-MIN_ANT_FOOD) + MIN_ANT_FOOD;
 	this.layTimer = 0;
 	this.careTimer = 0;
 	//console.log(geneRole + " " + geneForage);
@@ -28,7 +32,7 @@ Ant.prototype.update = function() {
 	if (this.age > LIFETIME) {
 		this.die(DEATH_AGE);
 	} else if (this.role === LAY_EGG) {
-		if (this.layTimer >= LAY_TIME) {
+		if (this.layTimer >= this.layTime) {
 			this.eggLay();
 			this.chooseRole();
 			this.layTimer = 0;
@@ -52,9 +56,9 @@ Ant.prototype.update = function() {
 }
 
 Ant.prototype.draw = function() {
-	if (this.food >= MAX_ANT_FOOD) {
+	if (this.food >= this.maxFood) {
 		this.ctx.fillStyle = "#004400";
-	} else if (this.food > Math.round(MAX_ANT_FOOD/2)) {
+	} else if (this.food > Math.round(this.maxFood/2)) {
 		this.ctx.fillStyle = "#008800";
 	} else if (this.food > 0) {
 		this.ctx.fillStyle = "#00BB00";
@@ -220,27 +224,27 @@ Ant.prototype.decide = function() {
 		}
 	}
 	if (this.role === EXPLOIT) {
-		if (this.food >= MAX_ANT_FOOD && this.action === OUTBOUND) {
+		if (this.food >= this.maxFood && this.action === OUTBOUND) {
 			this.action = INBOUND;
 			this.energy = MAX_ENERGY;
 			curTile.inPheromone = this.energy;
 			this.turnAround();
-		} else if (tileFood > 0 && this.food < MAX_ANT_FOOD) {
+		} else if (tileFood > 0 && this.food < this.maxFood) {
 			if (tileFood >= FOOD_COLLECT_RATE) {
-				if ((this.food + FOOD_COLLECT_RATE) <= MAX_ANT_FOOD) {
+				if ((this.food + FOOD_COLLECT_RATE) <= this.maxFood) {
 					curTile.foodLevel -= FOOD_COLLECT_RATE;
 					this.food += FOOD_COLLECT_RATE;
 				} else {
-					curTile.foodLevel -= MAX_ANT_FOOD - this.food;
-					this.food = MAX_ANT_FOOD;
+					curTile.foodLevel -= this.maxFood - this.food;
+					this.food = this.maxFood;
 				}
 			} else {
-				if ((this.food + tileFood) <= MAX_ANT_FOOD) {
+				if ((this.food + tileFood) <= this.maxFood) {
 					curTile.foodLevel = 0;
 					this.food += tileFood;
 				} else {
-					curTile.foodLevel -= MAX_ANT_FOOD - this.food;
-					this.food = MAX_ANT_FOOD;
+					curTile.foodLevel -= this.maxFood - this.food;
+					this.food = this.maxFood;
 				}
 			}
 		} else if (this.action === OUTBOUND) {
@@ -364,10 +368,10 @@ Ant.prototype.die = function(reason) {
 
 Ant.prototype.chooseRole = function() {
 	// if over threshold for egg laying, lay egg
-	if (Math.random() > this.geneRole && this.mound.canGrow()) {
+	if (Math.random() >= this.geneRole && this.mound.canGrow()) {
 		this.role = LAY_EGG;
 	} else { // forage otherwise
-		if (Math.random() > this.geneForage) {
+		if (Math.random() >= this.geneForage) {
 			this.role = EXPLOIT;
 		} else {
 			this.role = EXPLORE;
