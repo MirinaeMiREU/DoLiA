@@ -54,9 +54,9 @@ Mound.prototype.setTiles = function(tiles) {
 
 Mound.prototype.spawnAnt = function() {
 	var dev = Math.random() * MAX_DEVIATION;
-	dev = Math.random() > 0.5 ? dev : -dev;
+	dev = Math.random() >= 0.5 ? dev : -dev;
 	var dev2 = Math.random() * MAX_DEVIATION;
-	dev2 = Math.random() > 0.5 ? dev2 : -dev2;
+	dev2 = Math.random() >= 0.5 ? dev2 : -dev2;
 	var randomAnt = this.colony[Math.floor(this.antCount*Math.random())];
 	var ant;
 	if (randomAnt === undefined) {

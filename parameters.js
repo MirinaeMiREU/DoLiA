@@ -33,8 +33,8 @@ var EXPLOIT = 1;
 var LAY_EGG = 2;
 var CARE_EGG = 3;
 
-var LAY_TIME = 100;
-var MIN_LAY_TIME = 10;
+var LAY_TIME = 50;
+var MIN_LAY_TIME = LAY_TIME/10;
 var CARE_TIME = 10;
 
 var DEATH_AGE = 0;
@@ -52,7 +52,7 @@ var INBOUND = 1;
 var MAX_ENERGY = MAX_PHEROMONE;
 var MIN_ENERGY = MAX_ENERGY/10;
 var MAX_ANT_FOOD = 10;
-var MIN_ANT_FOOD = 1;
+var MIN_ANT_FOOD = MAX_ANT_FOOD/10;
 var FOOD_COLLECT_RATE = 2;
 var ENERGY_DECAY = 5;
 

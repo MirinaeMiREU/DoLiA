@@ -17,9 +17,13 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.geneRole = geneRole < 0 ? 0 : geneRole;
 	this.geneForage = geneForage > 1 ? 1 : geneForage;
 	this.geneForage = geneForage < 0 ? 0 : geneForage;
-	this.energy = (Math.ceil(MAX_ENERGY*this.geneRole)-MIN_ENERGY) + MIN_ENERGY;
-	this.layTime = (Math.ceil(LAY_TIME*this.geneRole*2)-MIN_LAY_TIME) + MIN_LAY_TIME;
-	this.maxFood = (Math.ceil(MAX_ANT_FOOD*this.geneRole*2)-MIN_ANT_FOOD) + MIN_ANT_FOOD;
+	this.energy = Math.ceil(MAX_ENERGY*this.geneRole) <= MIN_ENERGY ? 
+				  MIN_ENERGY : Math.ceil(MAX_ENERGY*this.geneRole);
+	this.maxEnergy = this.energy;
+	this.layTime = Math.ceil(LAY_TIME*this.geneRole*2) <= MIN_LAY_TIME ?
+				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRole*2);
+	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRole*2) <= MIN_ANT_FOOD ?
+				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRole*2);
 	this.layTimer = 0;
 	this.careTimer = 0;
 	//console.log(geneRole + " " + geneForage);
@@ -221,13 +225,13 @@ Ant.prototype.decide = function() {
 			}
 			this.chooseRole();
 			this.food = 0;
-			this.energy = MAX_ENERGY;
+			this.energy = this.maxEnergy;
 		}
 	}
 	if (this.role === EXPLOIT) {
 		if (this.food >= this.maxFood && this.action === OUTBOUND) {
 			this.action = INBOUND;
-			this.energy = MAX_ENERGY;
+			this.energy = this.maxEnergy;
 			curTile.inPheromone = this.energy;
 			this.turnAround();
 		} else if (tileFood > 0 && this.food < this.maxFood) {
@@ -262,13 +266,13 @@ Ant.prototype.decide = function() {
 	} else if (this.role === EXPLORE) {
 		if (this.food >= 10 && this.action === OUTBOUND) {
 			this.action = INBOUND;
-			this.energy = MAX_ENERGY;
+			this.energy = this.maxEnergy;
 			curTile.inPheromone = this.energy;
 			this.turnAround();
 		} else if (tileFood > 0 && this.action === OUTBOUND) {
 			curTile.foodLevel--;
 			this.food++;
-			this.energy = MAX_ENERGY;
+			this.energy = this.maxEnergy;
 		} else if (this.action === OUTBOUND) {
 			var rand = Math.random();
 			if (rand > 0.85) {

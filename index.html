@@ -21,5 +21,43 @@
 	<button id="pause">Pause</button>
 	<br>
 	<button id="step">Step</button>
+	<br>
+	<div id="environment">
+        <p>Environment Parameters</p>
+        <input type="text" id="cellSize" value="20"/>Cell Size<br />
+        <input type="text" id="simDuration" value="100000"/>Simulation Duration<br />
+        <input type="text" id="maxFood" value="1000"/>Max Food Value<br />
+        <input type="text" id="foodAbundance" value="0.1"/>Initial Food Abundance<br />
+        <input type="text" id="foodRegenRate" value="0.01"/>Food Regen Rate<br />
+		<input type="text" id="foodRegenDelay" value="200"/>Food Regen Delay<br />
+		<input type="text" id="foodRegenAmount" value="100"/>Food Regen Amount<br />
+		<input type="text" id="foodReplenishRate" value="0.05"/>Food Replenish Rate<br />
+		<input type="text" id="foodReplenishDelay" value="200"/>Food Replenish Delay<br />
+		<input type="text" id="foodReplenishAmount" value="100"/>Food Replenish Amount<br />
+        <div><input type="text" id="mapname" />Map Name<br /></div>
+        <div class="button" id="savemap">Save</div>
+        <div class="button" id="loadmap">Load</div>
+        <div class="button" id="newmap">New</div>
+    </div>
+    <div id="population">
+        <p>Population Parameters</p>
+        <input type="text" id="initPop" value="1" />Initial Population<br />
+        <input type="text" id="maxEnergy" value="500" />Max Energy<br />
+        <input type="text" id="maxEggLayTime" value="100" />Max Egg Laying Time<br />
+        <input type="text" id="lifetime" value="1000" />Lifetime<br />
+        <input type="text" id="hungerThreshold" value="500" />Hunger Threshold<br />
+		<input type="text" id="foodIntake" value="10" />Food Intake<br />
+        <input type="text" id="mutationRate" value="0.05" />Mutation Rate<br />
+        <input type="text" id="maxDev" value="0.1" />Max Deviantion<br />
+        <input type="text" id="maxCarryingCapacity" value="20" />Max Carrying Capacity<br />
+        <input type="text" id="energyDecay" value="5" />Energy Decay<br />
+        <input type="checkbox" id="asexualon" checked=true />Asexual <br />
+        <input type="checkbox" id="sexualon" checked=true />Sexual <br />
+        <input type="radio" name="genome" id="genome_path" value="path" checked=true />Path Genome<br />
+        <input type="radio" name="genome" id="genome_stochastic" value="stochastic"/>Stochastic Genome<br />
+        <input type="text" id="noise" value="1" />Noise (1 low 10 high)<br />
+        <div class="button" id="restart">New</div>
+    </div><br />
+
 </body>
 </html>
