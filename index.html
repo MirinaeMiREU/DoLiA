@@ -16,12 +16,11 @@
 <body>
     <canvas id="gameWorld" tabindex="1" width="800" height="600" style="border: 1px solid brown; background: white"></canvas>
 	<br>
-	<button id="play">Play</button>
-	<br>
-	<button id="pause">Pause</button>
-	<br>
-	<button id="step">Step</button>
-	<br>
+	<div id="sim">
+		<button id="play">Play</button>
+		<button id="pause">Pause</button>
+		<button id="step">Step</button>
+	</div>
 	<div id="environment">
         <p>Environment Parameters</p>
         <input type="text" id="cellSize" value="20"/>Cell Size<br />
@@ -35,9 +34,9 @@
 		<input type="text" id="foodReplenishDelay" value="200"/>Food Replenish Delay<br />
 		<input type="text" id="foodReplenishAmount" value="100"/>Food Replenish Amount<br />
         <div><input type="text" id="mapname" />Map Name<br /></div>
-        <div class="button" id="savemap">Save</div>
-        <div class="button" id="loadmap">Load</div>
-        <div class="button" id="newmap">New</div>
+        <button id="save">Save</button>
+		<button id="load">Load</button>
+        <button id="newMap">New</button>
     </div>
     <div id="population">
         <p>Population Parameters</p>
@@ -53,11 +52,8 @@
         <input type="text" id="energyDecay" value="5" />Energy Decay<br />
         <input type="checkbox" id="asexualon" checked=true />Asexual <br />
         <input type="checkbox" id="sexualon" checked=true />Sexual <br />
-        <input type="radio" name="genome" id="genome_path" value="path" checked=true />Path Genome<br />
-        <input type="radio" name="genome" id="genome_stochastic" value="stochastic"/>Stochastic Genome<br />
-        <input type="text" id="noise" value="1" />Noise (1 low 10 high)<br />
-        <div class="button" id="restart">New</div>
-    </div><br />
+        <button id="newAnt">New</button>
+    </div>
 
 </body>
 </html>

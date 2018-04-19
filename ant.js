@@ -20,10 +20,11 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.energy = Math.ceil(MAX_ENERGY*this.geneRole) <= MIN_ENERGY ? 
 				  MIN_ENERGY : Math.ceil(MAX_ENERGY*this.geneRole);
 	this.maxEnergy = this.energy;
-	this.layTime = Math.ceil(LAY_TIME*this.geneRole*2) <= MIN_LAY_TIME ?
-				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRole*2);
-	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRole*2) <= MIN_ANT_FOOD ?
-				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRole*2);
+	this.layTime = Math.ceil(LAY_TIME*this.geneRole) <= MIN_LAY_TIME ?
+				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRole);
+	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRole) <= MIN_ANT_FOOD ?
+				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRole);
+	this.foodCollection = Math.ceil(this.maxFood/10);
 	this.layTimer = 0;
 	this.careTimer = 0;
 	//console.log(geneRole + " " + geneForage);
@@ -235,10 +236,10 @@ Ant.prototype.decide = function() {
 			curTile.inPheromone = this.energy;
 			this.turnAround();
 		} else if (tileFood > 0 && this.food < this.maxFood) {
-			if (tileFood >= FOOD_COLLECT_RATE) {
-				if ((this.food + FOOD_COLLECT_RATE) <= this.maxFood) {
-					curTile.foodLevel -= FOOD_COLLECT_RATE;
-					this.food += FOOD_COLLECT_RATE;
+			if (tileFood >= this.foodCollection) {
+				if ((this.food + this.foodCollection) <= this.maxFood) {
+					curTile.foodLevel -= this.foodCollection;
+					this.food += this.foodCollection;
 				} else {
 					curTile.foodLevel -= this.maxFood - this.food;
 					this.food = this.maxFood;

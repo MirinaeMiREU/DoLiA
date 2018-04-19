@@ -6,9 +6,21 @@ AM.downloadAll(function () {
     var canvas = document.getElementById("gameWorld");
     var ctx = canvas.getContext("2d");
 
+	var buttons = [];
 	var playButton = document.getElementById("play");
+	buttons.push(playButton);
 	var pauseButton = document.getElementById("pause");
+	buttons.push(pauseButton);
 	var stepButton = document.getElementById("step");
+	buttons.push(stepButton);
+	var saveButton = document.getElementById("save");
+	buttons.push(saveButton);
+	var loadButton = document.getElementById("load");
+	buttons.push(loadButton);
+	var newMapButton = document.getElementById("newMap");
+	buttons.push(newMapButton);
+	var newAntButton = document.getElementById("newAnt");
+	buttons.push(newAntButton);
 	
     var gameEngine = new GameEngine();
     gameEngine.init(ctx, playButton, pauseButton, stepButton);
@@ -87,7 +99,10 @@ AM.downloadAll(function () {
 	}
 	var mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
 	mound.setTiles(squares);
-	mound.spawnAnt();
+	for (var i = 0; i < 10; i++) {
+		mound.spawnAnt();
+	}
+	
 	
 	gameEngine.start();
 	

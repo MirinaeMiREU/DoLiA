@@ -1,0 +1,12 @@
+todo
+
+fitness function for both role and forage pattern (exploit/explore)
+
+a(food/time) + b(babies/time)
+
+sum fitness / num ants
+
+pick random from better half of colony
+
+min values have their own parameters
+
