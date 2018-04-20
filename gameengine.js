@@ -20,6 +20,7 @@ function GameEngine() {
 	this.play = null;
 	this.pause = null;
 	this.step = null;
+	this.updateCounter = 0;
 }
 
 GameEngine.prototype.init = function (ctx, play, pause, step) {
@@ -120,15 +121,30 @@ GameEngine.prototype.update = function () {
     }
 }
 
+GameEngine.prototype.updatePeriod = function () {
+    var entitiesCount = this.entities.length;
+	if (this.updateCounter >= UPDATE_PERIOD) {
+		for (var i = 0; i < entitiesCount; i++) {
+			var entity = this.entities[i];
+			if (entity != undefined) {
+				entity.updatePeriod();
+			}
+		}
+		this.updateCounter = 0;
+	}
+	this.updateCounter++;
+}
+
 GameEngine.prototype.loop = function () {
 	if (this.isStepping) {
+		this.updatePeriod();
 		this.update();
 		this.draw();
 		this.isStepping = false;
 	}
 	if (!this.isPaused) {
 		this.clockTick = this.timer.tick();
-		
+		this.updatePeriod();
 		this.update();
 		this.draw();
 		

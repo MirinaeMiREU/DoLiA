@@ -54,25 +54,15 @@ Tile.prototype.update = function() {
 			this.outPheromone = 0;
 	}
 	
-	if (this.foodLevel <= 0) {
-		this.foodRegenCount++;
-		if (this.foodRegenCount > FOOD_REGEN_DELAY) {
-			if (Math.random() < FOOD_REGEN_RATE) {
-				this.foodLevel = FOOD_REGEN_AMOUNT;
-			}
-			this.foodRegenCount = 0;
-		}
-	} else {
-		this.foodReplenishCount++;
-		if (this.foodReplenishCount > FOOD_REPLENISH_DELAY) {
-			if (Math.random() < FOOD_REPLENISH_RATE) {
-				this.foodLevel += FOOD_REPLENISH_AMOUNT;
-			}
-			this.foodReplenishCount = 0;
-		}
-	}
-	
 	this.draw();
+}
+
+Tile.prototype.updatePeriod = function() {
+	if (this.foodLevel <= 0 && Math.random() < FOOD_REGEN_RATE) {
+		this.foodLevel = FOOD_REGEN_AMOUNT;
+	} else if (this.foodLevel > 0 && Math.random() < FOOD_REPLENISH_RATE) {
+		this.foodLevel += FOOD_REPLENISH_AMOUNT;
+	}
 }
 
 Tile.prototype.draw = function() {

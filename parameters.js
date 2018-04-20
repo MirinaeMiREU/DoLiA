@@ -1,5 +1,5 @@
 // main
-var CELL_SIZE = 10;
+var CELL_SIZE = 20;
 var XSIZE = Math.floor(800/CELL_SIZE);
 var YSIZE = Math.floor(600/CELL_SIZE);
 
@@ -9,6 +9,7 @@ var SOUTH = 2;
 var WEST = 3;
 
 var GAME_LIFE_TIME = 1000000;
+var UPDATE_PERIOD = 100;
 
 //tile
 var MAX_PHEROMONE = XSIZE*10;
@@ -19,12 +20,10 @@ var FOOD_ABUNDANCE = 0.01;
 var FOOD_REGEN_AMOUNT = Math.ceil(MAX_TILE_FOOD/5);
 var FOOD_REPLENISH_AMOUNT = Math.ceil(MAX_TILE_FOOD/10);
 var FOOD_REGEN_RATE = 0;
-var FOOD_REPLENISH_RATE = 0.02;
-var FOOD_REGEN_DELAY = 100;
-var FOOD_REPLENISH_DELAY = 100;
+var FOOD_REPLENISH_RATE = 0.5;
 
 // mound
-var MAX_ANTS = 10;
+var INIT_ANTS = 10;
 var COUNT_TIL = 10;
 
 // ant

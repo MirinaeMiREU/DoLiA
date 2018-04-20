@@ -99,7 +99,7 @@ AM.downloadAll(function () {
 	}
 	var mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
 	mound.setTiles(squares);
-	for (var i = 0; i < 10; i++) {
+	for (var i = 0; i < INIT_ANTS; i++) {
 		mound.spawnAnt();
 	}
 	
