@@ -54,14 +54,15 @@ Tile.prototype.update = function() {
 			this.outPheromone = 0;
 	}
 	
-	this.draw();
+	//this.draw();
 }
 
 Tile.prototype.updatePeriod = function() {
 	if (this.foodLevel <= 0 && Math.random() < FOOD_REGEN_RATE) {
 		this.foodLevel = FOOD_REGEN_AMOUNT;
 	} else if (this.foodLevel > 0 && Math.random() < FOOD_REPLENISH_RATE) {
-		this.foodLevel += FOOD_REPLENISH_AMOUNT;
+		this.foodLevel = this.foodLevel + FOOD_REPLENISH_AMOUNT > MAX_TILE_FOOD ? 
+						 MAX_TILE_FOOD : this.foodLevel + FOOD_REPLENISH_AMOUNT;
 	}
 }
 
@@ -89,25 +90,25 @@ Tile.prototype.draw = function() {
 	if (this.outPheromone <= 0) {
 		this.ctx.fillStyle = "#FFFFFF";
 	} else if (this.outPheromone <= MULT) {
-		this.ctx.fillStyle = "#FFEEEE";
-	} else if (this.outPheromone <= MULT*2) {
 		this.ctx.fillStyle = "#FFDDDD";
-	} else if (this.outPheromone <= MULT*3) {
-		this.ctx.fillStyle = "#FFCCCC";
-	} else if (this.outPheromone <= MULT*4) {
+	} else if (this.outPheromone <= MULT*2) {
 		this.ctx.fillStyle = "#FFBBBB";
-	} else if (this.outPheromone <= MULT*5) {
-		this.ctx.fillStyle = "#FFAAAA";
-	} else if (this.outPheromone <= MULT*6) {
+	} else if (this.outPheromone <= MULT*3) {
 		this.ctx.fillStyle = "#FF9999";
-	} else if (this.outPheromone <= MULT*7) {
+	} else if (this.outPheromone <= MULT*4) {
 		this.ctx.fillStyle = "#FF8888";
-	} else if (this.outPheromone <= MULT*8) {
+	} else if (this.outPheromone <= MULT*5) {
 		this.ctx.fillStyle = "#FF7777";
-	} else if (this.outPheromone <= MULT*9) {
+	} else if (this.outPheromone <= MULT*6) {
 		this.ctx.fillStyle = "#FF6666";
-	} else {
+	} else if (this.outPheromone <= MULT*7) {
 		this.ctx.fillStyle = "#FF5555";
+	} else if (this.outPheromone <= MULT*8) {
+		this.ctx.fillStyle = "#FF4444";
+	} else if (this.outPheromone <= MULT*9) {
+		this.ctx.fillStyle = "#FF3333";
+	} else {
+		this.ctx.fillStyle = "#FF2222";
 	}
 
 	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/2), 
@@ -117,25 +118,25 @@ Tile.prototype.draw = function() {
 	if (this.inPheromone <= 0) {
 		this.ctx.fillStyle = "#FFFFFF";
 	} else if (this.inPheromone <= MULT) {
-		this.ctx.fillStyle = "#EEEEFF";
-	} else if (this.inPheromone <= MULT*2) {
 		this.ctx.fillStyle = "#DDDDFF";
-	} else if (this.inPheromone <= MULT*3) {
-		this.ctx.fillStyle = "#CCCCFF";
-	} else if (this.inPheromone <= MULT*4) {
+	} else if (this.inPheromone <= MULT*2) {
 		this.ctx.fillStyle = "#BBBBFF";
-	} else if (this.inPheromone <= MULT*5) {
-		this.ctx.fillStyle = "#AAAAFF";
-	} else if (this.inPheromone <= MULT*6) {
+	} else if (this.inPheromone <= MULT*3) {
 		this.ctx.fillStyle = "#9999FF";
-	} else if (this.inPheromone <= MULT*7) {
+	} else if (this.inPheromone <= MULT*4) {
 		this.ctx.fillStyle = "#8888FF";
-	} else if (this.inPheromone <= MULT*8) {
+	} else if (this.inPheromone <= MULT*5) {
 		this.ctx.fillStyle = "#7777FF";
-	} else if (this.inPheromone <= MULT*9) {
+	} else if (this.inPheromone <= MULT*6) {
 		this.ctx.fillStyle = "#6666FF";
-	} else {
+	} else if (this.inPheromone <= MULT*7) {
 		this.ctx.fillStyle = "#5555FF";
+	} else if (this.inPheromone <= MULT*8) {
+		this.ctx.fillStyle = "#4444FF";
+	} else if (this.inPheromone <= MULT*9) {
+		this.ctx.fillStyle = "#3333FF";
+	} else {
+		this.ctx.fillStyle = "#2222FF";
 	}
 	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/2), 
 					  this.y+Math.round(CELL_SIZE/2), 

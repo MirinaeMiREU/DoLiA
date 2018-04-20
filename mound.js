@@ -3,12 +3,13 @@ function Mound(game, xPos, yPos) {
 	this.ctx = game.ctx;
 	this.xPos = xPos;
 	this.yPos = yPos;
-	this.updateCounter = 0;
 	this.antCount = 0;
 	this.larvaCount = 0;
 	this.foodStorage = 0;
 	this.lifeTimeCount = 0;
+	this.tick = 1;
 	this.colony = [];
+	this.breedable = [];
 	this.larvae = [];
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
@@ -18,26 +19,24 @@ Mound.prototype.constructor = Mound;
 
 Mound.prototype.update = function() {
 	this.tiles[this.yPos][this.xPos].outPheromone=MAX_PHEROMONE;
-	if (this.colony.length <= 0) {
+	if (this.colony.length <= 0 || this.lifeTimeCount >= GAME_LIFE_TIME) {
 		console.log(this.foodStorage);
-		this.game.pauseGame();
-	}
-	if (this.updateCounter >= 50) {
-		console.log("Ant:" + this.antCount + 
-					" Larva:" + this.larvaCount + 
-					" Food:" + this.foodStorage);
-		this.updateRoleHistogram();
-		this.updateForageHistogram();
-		this.updateCounter = 0;
-	}
-	
-	if (this.lifeTimeCount >= GAME_LIFE_TIME) {
 		this.game.pauseGame();
 	}
 	
 	this.lifeTimeCount++;
-	this.updateCounter++;
-	this.draw();
+}
+
+Mound.prototype.updatePeriod = function() {
+	console.log("Tick #:" + this.tick +
+				" Cycle #:" + this.lifeTimeCount +
+				" Ant:" + this.antCount + 
+				" Larva:" + this.larvaCount + 
+				" Food:" + this.foodStorage);
+	this.tick++;
+	this.updateRoleHistogram();
+	this.updateForageHistogram();
+	this.updateBreedableAnts();
 }
 
 Mound.prototype.draw = function() {
@@ -57,7 +56,7 @@ Mound.prototype.spawnAnt = function() {
 	dev = Math.random() >= 0.5 ? dev : -dev;
 	var dev2 = Math.random() * MAX_DEVIATION;
 	dev2 = Math.random() >= 0.5 ? dev2 : -dev2;
-	var randomAnt = this.colony[Math.floor(this.antCount*Math.random())];
+	var randomAnt = this.breedable[Math.floor(this.breedable.length*Math.random())];
 	var ant;
 	if (randomAnt === undefined) {
 		ant = new Ant(this.game, 
@@ -173,7 +172,7 @@ Mound.prototype.updateRoleHistogram = function() {
 			roleHistogram[19]++;
 		}
 	}
-	console.log("role: " + roleHistogram);
+	console.log("breed/forage: " + roleHistogram);
 }
 
 Mound.prototype.updateForageHistogram = function() {
@@ -226,4 +225,32 @@ Mound.prototype.updateForageHistogram = function() {
 		}
 	}
 	console.log("exploit/explore: " + histogram);
+}
+
+Mound.prototype.updateBreedableAnts = function() {
+	var breed = [];
+	var cutoff = this.getAverageFitness();
+	
+	for (var i = 0; i < this.colony.length; i++) {
+		if (this.colony[i] !== undefined && 
+			this.colony[i].overallFitness >= cutoff) {
+			breed.push(this.colony[i]);
+		}
+	}
+	
+	this.breedable = breed;
+}
+
+Mound.prototype.getAverageFitness = function() {
+	var total = 0;
+	var count = 0;
+	
+	for (var i = 0; i < this.colony.length; i++) {
+		if (this.colony[i] !== undefined) {
+			total += this.colony[i].overallFitness;
+			count++;
+		}
+	}
+	
+	return total/count;
 }

@@ -3,10 +3,13 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.yPos = yPos;
 	this.ctx = game.ctx;
 	this.dir = Math.floor(Math.random() * 4);
-	this.food = 0;
 	this.age = 0;
+	this.food = 0;
 	this.consecutiveTurns = 0;
-	
+	this.overallFitness = 0;
+	this.forageFitness = 0;
+	this.totalFood = 0;
+	this.totalOffspring = 0;
 	this.hunger = 0;
 	this.action = OUTBOUND;
 	this.role = EXPLOIT;
@@ -27,7 +30,6 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.foodCollection = Math.ceil(this.maxFood/10);
 	this.layTimer = 0;
 	this.careTimer = 0;
-	//console.log(geneRole + " " + geneForage);
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -35,7 +37,7 @@ Ant.prototype = new Entity();
 Ant.prototype.constructor = Ant;
 
 Ant.prototype.update = function() {
-	if (this.age > LIFETIME) {
+	if (Math.random() < CHANCE_TO_DIE) {
 		this.die(DEATH_AGE);
 	} else if (this.role === LAY_EGG) {
 		if (this.layTimer >= this.layTime) {
@@ -46,8 +48,8 @@ Ant.prototype.update = function() {
 			this.layTimer++;
 		}
 	} else {
-		var curTile = this.tiles[this.yPos][this.xPos];
-		var tileFood = curTile.foodLevel;
+		//var curTile = this.tiles[this.yPos][this.xPos];
+		//var tileFood = curTile.foodLevel;
 		this.diverge();
 		this.decide();
 		
@@ -55,10 +57,14 @@ Ant.prototype.update = function() {
 			this.energy -= ENERGY_DECAY;
 		}
 	}
-	this.age++;
 	this.hunger++;
-	this.draw();
+	this.age++;
+}
 
+Ant.prototype.updatePeriod = function() {
+	this.overallFitness = ((FORAGE_WEIGHT * this.totalFood) + 
+						   (BREED_WEIGHT * this.totalOffspring)) / this.age; 
+	this.forageFitness = FORAGE_WEIGHT * this.totalFood / this.age;
 }
 
 Ant.prototype.draw = function() {
@@ -72,7 +78,10 @@ Ant.prototype.draw = function() {
 		this.ctx.fillStyle = "#00FF00";
 	}
 	
-	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5), this.y+Math.round(CELL_SIZE/5), Math.round(CELL_SIZE*3/5), Math.round(CELL_SIZE*3/5));
+	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5), 
+					  this.y+Math.round(CELL_SIZE/5), 
+					  Math.round(CELL_SIZE*3/5), 
+					  Math.round(CELL_SIZE*3/5));
 	
 	switch(this.dir) {
 		case NORTH:
@@ -100,11 +109,11 @@ Ant.prototype.draw = function() {
 							  Math.round(CELL_SIZE/5));
 	}
 }
-
+/*
 Ant.prototype.setNeighbors = function(neighbors) {
 	this.neighbors = neighbors;
 }
-
+*/
 Ant.prototype.turnRight = function() {
 	this.dir = this.dir + 1 > 3 ? 0 : this.dir + 1;
 	this.consecutiveTurns++;
@@ -214,9 +223,10 @@ Ant.prototype.decide = function() {
 	}
 	if (curTile.isHome && this.action === INBOUND) {
 		this.mound.foodStorage += this.food;
+		this.totalFood += this.food;
 		//console.log(this.mound.foodStorage);
 		if (this.hunger > HUNGER_THRESHHOLD &&
-			this.mound.foodStorage < 10) {
+			this.mound.foodStorage < EAT_AMOUNT) {
 			this.die(DEATH_HUNGER);
 		} else {
 			if (this.hunger > HUNGER_THRESHHOLD) {
@@ -265,7 +275,7 @@ Ant.prototype.decide = function() {
 							      this.energy : curTile.inPheromone;
 		}
 	} else if (this.role === EXPLORE) {
-		if (this.food >= 10 && this.action === OUTBOUND) {
+		if (this.food >= this.maxFood && this.action === OUTBOUND) {
 			this.action = INBOUND;
 			this.energy = this.maxEnergy;
 			curTile.inPheromone = this.energy;
@@ -361,6 +371,7 @@ Ant.prototype.eat = function() {
 
 Ant.prototype.eggLay = function() {
 	this.mound.spawnLarva(this);
+	this.totalOffspring++;
 	//console.log("laid");
 }
 

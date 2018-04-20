@@ -20,20 +20,175 @@ function GameEngine() {
 	this.play = null;
 	this.pause = null;
 	this.step = null;
+	this.save = null;
+	this.load = null;
+	this.newMap = null;
+	this.newAnt = null;
 	this.updateCounter = 0;
 }
 
-GameEngine.prototype.init = function (ctx, play, pause, step) {
+GameEngine.prototype.init = function (ctx) {
     this.ctx = ctx;
-	this.play = play;
-	this.pause = pause;
-	this.step = step;
+	this.play = document.getElementById("play");
+	this.pause = document.getElementById("pause");
+	this.step = document.getElementById("step");
+	this.save = document.getElementById("save");
+	this.load = document.getElementById("load");
+	this.newMap = document.getElementById("newMap");
+	this.newAnt = document.getElementById("newAnt");
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
     this.timer = new Timer();
+	this.setup();
     this.startInput();
 	
     console.log('game initialized');
+}
+
+GameEngine.prototype.reinit = function() {
+	// main
+	CELL_SIZE = document.getElementById("cellSize").value;
+	XSIZE = Math.floor(800/CELL_SIZE);
+	YSIZE = Math.floor(600/CELL_SIZE);
+
+	NORTH = 0;
+	EAST = 1;
+	SOUTH = 2;
+	WEST = 3;
+
+	GAME_LIFE_TIME = document.getElementById("simDuration").value;
+	UPDATE_PERIOD = document.getElementById("updatePeriod").value;
+
+	// mound
+	INIT_ANTS = document.getElementById("initPop").value;
+
+	// ant
+	EXPLORE = 0;
+	EXPLOIT = 1;
+	LAY_EGG = 2;
+
+	LAY_TIME = document.getElementById("maxEggLayTime").value;
+	MIN_LAY_TIME = document.getElementById("minEggLayTime").value;
+
+	FORAGE_WEIGHT = document.getElementById("forageWeight").value;
+	BREED_WEIGHT = document.getElementById("breedWeight").value;
+
+	DEATH_AGE = 0;
+	DEATH_HUNGER = 1;
+
+	CHANCE_TO_DIE = document.getElementById("deathChance").value;
+	HUNGER_THRESHHOLD = document.getElementById("hungerThreshold").value;
+	EAT_AMOUNT = document.getElementById("foodIntake").value;
+	MUTATION_RATE = document.getElementById("mutationRate").value;
+	MAX_DEVIATION = document.getElementById("maxDev").value;
+
+	OUTBOUND = 0;
+	INBOUND = 1;
+
+	MAX_ENERGY = document.getElementById("maxEnergy").value;
+	MIN_ENERGY = document.getElementById("minEnergy").value;
+	MAX_ANT_FOOD = document.getElementById("maxCarryingCapacity").value;
+	MIN_ANT_FOOD = document.getElementById("minCarryingCapacity").value;
+	ENERGY_DECAY = document.getElementById("energyDecay").value;
+
+	// larva
+
+	MATURE_TIME = document.getElementById("matureTime").value;
+
+	//tile
+	MAX_PHEROMONE = MAX_ENERGY;
+	MULT = Math.ceil(MAX_PHEROMONE/10);
+	DECAY_RATE = Math.ceil(MAX_PHEROMONE/200);
+	MAX_TILE_FOOD = document.getElementById("maxFood").value;
+	FOOD_ABUNDANCE = document.getElementById("foodAbundance").value;
+	FOOD_REGEN_AMOUNT = document.getElementById("foodRegenAmount").value;
+	FOOD_REPLENISH_AMOUNT = document.getElementById("foodReplenishAmount").value;
+	FOOD_REGEN_RATE = document.getElementById("foodRegenRate").value;
+	FOOD_REPLENISH_RATE = document.getElementById("foodReplenishRate").value;
+	
+	this.entities = [];
+	this.setup();
+	this.updateCounter = 0;
+}
+
+GameEngine.prototype.setup = function() {
+	var squares = [];
+	
+	for (var i = 0; i < YSIZE; i++) {
+		squares.push([]);
+		for (var j = 0; j < XSIZE; j++) {
+			var tile = new Tile(this, j, i);
+			squares[i].push(tile);
+			this.addEntity(tile);
+		}
+	}
+	
+	for (var i = 0; i < YSIZE; i++) {
+		for (var j = 0; j < XSIZE; j++) {
+			if (i == 0 || i == YSIZE-1 || j == 0 || j == XSIZE-1) {
+				squares[i][j].foodLevel = 0;
+			}
+		}
+	}
+	
+	
+	for (var i = 0; i < YSIZE; i++) {
+		for (var j = 0; j < XSIZE; j++) {
+			var neighbors = [];
+			if (i === 0) {
+				neighbors.push(squares[YSIZE-1][j]);
+				if (j === 0) {
+					neighbors.push(squares[i][j+1]);
+					neighbors.push(squares[i+1][j]);
+					neighbors.push(squares[i][XSIZE-1]);
+				} else if (j === XSIZE-1) {
+					neighbors.push(squares[i][0]);
+					neighbors.push(squares[i+1][j]);
+					neighbors.push(squares[i][j-1]);
+				} else {
+					neighbors.push(squares[i][j+1]);
+					neighbors.push(squares[i+1][j]);
+					neighbors.push(squares[i][j-1]);
+				}
+			} else if (i === YSIZE-1) {
+				neighbors.push(squares[i-1][j]);
+				if (j === 0) {
+					neighbors.push(squares[i][j+1]);
+					neighbors.push(squares[0][j]);
+					neighbors.push(squares[i][XSIZE-1]);
+				} else if (j === XSIZE-1) {
+					neighbors.push(squares[i][0]);
+					neighbors.push(squares[0][j]);
+					neighbors.push(squares[i][j-1]);
+				} else {
+					neighbors.push(squares[i][j+1]);
+					neighbors.push(squares[0][j]);
+					neighbors.push(squares[i][j-1]);
+				}
+			} else if (j === 0) {
+				neighbors.push(squares[i-1][j]);
+				neighbors.push(squares[i][j+1]);
+				neighbors.push(squares[i+1][j]);
+				neighbors.push(squares[i][XSIZE-1]);
+			} else if (j === XSIZE-1) {
+				neighbors.push(squares[i-1][j]);
+				neighbors.push(squares[i][0]);
+				neighbors.push(squares[i+1][j]);
+				neighbors.push(squares[i][j-1]);
+			} else {
+				neighbors.push(squares[i-1][j]);
+				neighbors.push(squares[i][j+1]);
+				neighbors.push(squares[i+1][j]);
+				neighbors.push(squares[i][j-1]);
+			}
+			squares[i][j].setNeighbors(neighbors);
+		}
+	}
+	var mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
+	mound.setTiles(squares);
+	for (var i = 0; i < INIT_ANTS; i++) {
+		mound.spawnAnt();
+	}
 }
 
 GameEngine.prototype.start = function () {
@@ -43,6 +198,11 @@ GameEngine.prototype.start = function () {
 		that.loop();
 		requestAnimFrame(gameLoop, that.ctx.canvas);
 	})();
+}
+
+GameEngine.prototype.restart = function() {
+	console.log("restarting game");
+    this.reinit();
 }
 
 GameEngine.prototype.pauseGame = function() {
@@ -85,6 +245,22 @@ GameEngine.prototype.startInput = function () {
 	this.step.addEventListener("click", function (e) {
 		that.isStepping = true;
     }, false);
+	
+	this.save.addEventListener("click", function (e) {
+		console.log("Doesn't do anything yet");
+    }, false);
+	
+	this.load.addEventListener("click", function (e) {
+		console.log("Doesn't do anything yet");
+    }, false);
+	
+	this.newMap.addEventListener("click", function(e) {
+		that.restart();
+	})
+	
+	this.newAnt.addEventListener("click", function(e) {
+		that.restart();
+	})
 	
 
     console.log('Input started');
