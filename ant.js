@@ -77,7 +77,7 @@ Ant.prototype.draw = function() {
 	} else {
 		this.ctx.fillStyle = "#00FF00";
 	}
-	
+
 	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5), 
 					  this.y+Math.round(CELL_SIZE/5), 
 					  Math.round(CELL_SIZE*3/5), 
