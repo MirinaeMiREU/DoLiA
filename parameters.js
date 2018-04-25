@@ -2,6 +2,10 @@
 var CELL_SIZE = 12;
 var XSIZE = Math.floor(800/CELL_SIZE);
 var YSIZE = Math.floor(600/CELL_SIZE);
+var SIM_X = 800;
+var SIM_Y = 600;
+var CHART_X = 400;
+var CHART_Y = 600;
 
 var NORTH = 0;
 var EAST = 1;

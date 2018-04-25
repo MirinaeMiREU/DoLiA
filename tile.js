@@ -147,6 +147,9 @@ Tile.prototype.draw = function() {
 	this.ctx.strokeRect(this.x, this.y, CELL_SIZE, CELL_SIZE);	
 }
 
+Tile.prototype.drawPeriod = function() {
+}
+
 Tile.prototype.setNeighbors = function(neighbors) {
 	this.neighbors = neighbors;
 }

@@ -7,7 +7,7 @@ function Mound(game, xPos, yPos) {
 	this.larvaCount = 0;
 	this.foodStorage = 0;
 	this.lifeTimeCount = 0;
-	this.tick = 1;
+	this.tick = 0;
 	this.colony = [];
 	this.breedable = [];
 	this.larvae = [];
@@ -47,6 +47,9 @@ Mound.prototype.draw = function() {
 	this.ctx.fillRect(this.x, this.y, CELL_SIZE, CELL_SIZE);
 	this.ctx.fillStyle = "black";
 	this.ctx.strokeRect(this.x, this.y, CELL_SIZE, CELL_SIZE);
+}
+
+Mound.prototype.drawPeriod = function() {
 }
 
 Mound.prototype.setTiles = function(tiles) {

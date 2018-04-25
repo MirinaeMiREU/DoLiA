@@ -20,7 +20,8 @@ Entity.prototype.draw = function (ctx) {
         this.game.ctx.closePath();
     }
 }
-
+Entity.prototype.drawPeriod = function (ctx) {
+}
 Entity.prototype.rotateAndCache = function (image, angle) {
     var offscreenCanvas = document.createElement('canvas');
     var size = Math.max(image.width, image.height);

@@ -281,12 +281,23 @@ GameEngine.prototype.removeEntity = function(entity) {
 }
 
 GameEngine.prototype.draw = function () {
-    this.ctx.clearRect(0, 0, this.surfaceWidth, this.surfaceHeight);
+    this.ctx.clearRect(0, 0, SIM_X, SIM_Y);
     this.ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
     this.ctx.restore();
+}
+
+GameEngine.prototype.drawPeriod = function() {
+	if (this.updateCounter % UPDATE_PERIOD === 0) {
+		this.ctx.clearRect(SIM_X, 0, CHART_X, CHART_Y);
+		this.ctx.save();
+		for (var i = 0; i < this.entities.length; i++) {
+			this.entities[i].drawPeriod(this.ctx);
+		}
+		this.ctx.restore();
+	}
 }
 
 GameEngine.prototype.update = function () {
@@ -302,16 +313,14 @@ GameEngine.prototype.update = function () {
 
 GameEngine.prototype.updatePeriod = function () {
     var entitiesCount = this.entities.length;
-	if (this.updateCounter >= UPDATE_PERIOD) {
+	if (this.updateCounter % UPDATE_PERIOD === 0) {
 		for (var i = 0; i < entitiesCount; i++) {
 			var entity = this.entities[i];
 			if (entity != undefined) {
 				entity.updatePeriod();
 			}
 		}
-		this.updateCounter = 0;
 	}
-	this.updateCounter++;
 }
 
 GameEngine.prototype.loop = function () {
@@ -319,13 +328,17 @@ GameEngine.prototype.loop = function () {
 		this.updatePeriod();
 		this.update();
 		this.draw();
+		this.drawPeriod();
 		this.isStepping = false;
+		this.updateCounter++;
 	}
 	if (!this.isPaused) {
 		this.clockTick = this.timer.tick();
 		this.updatePeriod();
 		this.update();
 		this.draw();
+		this.drawPeriod();
+		this.updateCounter++;
 		
 		/*
 		if (this.timer.gameTime % 0.05 > 0.025 && !this.ticked) {
@@ -339,6 +352,8 @@ GameEngine.prototype.loop = function () {
 		}
 		*/
 	}
+	
+	
 }
 
 function Timer() {

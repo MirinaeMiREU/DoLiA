@@ -109,6 +109,10 @@ Ant.prototype.draw = function() {
 							  Math.round(CELL_SIZE/5));
 	}
 }
+
+Ant.prototype.drawPeriod = function() {
+}
+
 /*
 Ant.prototype.setNeighbors = function(neighbors) {
 	this.neighbors = neighbors;

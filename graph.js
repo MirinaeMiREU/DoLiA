@@ -13,7 +13,7 @@ function Graph(game, mound) {
 						   this.larvaData);
 						   //,
 						   //this.foodData); 
-	Entity.call(this, game, 800, 0);
+	Entity.call(this, game, 810, 0);
 }
 
 Graph.prototype.update = function () {
@@ -27,6 +27,10 @@ Graph.prototype.updatePeriod = function() {
 }
 
 Graph.prototype.draw = function (ctx) {
+
+}
+
+Graph.prototype.drawPeriod = function(ctx) {
 	//this.ctx.clearRect(this.x, this.y, this.xSize, this.ySize);
 	//this.ctx.moveTo(this.x, this.y+this.ySize);
 	if (this.antData.length > 1) {
@@ -44,7 +48,7 @@ Graph.prototype.draw = function (ctx) {
 					 20 : this.antData.length;
 		for (var i = 1; i < length; i++) {
 			var index = this.mound.tick > 20 ?
-						this.mound.tick-20+i : i;
+						this.mound.tick-19+i : i;
 			xPos += Math.round(this.xSize/(length-1));
 			yPos = this.y+this.ySize-Math.round(this.antData[index]/this.maxVal*this.ySize);
 			if (yPos <= 0) {
@@ -53,8 +57,7 @@ Graph.prototype.draw = function (ctx) {
 			//console.log(xPos,
 				//			this.y+this.ySize-Math.round(this.antData[i]/this.maxVal*this.ySize));
 			if (i === length-1) {
-				this.ctx.lineTo(this.x + this.xSize,
-							yPos);
+				this.ctx.lineTo(this.x + this.xSize, yPos);
 			} else {
 				this.ctx.lineTo(xPos, yPos);
 			}
@@ -77,7 +80,7 @@ Graph.prototype.draw = function (ctx) {
 		
 		for (var i = 1; i < length; i++) {
 			var index = this.mound.tick > 20 ?
-						this.mound.tick-20+i : i;
+						this.mound.tick-19+i : i;
 			xPos += Math.round(this.xSize/(length-1));
 			yPos = this.y+this.ySize-Math.round(this.larvaData[index]/this.maxVal*this.ySize);
 			
@@ -103,7 +106,7 @@ Graph.prototype.draw = function (ctx) {
 		firstTick = this.mound.tick > 20 ? this.mound.tick - 20 : 0;
 		this.ctx.fillText(firstTick, this.x, this.y+this.ySize+10);
 		this.ctx.textAlign = "right";
-		this.ctx.fillText(this.mound.tick, this.x+this.xSize-5, this.y+this.ySize+10);
+		this.ctx.fillText(this.mound.tick-1, this.x+this.xSize-5, this.y+this.ySize+10);
 		
 		this.ctx.moveTo(this.x, this.y+this.ySize);
 		for (var i = 1; i < this.larvaData.length; i++) {
