@@ -11,6 +11,8 @@ function Mound(game, xPos, yPos) {
 	this.colony = [];
 	this.breedable = [];
 	this.larvae = [];
+	this.roleHistogram = [];
+	this.forageHistogram = [];
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -173,6 +175,7 @@ Mound.prototype.updateRoleHistogram = function() {
 		}
 	}
 	console.log("breed/forage: " + roleHistogram);
+	this.roleHistogram = roleHistogram;
 }
 
 Mound.prototype.updateForageHistogram = function() {
@@ -225,6 +228,7 @@ Mound.prototype.updateForageHistogram = function() {
 		}
 	}
 	console.log("exploit/explore: " + histogram);
+	this.forageHistogram = histogram;
 }
 
 Mound.prototype.updateBreedableAnts = function() {

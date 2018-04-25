@@ -186,6 +186,8 @@ GameEngine.prototype.setup = function() {
 	}
 	var mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
 	mound.setTiles(squares);
+	var graph = new Graph(this, mound);
+	this.addEntity(graph);
 	for (var i = 0; i < INIT_ANTS; i++) {
 		mound.spawnAnt();
 	}
