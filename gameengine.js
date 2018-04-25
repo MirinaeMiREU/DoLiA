@@ -192,6 +192,11 @@ GameEngine.prototype.setup = function() {
 	}
 	var graph = new Graph(this, mound);
 	this.addEntity(graph);
+	var histRole = new Histogram(this, mound, 810, 200);
+	var histForage = new Histogram(this, mound, 810, 400);
+	this.addEntity(histRole);
+	this.addEntity(histForage);
+	console.clear();
 }
 
 GameEngine.prototype.start = function () {

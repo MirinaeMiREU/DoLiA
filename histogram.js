@@ -1,27 +1,27 @@
-function Entity(game, x, y) {
-    this.game = game;
-    this.x = x;
-    this.y = y;
-    this.removeFromWorld = false;
+function Histogram(game, mound, x, y) {
+	this.xSize = 350;
+	this.ySize = 180;
+	this.ctx = game.ctx;
+	this.mound = mound;
+	Entity.call(this, game, x, y);
 }
 
-Entity.prototype.update = function () {
+Histogram.prototype.update = function () {
 }
 
-Entity.prototype.updatePeriod = function() {
+Histogram.prototype.updatePeriod = function() {
 }
 
-Entity.prototype.draw = function (ctx) {
-    if (this.game.showOutlines && this.radius) {
-        this.game.ctx.beginPath();
-        this.game.ctx.strokeStyle = "green";
-        this.game.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-        this.game.ctx.stroke();
-        this.game.ctx.closePath();
-    }
+Histogram.prototype.draw = function (ctx) {
 }
 
-Entity.prototype.rotateAndCache = function (image, angle) {
+Histogram.prototype.drawPeriod = function() {
+	this.ctx.strokeStyle = "#000000";
+	this.ctx.lineWidth = 1;
+	this.ctx.strokeRect(this.x, this.y, this.xSize, this.ySize);
+}
+
+Histogram.prototype.rotateAndCache = function (image, angle) {
     var offscreenCanvas = document.createElement('canvas');
     var size = Math.max(image.width, image.height);
     offscreenCanvas.width = size;
