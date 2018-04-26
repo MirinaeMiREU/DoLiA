@@ -10,3 +10,7 @@ pick random from better half of colony
 
 min values have their own parameters
 
+heatmap for histogram.
+histogram on its height. 3d-ish
+
+generation count.

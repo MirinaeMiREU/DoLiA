@@ -7,6 +7,8 @@ var SIM_Y = 600;
 var CHART_X = 400;
 var CHART_Y = 600;
 
+var TICK_DISPLAY = 350;
+
 var NORTH = 0;
 var EAST = 1;
 var SOUTH = 2;
