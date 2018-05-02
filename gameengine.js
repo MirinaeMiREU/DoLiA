@@ -214,6 +214,10 @@ GameEngine.prototype.restart = function() {
     this.reinit();
 }
 
+GameEngine.prototype.save = function() {
+	//todo
+}
+
 GameEngine.prototype.pauseGame = function() {
 	console.log("pausing game");
 	this.isPaused = true;
