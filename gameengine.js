@@ -77,6 +77,7 @@ GameEngine.prototype.reinit = function() {
 	DEATH_HUNGER = 1;
 
 	CHANCE_TO_DIE = Number(document.getElementById("deathChance").value);
+	MIN_AGE = Number(document.getElementById("minAge").value);
 	HUNGER_THRESHHOLD = parseInt(document.getElementById("hungerThreshold").value);
 	EAT_AMOUNT = parseInt(document.getElementById("foodIntake").value);
 	MUTATION_RATE = Number(document.getElementById("mutationRate").value);
@@ -192,8 +193,8 @@ GameEngine.prototype.setup = function() {
 	}
 	var graph = new Graph(this, mound);
 	this.addEntity(graph);
-	var histRole = new Histogram(this, mound, 810, 200);
-	var histForage = new Histogram(this, mound, 810, 400);
+	var histRole = new Histogram(this, mound, 810, 200, 0);
+	var histForage = new Histogram(this, mound, 810, 400, 1);
 	this.addEntity(histRole);
 	this.addEntity(histForage);
 	console.clear();
