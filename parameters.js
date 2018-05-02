@@ -7,7 +7,7 @@ var SIM_Y = 600;
 var CHART_X = 400;
 var CHART_Y = 600;
 
-var TICK_DISPLAY = 350;
+var TICK_DISPLAY = 360;
 
 var NORTH = 0;
 var EAST = 1;
@@ -34,6 +34,7 @@ var BREED_WEIGHT = 100;
 var DEATH_AGE = 0;
 var DEATH_HUNGER = 1;
 
+var MIN_AGE = 100;
 var CHANCE_TO_DIE = 0.001;
 var HUNGER_THRESHHOLD = 500;
 var EAT_AMOUNT = 10;

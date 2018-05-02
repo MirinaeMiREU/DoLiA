@@ -14,7 +14,7 @@ Larva.prototype.constructor = Larva;
 Larva.prototype.update = function() {
 	if (this.age >= MATURE_TIME) {
 		if (this.mound.foodStorage >= EAT_AMOUNT) {
-			this.mound.spawnAnt(this.parent);
+			this.mound.spawnAnt();
 			this.mound.foodStorage -= EAT_AMOUNT;
 		}
 		this.mound.removeLarva(this);

@@ -13,6 +13,7 @@ function Mound(game, xPos, yPos) {
 	this.larvae = [];
 	this.roleHistogram = [];
 	this.forageHistogram = [];
+	this.averageGen = 0;
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -34,11 +35,13 @@ Mound.prototype.updatePeriod = function() {
 				" Cycle #:" + this.lifeTimeCount +
 				" Ant:" + this.antCount + 
 				" Larva:" + this.larvaCount + 
-				" Food:" + this.foodStorage);
+				" Food:" + this.foodStorage +
+				" Gen:" + this.averageGen);
 	this.tick++;
 	this.updateRoleHistogram();
 	this.updateForageHistogram();
 	this.updateBreedableAnts();
+	this.updateAverageGeneration();
 }
 
 Mound.prototype.draw = function() {
@@ -71,7 +74,8 @@ Mound.prototype.spawnAnt = function() {
 					  this.tiles,
 					  this,
 					  0.5,
-					  0.5);
+					  0.5,
+					  0);
 	} else if (Math.random() < MUTATION_RATE) {
 		ant = new Ant(this.game, 
 					  Math.round(XSIZE/2)-1, 
@@ -80,7 +84,8 @@ Mound.prototype.spawnAnt = function() {
 					  this.tiles,
 					  this,
 					  randomAnt.geneRole + dev,
-					  randomAnt.geneForage + dev2);
+					  randomAnt.geneForage + dev2,
+					  randomAnt.generation + 1);
 	} else {
 		ant = new Ant(this.game, 
 					  Math.round(XSIZE/2)-1, 
@@ -89,7 +94,8 @@ Mound.prototype.spawnAnt = function() {
 					  this.tiles,
 					  this,
 					  randomAnt.geneRole,
-					  randomAnt.geneForage);
+					  randomAnt.geneForage,
+					  randomAnt.generation + 1);
 	}
 	
 	this.colony.push(ant);
@@ -236,8 +242,10 @@ Mound.prototype.updateForageHistogram = function() {
 
 Mound.prototype.updateBreedableAnts = function() {
 	var breed = [];
-	var cutoff = this.getAverageFitness();
+	var breed2 = [];
 	
+	// first pass to get better half
+	var cutoff = this.getAverageFitness(this.colony);
 	for (var i = 0; i < this.colony.length; i++) {
 		if (this.colony[i] !== undefined && 
 			this.colony[i].overallFitness >= cutoff) {
@@ -245,19 +253,42 @@ Mound.prototype.updateBreedableAnts = function() {
 		}
 	}
 	
-	this.breedable = breed;
+	// second pass to get the best quarter
+	var cutoff2 = this.getAverageFitness(breed);
+	for (var i = 0; i < breed.length; i++) {
+		if (breed[i] !== undefined &&
+			breed[i].overallFitness >= cutoff2) {
+			breed2.push(breed[i]);
+		}
+	}
+	
+	//console.log(breed2.length);
+	this.breedable = breed2;
 }
 
-Mound.prototype.getAverageFitness = function() {
+Mound.prototype.getAverageFitness = function(arr) {
 	var total = 0;
 	var count = 0;
 	
-	for (var i = 0; i < this.colony.length; i++) {
-		if (this.colony[i] !== undefined) {
-			total += this.colony[i].overallFitness;
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i] !== undefined) {
+			total += arr[i].overallFitness;
 			count++;
 		}
 	}
 	
 	return total/count;
+}
+
+Mound.prototype.updateAverageGeneration = function() {
+	var total = 0;
+	
+	for (var i = 0; i < this.colony.length; i++) {
+		if (this.colony[i] !== undefined) {
+			total += this.colony[i].generation;
+		}
+	}
+	
+	var average = total/this.colony.length;
+	this.averageGen = Math.round(average);
 }

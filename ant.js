@@ -1,9 +1,10 @@
-function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
+function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, generation) {
 	this.xPos = xPos;
 	this.yPos = yPos;
 	this.ctx = game.ctx;
 	this.dir = Math.floor(Math.random() * 4);
 	this.age = 0;
+	this.generation = generation;
 	this.food = 0;
 	this.consecutiveTurns = 0;
 	this.overallFitness = 0;
@@ -17,9 +18,9 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage) {
 	this.peers = peers;
 	this.mound = mound;
 	this.geneRole = geneRole > 1 ? 1 : geneRole;
-	this.geneRole = geneRole < 0 ? 0 : geneRole;
+	this.geneRole = this.geneRole < 0 ? 0 : this.geneRole;
 	this.geneForage = geneForage > 1 ? 1 : geneForage;
-	this.geneForage = geneForage < 0 ? 0 : geneForage;
+	this.geneForage = this.geneForage < 0 ? 0 : this.geneForage;
 	this.energy = Math.ceil(MAX_ENERGY*this.geneRole) <= MIN_ENERGY ? 
 				  MIN_ENERGY : Math.ceil(MAX_ENERGY*this.geneRole);
 	this.maxEnergy = this.energy;
@@ -37,7 +38,7 @@ Ant.prototype = new Entity();
 Ant.prototype.constructor = Ant;
 
 Ant.prototype.update = function() {
-	if (Math.random() < CHANCE_TO_DIE) {
+	if (Math.random() < CHANCE_TO_DIE && this.age > MIN_AGE) {
 		this.die(DEATH_AGE);
 	} else if (this.role === LAY_EGG) {
 		if (this.layTimer >= this.layTime) {
@@ -48,8 +49,6 @@ Ant.prototype.update = function() {
 			this.layTimer++;
 		}
 	} else {
-		//var curTile = this.tiles[this.yPos][this.xPos];
-		//var tileFood = curTile.foodLevel;
 		this.diverge();
 		this.decide();
 		
