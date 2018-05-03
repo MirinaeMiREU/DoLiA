@@ -214,7 +214,7 @@ GameEngine.prototype.restart = function() {
     this.reinit();
 }
 
-GameEngine.prototype.save = function() {
+GameEngine.prototype.saveGame = function() {
 	//todo
 }
 

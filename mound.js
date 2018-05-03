@@ -24,7 +24,7 @@ Mound.prototype.update = function() {
 	this.tiles[this.yPos][this.xPos].outPheromone=MAX_PHEROMONE;
 	if (this.colony.length <= 0 || this.lifeTimeCount >= GAME_LIFE_TIME) {
 		console.log(this.foodStorage);
-		this.game.save();
+		this.game.saveGame();
 		this.game.restart();
 	}
 	
