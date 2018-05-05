@@ -21,8 +21,8 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.geneRole = this.geneRole < 0 ? 0 : this.geneRole;
 	this.geneForage = geneForage > 1 ? 1 : geneForage;
 	this.geneForage = this.geneForage < 0 ? 0 : this.geneForage;
-	this.geneRoleActual = this.geneForage;
-	this.geneForageActual = this.geneRole;
+	this.geneRoleActual = this.geneRole;
+	this.geneForageActual = this.geneForage;
 	if (GENE_TOGGLE) {
 		this.geneRoleActual = this.geneRole < 0.5 ?
 							  Math.pow(this.geneRole,2)*2:
@@ -38,7 +38,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRoleActual);
 	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRoleActual) <= MIN_ANT_FOOD ?
 				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRoleActual);
-	this.foodCollection = Math.ceil(this.maxFood/5);
+	this.foodCollection = Math.ceil(this.maxFood/1);
 	this.layTimer = 0;
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
@@ -77,13 +77,28 @@ Ant.prototype.updatePeriod = function() {
 
 Ant.prototype.draw = function() {
 	if (this.food >= this.maxFood) {
-		this.ctx.fillStyle = "#004400";
+		if (this.role === EXPLOIT)
+			this.ctx.fillStyle = "#004400";
+		else if (this.role === EXPLORE)
+			this.ctx.fillStyle = "#004444";
 	} else if (this.food > Math.round(this.maxFood/2)) {
-		this.ctx.fillStyle = "#008800";
+		if (this.role === EXPLOIT)
+			this.ctx.fillStyle = "#008800";
+		else if (this.role === EXPLORE)
+			this.ctx.fillStyle = "#008888";
 	} else if (this.food > 0) {
-		this.ctx.fillStyle = "#00BB00";
+		if (this.role === EXPLOIT)
+			this.ctx.fillStyle = "#00BB00";
+		else if (this.role === EXPLORE)
+			this.ctx.fillStyle = "#00BBBB";
 	} else {
-		this.ctx.fillStyle = "#00FF00";
+		if (this.role === EXPLOIT)
+			this.ctx.fillStyle = "#00FF00";
+		else if (this.role === EXPLORE)
+			this.ctx.fillStyle = "#00FFFF";
+	}
+	if (this.role === LAY_EGG) {
+		this.ctx.fillStyle = "#FF0000";
 	}
 
 	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5), 

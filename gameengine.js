@@ -218,7 +218,6 @@ GameEngine.prototype.restart = function() {
 }
 
 GameEngine.prototype.saveGame = function() {
-	//todo
 }
 
 GameEngine.prototype.pauseGame = function() {
