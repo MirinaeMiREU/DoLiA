@@ -14,7 +14,7 @@ heatmap for histogram.
 histogram on its height. 3d-ish
 
 generation count.
-
+----------------
 graph for min/avg/max generation
 
 toggle gene scaling
@@ -28,6 +28,5 @@ p(forage) = 1-p(breed)
 
 same for exploit/explore
 and other stats
-
 
 breeding condition toggle

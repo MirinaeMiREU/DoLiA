@@ -25,6 +25,9 @@ var EXPLORE = 0;
 var EXPLOIT = 1;
 var LAY_EGG = 2;
 
+var GENE_TOGGLE = false;
+var BREED_TOGGLE = false;
+
 var LAY_TIME = 100;
 var MIN_LAY_TIME = 10;
 

@@ -66,6 +66,9 @@ GameEngine.prototype.reinit = function() {
 	EXPLORE = 0;
 	EXPLOIT = 1;
 	LAY_EGG = 2;
+	
+	GENE_TOGGLE = document.getElementById("geneToggle").checked;
+	BREED_TOGGLE = document.getElementById("breedToggle").checked;
 
 	LAY_TIME = parseInt(document.getElementById("maxEggLayTime").value);
 	MIN_LAY_TIME = parseInt(document.getElementById("minEggLayTime").value);
