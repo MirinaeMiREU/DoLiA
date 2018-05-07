@@ -58,7 +58,15 @@ Tile.prototype.update = function() {
 }
 
 Tile.prototype.updatePeriod = function() {
-	if (this.foodLevel <= 0 && Math.random() < FOOD_REGEN_RATE) {
+	var neighborsEmpty = true;
+	for (var i = 0; i < this.neighbors.length; i++) {
+		if (this.neighbors[i].foodLevel > 0) {
+			neighborsEmpty = false;
+		}
+	}
+	if (this.foodLevel <= 0 && 
+		Math.random() < FOOD_REGEN_RATE &&
+		neighborsEmpty) {
 		this.foodLevel = FOOD_REGEN_AMOUNT;
 	} else if (this.foodLevel > 0 && Math.random() < FOOD_REPLENISH_RATE) {
 		this.foodLevel = this.foodLevel + FOOD_REPLENISH_AMOUNT > MAX_TILE_FOOD ? 

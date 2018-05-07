@@ -137,7 +137,7 @@ Mound.prototype.removeLarva = function(larva) {
 
 Mound.prototype.canGrow = function() {
 	return this.foodStorage > ((this.larvaCount+this.antCount)*EAT_AMOUNT) ||
-		   (BREED_TOGGLE && this.foodStorage > EAT_AMOUNT);
+		   (BREED_TOGGLE) /*&& this.foodStorage > EAT_AMOUNT)*/;
 }
 
 Mound.prototype.updateRoleHistogram = function() {

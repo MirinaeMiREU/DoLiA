@@ -388,7 +388,6 @@ Ant.prototype.eat = function() {
 
 Ant.prototype.eggLay = function() {
 	this.mound.spawnLarva(this);
-	this.totalOffspring++;
 	//console.log("laid");
 }
 

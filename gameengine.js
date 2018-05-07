@@ -293,12 +293,14 @@ GameEngine.prototype.removeEntity = function(entity) {
 }
 
 GameEngine.prototype.draw = function () {
+	if (this.updateCounter % UPDATE_PERIOD === 0) {
     this.ctx.clearRect(0, 0, SIM_X, SIM_Y);
     this.ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
     this.ctx.restore();
+	}
 }
 
 GameEngine.prototype.drawPeriod = function() {

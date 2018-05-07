@@ -22,8 +22,9 @@ Larva.prototype.update = function() {
 	}	
 	if (this.age >= MATURE_TIME) {
 		if (this.mound.foodStorage >= EAT_AMOUNT) {
-			this.mound.spawnAnt();
 			this.mound.foodStorage -= EAT_AMOUNT;
+			this.mound.spawnAnt();
+			this.parent.totalOffspring++;
 		}
 		this.mound.removeLarva(this);
 	}
