@@ -14,6 +14,8 @@ function Mound(game, xPos, yPos) {
 	this.roleHistogram = [];
 	this.forageHistogram = [];
 	this.averageGen = 0;
+	this.minGen = 0;
+	this.maxGen = 0;
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -24,8 +26,8 @@ Mound.prototype.update = function() {
 	this.tiles[this.yPos][this.xPos].outPheromone=MAX_PHEROMONE;
 	if (this.colony.length <= 0 || this.lifeTimeCount >= GAME_LIFE_TIME) {
 		console.log(this.foodStorage);
-		this.game.save();
-		this.game.restart();
+		this.game.pauseGame();
+		//this.game.restart();
 	}
 	
 	this.lifeTimeCount++;
@@ -36,13 +38,15 @@ Mound.prototype.updatePeriod = function() {
 				" Cycle #:" + this.lifeTimeCount +
 				" Ant:" + this.antCount + 
 				" Larva:" + this.larvaCount + 
-				" Food:" + this.foodStorage +
-				" Gen:" + this.averageGen);
+				" Food:" + this.foodStorage);
+	console.log("Min Gen:" + this.minGen +
+				" Avg Gen:" + this.averageGen + 
+				" Max Gen:" + this.maxGen);
 	this.tick++;
 	this.updateRoleHistogram();
 	this.updateForageHistogram();
 	this.updateBreedableAnts();
-	this.updateAverageGeneration();
+	this.updateGeneration();
 }
 
 Mound.prototype.draw = function() {
@@ -132,7 +136,8 @@ Mound.prototype.removeLarva = function(larva) {
 }
 
 Mound.prototype.canGrow = function() {
-	return this.foodStorage > ((this.larvaCount+this.antCount)*EAT_AMOUNT);
+	return this.foodStorage > ((this.larvaCount+this.antCount)*EAT_AMOUNT) ||
+		   (BREED_TOGGLE) /*&& this.foodStorage > EAT_AMOUNT)*/;
 }
 
 Mound.prototype.updateRoleHistogram = function() {
@@ -262,8 +267,7 @@ Mound.prototype.updateBreedableAnts = function() {
 			breed2.push(breed[i]);
 		}
 	}
-	
-	//console.log(breed2.length);
+
 	this.breedable = breed2;
 }
 
@@ -277,11 +281,10 @@ Mound.prototype.getAverageFitness = function(arr) {
 			count++;
 		}
 	}
-	
 	return total/count;
 }
 
-Mound.prototype.updateAverageGeneration = function() {
+Mound.prototype.updateGeneration = function() {
 	var total = 0;
 	
 	for (var i = 0; i < this.colony.length; i++) {
@@ -292,4 +295,10 @@ Mound.prototype.updateAverageGeneration = function() {
 	
 	var average = total/this.colony.length;
 	this.averageGen = Math.round(average);
+	this.minGen = this.colony.reduce(function(min, cur) {
+		return cur.generation < min.generation ? cur : min;
+	}).generation;
+	this.maxGen = this.colony.reduce(function(max, cur) {
+		return cur.generation > max.generation ? cur : max;
+	}).generation;
 }

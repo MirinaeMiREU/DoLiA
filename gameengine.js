@@ -66,6 +66,9 @@ GameEngine.prototype.reinit = function() {
 	EXPLORE = 0;
 	EXPLOIT = 1;
 	LAY_EGG = 2;
+	
+	GENE_TOGGLE = document.getElementById("geneToggle").checked;
+	BREED_TOGGLE = document.getElementById("breedToggle").checked;
 
 	LAY_TIME = parseInt(document.getElementById("maxEggLayTime").value);
 	MIN_LAY_TIME = parseInt(document.getElementById("minEggLayTime").value);
@@ -214,8 +217,7 @@ GameEngine.prototype.restart = function() {
     this.reinit();
 }
 
-GameEngine.prototype.save = function() {
-	//todo
+GameEngine.prototype.saveGame = function() {
 }
 
 GameEngine.prototype.pauseGame = function() {
@@ -291,12 +293,14 @@ GameEngine.prototype.removeEntity = function(entity) {
 }
 
 GameEngine.prototype.draw = function () {
+	if (this.updateCounter % UPDATE_PERIOD === 0) {
     this.ctx.clearRect(0, 0, SIM_X, SIM_Y);
     this.ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
         this.entities[i].draw(this.ctx);
     }
     this.ctx.restore();
+	}
 }
 
 GameEngine.prototype.drawPeriod = function() {

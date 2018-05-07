@@ -21,16 +21,25 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.geneRole = this.geneRole < 0 ? 0 : this.geneRole;
 	this.geneForage = geneForage > 1 ? 1 : geneForage;
 	this.geneForage = this.geneForage < 0 ? 0 : this.geneForage;
-	this.energy = Math.ceil(MAX_ENERGY*this.geneRole) <= MIN_ENERGY ? 
-				  MIN_ENERGY : Math.ceil(MAX_ENERGY*this.geneRole);
+	this.geneRoleActual = this.geneRole;
+	this.geneForageActual = this.geneForage;
+	if (GENE_TOGGLE) {
+		this.geneRoleActual = this.geneRole < 0.5 ?
+							  Math.pow(this.geneRole,2)*2:
+							  1-(Math.pow(1-this.geneRole,2)*2);
+		this.geneForageActual = this.geneForage < 0.5 ?
+							  Math.pow(this.geneForage,2)*2:
+							  1-(Math.pow(1-this.geneForage,2)*2);
+	}	
+	this.energy = Math.ceil(MAX_ENERGY*this.geneRoleActual) <= MIN_ENERGY ? 
+				  MIN_ENERGY : Math.ceil(MAX_ENERGY*this.geneRoleActual);
 	this.maxEnergy = this.energy;
-	this.layTime = Math.ceil(LAY_TIME*this.geneRole) <= MIN_LAY_TIME ?
-				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRole);
-	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRole) <= MIN_ANT_FOOD ?
-				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRole);
-	this.foodCollection = Math.ceil(this.maxFood/10);
+	this.layTime = Math.ceil(LAY_TIME*this.geneRoleActual) <= MIN_LAY_TIME ?
+				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRoleActual);
+	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRoleActual) <= MIN_ANT_FOOD ?
+				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRoleActual);
+	this.foodCollection = Math.ceil(this.maxFood/1);
 	this.layTimer = 0;
-	this.careTimer = 0;
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -62,19 +71,34 @@ Ant.prototype.update = function() {
 
 Ant.prototype.updatePeriod = function() {
 	this.overallFitness = ((FORAGE_WEIGHT * this.totalFood) + 
-						   (BREED_WEIGHT * this.totalOffspring)) / this.age; 
-	this.forageFitness = FORAGE_WEIGHT * this.totalFood / this.age;
+						   (BREED_WEIGHT * this.totalOffspring)) / (this.age+1); 
+	this.forageFitness = FORAGE_WEIGHT * this.totalFood / (this.age+1);
 }
 
 Ant.prototype.draw = function() {
 	if (this.food >= this.maxFood) {
-		this.ctx.fillStyle = "#004400";
+		if (this.role === EXPLOIT)
+			this.ctx.fillStyle = "#004400";
+		else if (this.role === EXPLORE)
+			this.ctx.fillStyle = "#004444";
 	} else if (this.food > Math.round(this.maxFood/2)) {
-		this.ctx.fillStyle = "#008800";
+		if (this.role === EXPLOIT)
+			this.ctx.fillStyle = "#008800";
+		else if (this.role === EXPLORE)
+			this.ctx.fillStyle = "#008888";
 	} else if (this.food > 0) {
-		this.ctx.fillStyle = "#00BB00";
+		if (this.role === EXPLOIT)
+			this.ctx.fillStyle = "#00BB00";
+		else if (this.role === EXPLORE)
+			this.ctx.fillStyle = "#00BBBB";
 	} else {
-		this.ctx.fillStyle = "#00FF00";
+		if (this.role === EXPLOIT)
+			this.ctx.fillStyle = "#00FF00";
+		else if (this.role === EXPLORE)
+			this.ctx.fillStyle = "#00FFFF";
+	}
+	if (this.role === LAY_EGG) {
+		this.ctx.fillStyle = "#FF0000";
 	}
 
 	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5), 
@@ -112,11 +136,6 @@ Ant.prototype.draw = function() {
 Ant.prototype.drawPeriod = function() {
 }
 
-/*
-Ant.prototype.setNeighbors = function(neighbors) {
-	this.neighbors = neighbors;
-}
-*/
 Ant.prototype.turnRight = function() {
 	this.dir = this.dir + 1 > 3 ? 0 : this.dir + 1;
 	this.consecutiveTurns++;
@@ -242,70 +261,65 @@ Ant.prototype.decide = function() {
 			this.energy = this.maxEnergy;
 		}
 	}
-	if (this.role === EXPLOIT) {
-		if (this.food >= this.maxFood && this.action === OUTBOUND) {
+	// if full, go home
+	if (this.food >= this.maxFood && this.action === OUTBOUND) {
 			this.action = INBOUND;
 			this.energy = this.maxEnergy;
 			curTile.inPheromone = this.energy;
 			this.turnAround();
-		} else if (tileFood > 0 && this.food < this.maxFood) {
-			if (tileFood >= this.foodCollection) {
-				if ((this.food + this.foodCollection) <= this.maxFood) {
-					curTile.foodLevel -= this.foodCollection;
-					this.food += this.foodCollection;
-				} else {
-					curTile.foodLevel -= this.maxFood - this.food;
-					this.food = this.maxFood;
-				}
+	} else if (tileFood > 0 && this.food < this.maxFood) { // if found food
+		if (tileFood >= this.foodCollection) {
+			if ((this.food + this.foodCollection) <= this.maxFood) {
+				curTile.foodLevel -= this.foodCollection;
+				this.food += this.foodCollection;
 			} else {
-				if ((this.food + tileFood) <= this.maxFood) {
-					curTile.foodLevel = 0;
-					this.food += tileFood;
-				} else {
-					curTile.foodLevel -= this.maxFood - this.food;
-					this.food = this.maxFood;
-				}
+				curTile.foodLevel -= this.maxFood - this.food;
+				this.food = this.maxFood;
 			}
-		} else if (this.action === OUTBOUND) {
-			this.decideDir(OUTBOUND);
-			this.move();
-			curTile.outPheromone = this.energy > curTile.outPheromone ?
-								   this.energy : curTile.outPheromone;
-		} else if (this.action === INBOUND) { // Going back home
-			this.decideDir(INBOUND);
-			this.move();
-			curTile.inPheromone = this.energy > curTile.inPheromone ?
-							      this.energy : curTile.inPheromone;
+		} else {
+			if ((this.food + tileFood) <= this.maxFood) {
+				curTile.foodLevel = 0;
+				this.food += tileFood;
+			} else {
+				curTile.foodLevel -= this.maxFood - this.food;
+				this.food = this.maxFood;
+			}
 		}
-	} else if (this.role === EXPLORE) {
-		if (this.food >= this.maxFood && this.action === OUTBOUND) {
-			this.action = INBOUND;
-			this.energy = this.maxEnergy;
-			curTile.inPheromone = this.energy;
-			this.turnAround();
-		} else if (tileFood > 0 && this.action === OUTBOUND) {
-			curTile.foodLevel--;
-			this.food++;
-			this.energy = this.maxEnergy;
-		} else if (this.action === OUTBOUND) {
-			var rand = Math.random();
-			if (rand > 0.85) {
-				if (rand > 0.925) {
-					this.turnRight();
-				} else {
-					this.turnLeft();
-				}
+	} else {
+		if (this.role === EXPLOIT) {
+			if (this.action === OUTBOUND) {
+				this.decideDir(OUTBOUND);
+				this.move();
+				curTile.outPheromone = this.energy > curTile.outPheromone ?
+									   this.energy : curTile.outPheromone;
+			} else if (this.action === INBOUND) { // Going back home
+				this.decideDir(INBOUND);
+				this.move();
+				curTile.inPheromone = this.energy > curTile.inPheromone ?
+									  this.energy : curTile.inPheromone;
 			}
-			this.move();
-			curTile.outPheromone = this.energy > curTile.outPheromone ?
-								   this.energy : curTile.outPheromone;
-		} else if (this.action === INBOUND) { // Going back home
-			this.decideDir(INBOUND);
-			this.move();
-			curTile.inPheromone = this.energy > curTile.inPheromone ?
-							      this.energy : curTile.inPheromone;
+		} else if (this.role === EXPLORE) {
+			if (this.action === OUTBOUND) {
+				var rand = Math.random();
+				if (rand > 0.85) {
+					if (rand > 0.925) {
+						this.turnRight();
+					} else {
+						this.turnLeft();
+					}
+				}
+				this.move();
+				curTile.outPheromone = this.energy > curTile.outPheromone ?
+									   this.energy : curTile.outPheromone;
+			} else if (this.action === INBOUND) { // Going back home
+				this.decideDir(INBOUND);
+				this.move();
+				curTile.inPheromone = this.energy > curTile.inPheromone ?
+									  this.energy : curTile.inPheromone;
+			}
 		}
 	}
+	
 	this.wrapAround();
 }
 
@@ -374,12 +388,7 @@ Ant.prototype.eat = function() {
 
 Ant.prototype.eggLay = function() {
 	this.mound.spawnLarva(this);
-	this.totalOffspring++;
 	//console.log("laid");
-}
-
-Ant.prototype.eggCare = function() {
-	
 }
 
 Ant.prototype.die = function(reason) {
@@ -391,7 +400,7 @@ Ant.prototype.chooseRole = function() {
 	if (Math.random() >= this.geneRole && this.mound.canGrow()) {
 		this.role = LAY_EGG;
 	} else { // forage otherwise
-		if (Math.random() >= this.geneForage) {
+		if (Math.random() >= this.geneForageActual) {
 			this.role = EXPLOIT;
 		} else {
 			this.role = EXPLORE;
