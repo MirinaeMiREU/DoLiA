@@ -11,12 +11,13 @@
 	<script type="text/javascript" src="./larva.js"></script>
 	<script type="text/javascript" src="./ant.js"></script>
 	<script type="text/javascript" src="./graph.js"></script>
+	<script type="text/javascript" src="./graph2.js"></script>
 	<script type="text/javascript" src="./histogram.js"></script>
 	<script type="text/javascript" src="./mound.js"></script>
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
-    <canvas id="gameWorld" tabindex="1" width="1200" height="600" style="border: 1px solid brown; background: white"></canvas>
+    <canvas id="gameWorld" tabindex="1" width="1200" height="800" style="border: 1px solid brown; background: white"></canvas>
 	<br>
 	<div id="sim">
 		<button id="play">Play</button>
@@ -27,12 +28,13 @@
         <p>Environment Parameters</p>
         <input type="text" id="cellSize" value="12"/>Cell Size<br />
         <input type="text" id="simDuration" value="250000"/>Simulation Duration<br />
-		<input type="text" id="updatePeriod" value="10"/>Cycles Per Tick<br />
+		<input type="text" id="updatePeriod" value="20"/>Cycles Per Tick<br />
+		<input type="text" id="drawPeriod" value="100"/>Cycles Per Simulation Draw<br />
         <input type="text" id="maxFood" value="10000"/>Max Food Value<br />
         <input type="text" id="foodAbundance" value="0.01"/>Initial Food Abundance<br />
-        <input type="text" id="foodRegenRate" value="0.000001"/>Food Regen Rate<br />
+        <input type="text" id="foodRegenRate" value="0.000002"/>Food Regen Rate<br />
 		<input type="text" id="foodRegenAmount" value="500"/>Food Regen Amount<br />
-		<input type="text" id="foodReplenishRate" value="0.25"/>Food Replenish Rate<br />
+		<input type="text" id="foodReplenishRate" value="0.5"/>Food Replenish Rate<br />
 		<input type="text" id="foodReplenishAmount" value="500"/>Food Replenish Amount<br />
         <div><input type="text" id="mapname" />Map Name<br /></div>
         <button id="save">Save</button>
@@ -42,15 +44,15 @@
     <div id="population">
         <p>Population Parameters</p>
 		<input type="checkbox" id="geneToggle" checked="true" />Toggle Gene
-		<input type="checkbox" id="breedToggle" checked="true" />Toggle Breed <br />
+		<input type="checkbox" id="breedToggle" checked="true"/>Toggle Breed <br />
         <input type="text" id="initPop" value="50" />Initial Population<br />
         <input type="text" id="maxEnergy" value="500" />Max Energy<br />
 		<input type="text" id="minEnergy" value="5" />Min Energy<br />
         <input type="text" id="maxEggLayTime" value="100" />Max Egg Laying Time<br />
 		<input type="text" id="minEggLayTime" value="10" />Min Egg Laying Time<br />
 		<input type="text" id="forageWeight" value="1" />Forage Weight<br />
-		<input type="text" id="breedWeight" value="5" />Breed Weight<br />
-        <input type="text" id="deathChance" value="0.003" />Chance To Die<br />
+		<input type="text" id="breedWeight" value="35" />Breed Weight<br />
+        <input type="text" id="deathChance" value="0.004" />Chance To Die<br />
 		<input type="text" id="minAge" value="100" />Minimum Age<br />
         <input type="text" id="hungerThreshold" value="300" />Hunger Threshold<br />
 		<input type="text" id="foodIntake" value="10" />Food Intake<br />

@@ -39,33 +39,25 @@ GameEngine.prototype.init = function (ctx) {
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
     this.timer = new Timer();
+	this.setParameters();
 	this.setup();
     this.startInput();
 	
     console.log('game initialized');
 }
 
-GameEngine.prototype.reinit = function() {
+GameEngine.prototype.setParameters = function() {
 	// main
 	CELL_SIZE = parseInt(document.getElementById("cellSize").value);
 	XSIZE = Math.floor(800/CELL_SIZE);
 	YSIZE = Math.floor(600/CELL_SIZE);
 
-	NORTH = 0;
-	EAST = 1;
-	SOUTH = 2;
-	WEST = 3;
-
 	GAME_LIFE_TIME = parseInt(document.getElementById("simDuration").value);
 	UPDATE_PERIOD = parseInt(document.getElementById("updatePeriod").value);
+	DRAW_PERIOD = parseInt(document.getElementById("drawPeriod").value);
 
 	// mound
 	INIT_ANTS = parseInt(document.getElementById("initPop").value);
-
-	// ant
-	EXPLORE = 0;
-	EXPLOIT = 1;
-	LAY_EGG = 2;
 	
 	GENE_TOGGLE = document.getElementById("geneToggle").checked;
 	BREED_TOGGLE = document.getElementById("breedToggle").checked;
@@ -76,18 +68,12 @@ GameEngine.prototype.reinit = function() {
 	FORAGE_WEIGHT = Number(document.getElementById("forageWeight").value);
 	BREED_WEIGHT = Number(document.getElementById("breedWeight").value);
 
-	DEATH_AGE = 0;
-	DEATH_HUNGER = 1;
-
 	CHANCE_TO_DIE = Number(document.getElementById("deathChance").value);
 	MIN_AGE = Number(document.getElementById("minAge").value);
 	HUNGER_THRESHHOLD = parseInt(document.getElementById("hungerThreshold").value);
 	EAT_AMOUNT = parseInt(document.getElementById("foodIntake").value);
 	MUTATION_RATE = Number(document.getElementById("mutationRate").value);
 	MAX_DEVIATION = Number(document.getElementById("maxDev").value);
-
-	OUTBOUND = 0;
-	INBOUND = 1;
 
 	MAX_ENERGY = parseInt(document.getElementById("maxEnergy").value);
 	MIN_ENERGY = parseInt(document.getElementById("minEnergy").value);
@@ -111,7 +97,6 @@ GameEngine.prototype.reinit = function() {
 	FOOD_REPLENISH_RATE = Number(document.getElementById("foodReplenishRate").value);
 	
 	this.entities = [];
-	this.setup();
 	this.updateCounter = 0;
 }
 
@@ -196,6 +181,9 @@ GameEngine.prototype.setup = function() {
 	}
 	var graph = new Graph(this, mound);
 	this.addEntity(graph);
+	var graph2 = new Graph2(this, mound);
+	this.addEntity(graph2);
+	
 	var histRole = new Histogram(this, mound, 810, 200, 0);
 	var histForage = new Histogram(this, mound, 810, 400, 1);
 	this.addEntity(histRole);
@@ -214,7 +202,8 @@ GameEngine.prototype.start = function () {
 
 GameEngine.prototype.restart = function() {
 	console.log("restarting game");
-    this.reinit();
+    this.setParameters();
+	this.setup();
 }
 
 GameEngine.prototype.saveGame = function() {
@@ -293,7 +282,7 @@ GameEngine.prototype.removeEntity = function(entity) {
 }
 
 GameEngine.prototype.draw = function () {
-	if (this.updateCounter % UPDATE_PERIOD === 0) {
+	if (this.updateCounter % DRAW_PERIOD === 0) {
     this.ctx.clearRect(0, 0, SIM_X, SIM_Y);
     this.ctx.save();
     for (var i = 0; i < this.entities.length; i++) {
@@ -306,6 +295,7 @@ GameEngine.prototype.draw = function () {
 GameEngine.prototype.drawPeriod = function() {
 	if (this.updateCounter % UPDATE_PERIOD === 0) {
 		this.ctx.clearRect(SIM_X, 0, CHART_X, CHART_Y);
+		this.ctx.clearRect(0, SIM_Y, SIM_X+CHART_X, CHART_BOTTOM_Y);
 		this.ctx.save();
 		for (var i = 0; i < this.entities.length; i++) {
 			this.entities[i].drawPeriod(this.ctx);

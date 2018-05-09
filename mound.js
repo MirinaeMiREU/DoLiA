@@ -58,6 +58,13 @@ Mound.prototype.draw = function() {
 }
 
 Mound.prototype.drawPeriod = function() {
+	this.ctx.strokeStyle = "#000000";
+	this.ctx.fillSytle = "#000000";
+	this.ctx.font = "20px Courier";
+	this.ctx.fillText("Min Gen:" + this.minGen,500, 630);
+	this.ctx.fillText("Average Gen:" + this.averageGen,500, 650);
+	this.ctx.fillText("Max Gen:" + this.maxGen,500, 670);
+	this.ctx.font = "10px sans-serif";
 }
 
 Mound.prototype.setTiles = function(tiles) {
