@@ -6,6 +6,7 @@ var SIM_X = 800;
 var SIM_Y = 600;
 var CHART_X = 400;
 var CHART_Y = 600;
+var CHART_BOTTOM_Y = 200;
 
 var TICK_DISPLAY = 360;
 

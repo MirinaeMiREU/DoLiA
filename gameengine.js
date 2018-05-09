@@ -196,6 +196,9 @@ GameEngine.prototype.setup = function() {
 	}
 	var graph = new Graph(this, mound);
 	this.addEntity(graph);
+	var graph2 = new Graph2(this, mound);
+	this.addEntity(graph2);
+	
 	var histRole = new Histogram(this, mound, 810, 200, 0);
 	var histForage = new Histogram(this, mound, 810, 400, 1);
 	this.addEntity(histRole);
@@ -306,6 +309,7 @@ GameEngine.prototype.draw = function () {
 GameEngine.prototype.drawPeriod = function() {
 	if (this.updateCounter % UPDATE_PERIOD === 0) {
 		this.ctx.clearRect(SIM_X, 0, CHART_X, CHART_Y);
+		this.ctx.clearRect(0, SIM_Y, SIM_X+CHART_X, CHART_BOTTOM_Y);
 		this.ctx.save();
 		for (var i = 0; i < this.entities.length; i++) {
 			this.entities[i].drawPeriod(this.ctx);
