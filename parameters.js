@@ -17,6 +17,7 @@ var WEST = 3;
 
 var GAME_LIFE_TIME = 1000000;
 var UPDATE_PERIOD = 100;
+var DRAW_PERIOD = 10;
 
 // mound
 var INIT_ANTS = 10;
@@ -26,8 +27,8 @@ var EXPLORE = 0;
 var EXPLOIT = 1;
 var LAY_EGG = 2;
 
-var GENE_TOGGLE = false;
-var BREED_TOGGLE = false;
+var GENE_TOGGLE = true;
+var BREED_TOGGLE = true;
 
 var LAY_TIME = 100;
 var MIN_LAY_TIME = 10;
