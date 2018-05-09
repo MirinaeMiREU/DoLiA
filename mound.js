@@ -64,6 +64,7 @@ Mound.prototype.drawPeriod = function() {
 	this.ctx.fillText("Min Gen:" + this.minGen,500, 630);
 	this.ctx.fillText("Average Gen:" + this.averageGen,500, 650);
 	this.ctx.fillText("Max Gen:" + this.maxGen,500, 670);
+	this.ctx.fillText("Cycle# :" + (this.lifeTimeCount-1),500, 690);
 	this.ctx.font = "10px sans-serif";
 }
 
