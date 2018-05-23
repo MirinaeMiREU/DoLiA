@@ -14,9 +14,9 @@ function GameEngine() {
     this.ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
-	this.isPaused = true;
+	this.isPaused = false;
 	this.ticked = false;
-	this.isStepping = true;
+	this.isStepping = false;
 	this.play = null;
 	this.pause = null;
 	this.step = null;
@@ -24,6 +24,7 @@ function GameEngine() {
 	this.load = null;
 	this.newMap = null;
 	this.newAnt = null;
+	this.mound = null;
 	this.updateCounter = 0;
 }
 
@@ -61,6 +62,7 @@ GameEngine.prototype.setParameters = function() {
 	
 	GENE_TOGGLE = document.getElementById("geneToggle").checked;
 	BREED_TOGGLE = document.getElementById("breedToggle").checked;
+	EFFECT_TOGGLE = document.getElementById("effectToggle").checked;
 
 	LAY_TIME = parseInt(document.getElementById("maxEggLayTime").value);
 	MIN_LAY_TIME = parseInt(document.getElementById("minEggLayTime").value);
@@ -173,22 +175,16 @@ GameEngine.prototype.setup = function() {
 			squares[i][j].setNeighbors(neighbors);
 		}
 	}
-	var mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
-	mound.setTiles(squares);
+	this.mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
+	this.mound.setTiles(squares);
+	this.addEntity(this.mound.roleHistogramData);
+	this.addEntity(this.mound.forageHistogramData);
+	this.addEntity(this.mound.graph1);
+	this.addEntity(this.mound.graph2);
 	
 	for (var i = 0; i < INIT_ANTS; i++) {
-		mound.spawnAnt();
+		this.mound.spawnAnt();
 	}
-	var graph = new Graph(this, mound);
-	this.addEntity(graph);
-	var graph2 = new Graph2(this, mound);
-	this.addEntity(graph2);
-	
-	var histRole = new Histogram(this, mound, 810, 200, 0);
-	var histForage = new Histogram(this, mound, 810, 400, 1);
-	this.addEntity(histRole);
-	this.addEntity(histForage);
-	console.clear();
 }
 
 GameEngine.prototype.start = function () {
@@ -201,9 +197,24 @@ GameEngine.prototype.start = function () {
 }
 
 GameEngine.prototype.restart = function() {
+	console.clear();
+	console.log(this.mound.roleHistogramData.data);
+	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
+									 this.mound.roleHistogramData, this.mound.forageHistogramData);
+	this.download(document.getElementById("filename").textContent+".csv", str);
+	var runNum = Number(document.getElementById("runNum").innerHTML);
+	runNum++;
+	document.getElementById("runNum").innerHTML = runNum;
 	console.log("restarting game");
     this.setParameters();
 	this.setup();
+}
+
+GameEngine.prototype.download = function(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+    pom.click();
 }
 
 GameEngine.prototype.saveGame = function() {
@@ -358,6 +369,32 @@ GameEngine.prototype.loop = function () {
 	}
 	
 	
+}
+
+GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) {
+	var str = ",Ant,Larva,Food\n";
+	for (var i = 0; i < graph1.antData.length; i++) {
+		str += i + "," +
+			   graph1.antData[i] + "," + 
+		       graph1.larvaData[i] + "," + 
+			   graph1.foodData[i] + "\n";
+	}
+	str+="\n,Ant+Larva,Food\n";
+	for (var i = 0; i < graph2.bioData.length; i++) {
+		str += i + "," +
+		       graph2.bioData[i] + "," + 
+			   graph2.foodData[i] + "\n";
+	}
+	str+="\n,Breed,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Forage\n";
+	for (var i = 0; i < hist1.data.length; i++) {
+		str += i + "," + hist1.data[i] + "\n";
+	}
+	str+="\n,Exploit,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Explore\n";
+	for (var i = 0; i < hist2.data.length; i++) {
+		str += i + "," + hist2.data[i] + "\n";
+	}
+	
+	return str;
 }
 
 function Timer() {

@@ -29,6 +29,7 @@ var LAY_EGG = 2;
 
 var GENE_TOGGLE = true;
 var BREED_TOGGLE = true;
+var EFFECT_TOGGLE = true;
 
 var LAY_TIME = 100;
 var MIN_LAY_TIME = 10;
