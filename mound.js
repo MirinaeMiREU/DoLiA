@@ -16,6 +16,10 @@ function Mound(game, xPos, yPos) {
 	this.averageGen = 0;
 	this.minGen = 0;
 	this.maxGen = 0;
+	this.graph1 = new Graph(game, this);
+	this.graph2 = new Graph2(game, this);
+	this.roleHistogramData = new Histogram(game, this, 810, 200, 0);
+	this.forageHistogramData = new Histogram(game, this, 810, 400, 1);
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -26,8 +30,7 @@ Mound.prototype.update = function() {
 	this.tiles[this.yPos][this.xPos].outPheromone=MAX_PHEROMONE;
 	if (this.colony.length <= 0 || this.lifeTimeCount >= GAME_LIFE_TIME) {
 		console.log(this.foodStorage);
-		this.game.pauseGame();
-		//this.game.restart();
+		this.game.restart();
 	}
 	
 	this.lifeTimeCount++;

@@ -63,6 +63,11 @@ Tile.prototype.updatePeriod = function() {
 		if (this.neighbors[i].foodLevel > 0) {
 			neighborsEmpty = false;
 		}
+		for (var j = 0; j < this.neighbors[i].neighbors.length; j++) {
+			if (this.neighbors[i].neighbors[j].foodLevel > 0) {
+				neighborsEmpty = false;
+			}
+		}
 	}
 	if (this.foodLevel <= 0 && 
 		Math.random() < FOOD_REGEN_RATE &&

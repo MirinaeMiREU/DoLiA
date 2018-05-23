@@ -36,3 +36,4 @@ toggle benefits/drawback of gene
 make sure that total food in environment is equal. have a parameter to set value
 
 implement download function from existing project. algorithm0r
+download and restart sim

@@ -17,6 +17,7 @@
     <script type="text/javascript" src="./main.js"></script>
 </head>
 <body>
+	<p id="filename">Run#<span id="runNum">1</span></p>
     <canvas id="gameWorld" tabindex="1" width="1200" height="800" style="border: 1px solid brown; background: white"></canvas>
 	<br>
 	<div id="sim">
@@ -26,13 +27,14 @@
 	</div>
 	<div id="environment">
         <p>Environment Parameters</p>
+		
         <input type="text" id="cellSize" value="12"/>Cell Size<br />
-        <input type="text" id="simDuration" value="250000"/>Simulation Duration<br />
-		<input type="text" id="updatePeriod" value="20"/>Cycles Per Tick<br />
+        <input type="text" id="simDuration" value="100000"/>Simulation Duration<br />
+		<input type="text" id="updatePeriod" value="50"/>Cycles Per Tick<br />
 		<input type="text" id="drawPeriod" value="100"/>Cycles Per Simulation Draw<br />
         <input type="text" id="maxFood" value="10000"/>Max Food Value<br />
         <input type="text" id="foodAbundance" value="0.01"/>Initial Food Abundance<br />
-        <input type="text" id="foodRegenRate" value="0.000002"/>Food Regen Rate<br />
+        <input type="text" id="foodRegenRate" value="0.000005"/>Food Regen Rate<br />
 		<input type="text" id="foodRegenAmount" value="500"/>Food Regen Amount<br />
 		<input type="text" id="foodReplenishRate" value="0.5"/>Food Replenish Rate<br />
 		<input type="text" id="foodReplenishAmount" value="500"/>Food Replenish Amount<br />
@@ -44,7 +46,9 @@
     <div id="population">
         <p>Population Parameters</p>
 		<input type="checkbox" id="geneToggle" checked="true" />Toggle Gene
-		<input type="checkbox" id="breedToggle" checked="true"/>Toggle Breed <br />
+		<input type="checkbox" id="breedToggle" checked="true"/>Toggle Breed 
+		<input type="checkbox" id="effectToggle" checked="true"/>Toggle Gene Effects 
+		<br />
         <input type="text" id="initPop" value="50" />Initial Population<br />
         <input type="text" id="maxEnergy" value="500" />Max Energy<br />
 		<input type="text" id="minEnergy" value="5" />Min Energy<br />

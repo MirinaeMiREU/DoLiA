@@ -31,6 +31,10 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 							  Math.pow(this.geneForage,2)*2:
 							  1-(Math.pow(1-this.geneForage,2)*2);
 	}	
+	if (!EFFECT_TOGGLE) {
+		this.geneRoleActual = 0.5;
+		this.geneForageActual = 0.5;
+	}
 	this.energy = Math.ceil(MAX_ENERGY*this.geneRoleActual) <= MIN_ENERGY ? 
 				  MIN_ENERGY : Math.ceil(MAX_ENERGY*this.geneRoleActual);
 	this.maxEnergy = this.energy;
