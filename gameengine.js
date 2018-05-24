@@ -91,6 +91,7 @@ GameEngine.prototype.setParameters = function() {
 	MAX_PHEROMONE = MAX_ENERGY;
 	MULT = Math.ceil(MAX_PHEROMONE/10);
 	DECAY_RATE = Math.ceil(MAX_PHEROMONE/200);
+	MAX_TOTAL_FOOD = parseInt(document.getElementById("maxTotalFood").value);
 	MAX_TILE_FOOD = parseInt(document.getElementById("maxFood").value);
 	FOOD_ABUNDANCE = Number(document.getElementById("foodAbundance").value);
 	FOOD_REGEN_AMOUNT = Number(document.getElementById("foodRegenAmount").value);
@@ -198,7 +199,6 @@ GameEngine.prototype.start = function () {
 
 GameEngine.prototype.restart = function() {
 	console.clear();
-	console.log(this.mound.roleHistogramData.data);
 	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
 									 this.mound.roleHistogramData, this.mound.forageHistogramData);
 	this.download(document.getElementById("filename").textContent+".csv", str);
@@ -206,6 +206,7 @@ GameEngine.prototype.restart = function() {
 	runNum++;
 	document.getElementById("runNum").innerHTML = runNum;
 	console.log("restarting game");
+	foodTotal = 0;
     this.setParameters();
 	this.setup();
 }

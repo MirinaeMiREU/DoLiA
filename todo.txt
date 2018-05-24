@@ -37,3 +37,11 @@ make sure that total food in environment is equal. have a parameter to set value
 
 implement download function from existing project. algorithm0r
 download and restart sim
+
+--------------------------------
+
+merge file  averages(python)
+graph (Excel for now)
+toggle something (hopefully i remember)
+entice breeders to breed (time out/ wait)
+toggle breed successful

@@ -250,7 +250,6 @@ Ant.prototype.decide = function() {
 	if (curTile.isHome && this.action === INBOUND) {
 		this.mound.foodStorage += this.food;
 		this.totalFood += this.food;
-		//console.log(this.mound.foodStorage);
 		if (this.hunger > HUNGER_THRESHHOLD &&
 			this.mound.foodStorage < EAT_AMOUNT) {
 			this.die(DEATH_HUNGER);
@@ -276,17 +275,21 @@ Ant.prototype.decide = function() {
 			if ((this.food + this.foodCollection) <= this.maxFood) {
 				curTile.foodLevel -= this.foodCollection;
 				this.food += this.foodCollection;
+				foodTotal -= this.foodCollection;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
+				foodTotal -= this.maxFood - this.food;
 			}
 		} else {
 			if ((this.food + tileFood) <= this.maxFood) {
+				foodTotal -= curTile.foodLevel;
 				curTile.foodLevel = 0;
 				this.food += tileFood;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
+				foodTotal -= this.maxFood - this.food;
 			}
 		}
 	} else {
