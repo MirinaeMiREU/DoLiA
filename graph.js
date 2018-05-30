@@ -6,9 +6,9 @@ function Graph(game, mound) {
 	this.antData = [];
 	this.larvaData = [];
 	this.foodData = [];
-	this.antData.push(mound.antCount);
-	this.larvaData.push(mound.larvaCount);
-	this.foodData.push(Math.floor(mound.foodStorage/EAT_AMOUNT));
+//	this.antData.push(mound.antCount);
+//	this.larvaData.push(mound.larvaCount);
+//	this.foodData.push(Math.floor(mound.foodStorage/EAT_AMOUNT));
 	this.maxVal = Math.max(this.antData, 
 						   this.larvaData,
 						   this.foodData); 

@@ -1,3 +1,5 @@
+var foodTotal = 0;
+
 function Tile(game, xPos, yPos) {
 	this.game = game;
 	this.ctx = game.ctx;
@@ -13,12 +15,13 @@ function Tile(game, xPos, yPos) {
 	
 	var rand = Math.random();
 	if (rand < FOOD_ABUNDANCE) {
-		if (rand < FOOD_ABUNDANCE/10) {
+		if (MAX_TOTAL_FOOD - foodTotal >= MAX_TILE_FOOD) {
 			this.foodLevel = MAX_TILE_FOOD;
-		} else if (rand < FOOD_ABUNDANCE/4) {
-			this.foodLevel = Math.round(MAX_TILE_FOOD/2);
-		} else {
-			this.foodLevel = Math.round(MAX_TILE_FOOD/4);
+			foodTotal += MAX_TILE_FOOD;
+		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
+		           MAX_TOTAL_FOOD - foodTotal < MAX_TILE_FOOD){
+			this.foodLevel += MAX_TOTAL_FOOD - foodTotal;
+			foodTotal = MAX_TOTAL_FOOD;
 		}
 	} else {
 		this.foodLevel = 0;
@@ -72,10 +75,34 @@ Tile.prototype.updatePeriod = function() {
 	if (this.foodLevel <= 0 && 
 		Math.random() < FOOD_REGEN_RATE &&
 		neighborsEmpty) {
-		this.foodLevel = FOOD_REGEN_AMOUNT;
-	} else if (this.foodLevel > 0 && Math.random() < FOOD_REPLENISH_RATE) {
-		this.foodLevel = this.foodLevel + FOOD_REPLENISH_AMOUNT > MAX_TILE_FOOD ? 
-						 MAX_TILE_FOOD : this.foodLevel + FOOD_REPLENISH_AMOUNT;
+		if (MAX_TOTAL_FOOD - foodTotal >= FOOD_REGEN_AMOUNT) {
+			this.foodLevel = FOOD_REGEN_AMOUNT;
+			foodTotal += FOOD_REGEN_AMOUNT;
+		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
+		           MAX_TOTAL_FOOD - foodTotal < FOOD_REGEN_AMOUNT) {
+			this.foodLevel += MAX_TOTAL_FOOD - foodTotal; 
+			foodTotal = MAX_TOTAL_FOOD;
+		}
+	} else if (this.foodLevel > 0 && 
+	           Math.random() < FOOD_REPLENISH_RATE) {
+		if (MAX_TOTAL_FOOD - foodTotal >= FOOD_REPLENISH_AMOUNT) {
+			if (this.foodLevel + FOOD_REPLENISH_AMOUNT > MAX_TILE_FOOD) {
+				foodTotal += MAX_TILE_FOOD - this.foodLevel;
+				this.foodLevel = MAX_TILE_FOOD;
+			} else {
+				this.foodLevel += FOOD_REPLENISH_AMOUNT;
+				foodTotal += FOOD_REPLENISH_AMOUNT;
+			}
+		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
+		           MAX_TOTAL_FOOD - foodTotal < FOOD_REPLENISH_AMOUNT) {
+			if (MAX_TOTAL_FOOD - foodTotal >= MAX_TILE_FOOD - this.foodLevel) {
+				foodTotal += MAX_TILE_FOOD - this.foodLevel;
+				this.foodLevel = MAX_TILE_FOOD;
+			} else {
+				this.foodLevel += MAX_TOTAL_FOOD - foodTotal;
+				foodTotal = MAX_TOTAL_FOOD;
+			}
+		}
 	}
 }
 

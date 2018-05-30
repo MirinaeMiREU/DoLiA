@@ -28,12 +28,14 @@ Mound.prototype.constructor = Mound;
 
 Mound.prototype.update = function() {
 	this.tiles[this.yPos][this.xPos].outPheromone=MAX_PHEROMONE;
-	if (this.colony.length <= 0 || this.lifeTimeCount >= GAME_LIFE_TIME) {
-		console.log(this.foodStorage);
-		this.game.restart();
-	}
-	
 	this.lifeTimeCount++;
+	if (this.colony.length <= 0 || this.lifeTimeCount >= GAME_LIFE_TIME) {
+		if (parseInt(document.getElementById("runNum").innerHTML) < MAX_RUN_COUNT) {
+			this.game.restart();
+		} else {
+			this.game.endGame();
+		}
+	}	
 }
 
 Mound.prototype.updatePeriod = function() {
@@ -45,6 +47,7 @@ Mound.prototype.updatePeriod = function() {
 	console.log("Min Gen:" + this.minGen +
 				" Avg Gen:" + this.averageGen + 
 				" Max Gen:" + this.maxGen);
+	console.log("Food Total:" + foodTotal);
 	this.tick++;
 	this.updateRoleHistogram();
 	this.updateForageHistogram();
@@ -67,7 +70,7 @@ Mound.prototype.drawPeriod = function() {
 	this.ctx.fillText("Min Gen:" + this.minGen,500, 630);
 	this.ctx.fillText("Average Gen:" + this.averageGen,500, 650);
 	this.ctx.fillText("Max Gen:" + this.maxGen,500, 670);
-	this.ctx.fillText("Cycle# :" + (this.lifeTimeCount-1),500, 690);
+	this.ctx.fillText("Cycle# :" + this.lifeTimeCount,500, 690);
 	this.ctx.font = "10px sans-serif";
 }
 
@@ -304,12 +307,15 @@ Mound.prototype.updateGeneration = function() {
 		}
 	}
 	
-	var average = total/this.colony.length;
-	this.averageGen = Math.round(average);
-	this.minGen = this.colony.reduce(function(min, cur) {
-		return cur.generation < min.generation ? cur : min;
-	}).generation;
-	this.maxGen = this.colony.reduce(function(max, cur) {
-		return cur.generation > max.generation ? cur : max;
-	}).generation;
+	if (this.colony.length > 0) {
+		var average = total/this.colony.length;
+		this.averageGen = Math.round(average);
+	
+		this.minGen = this.colony.reduce(function(min, cur) {
+			return cur.generation < min.generation ? cur : min;
+		}).generation;
+		this.maxGen = this.colony.reduce(function(max, cur) {
+			return cur.generation > max.generation ? cur : max;
+		}).generation;
+	}
 }

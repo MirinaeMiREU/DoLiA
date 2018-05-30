@@ -56,6 +56,7 @@ GameEngine.prototype.setParameters = function() {
 	GAME_LIFE_TIME = parseInt(document.getElementById("simDuration").value);
 	UPDATE_PERIOD = parseInt(document.getElementById("updatePeriod").value);
 	DRAW_PERIOD = parseInt(document.getElementById("drawPeriod").value);
+	MAX_RUN_COUNT = parseInt(document.getElementById("runCount").value);
 
 	// mound
 	INIT_ANTS = parseInt(document.getElementById("initPop").value);
@@ -91,6 +92,7 @@ GameEngine.prototype.setParameters = function() {
 	MAX_PHEROMONE = MAX_ENERGY;
 	MULT = Math.ceil(MAX_PHEROMONE/10);
 	DECAY_RATE = Math.ceil(MAX_PHEROMONE/200);
+	MAX_TOTAL_FOOD = parseInt(document.getElementById("maxTotalFood").value);
 	MAX_TILE_FOOD = parseInt(document.getElementById("maxFood").value);
 	FOOD_ABUNDANCE = Number(document.getElementById("foodAbundance").value);
 	FOOD_REGEN_AMOUNT = Number(document.getElementById("foodRegenAmount").value);
@@ -198,7 +200,6 @@ GameEngine.prototype.start = function () {
 
 GameEngine.prototype.restart = function() {
 	console.clear();
-	console.log(this.mound.roleHistogramData.data);
 	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
 									 this.mound.roleHistogramData, this.mound.forageHistogramData);
 	this.download(document.getElementById("filename").textContent+".csv", str);
@@ -206,6 +207,7 @@ GameEngine.prototype.restart = function() {
 	runNum++;
 	document.getElementById("runNum").innerHTML = runNum;
 	console.log("restarting game");
+	foodTotal = 0;
     this.setParameters();
 	this.setup();
 }
@@ -223,6 +225,14 @@ GameEngine.prototype.saveGame = function() {
 GameEngine.prototype.pauseGame = function() {
 	console.log("pausing game");
 	this.isPaused = true;
+}
+
+GameEngine.prototype.endGame = function() {
+	console.log("ending game");
+	this.isPaused = true;
+	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
+									 this.mound.roleHistogramData, this.mound.forageHistogramData);
+	this.download(document.getElementById("filename").textContent+".csv", str);
 }
 
 GameEngine.prototype.resumeGame = function() {
@@ -372,26 +382,50 @@ GameEngine.prototype.loop = function () {
 }
 
 GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) {
+	var listNum = GAME_LIFE_TIME/UPDATE_PERIOD;
+	
 	var str = ",Ant,Larva,Food\n";
-	for (var i = 0; i < graph1.antData.length; i++) {
-		str += i + "," +
-			   graph1.antData[i] + "," + 
-		       graph1.larvaData[i] + "," + 
-			   graph1.foodData[i] + "\n";
+	for (var i = 0; i < listNum; i++) {
+		str += i + ",";
+		if (graph1.antData.length > i) {
+			str += graph1.antData[i] + "," + 
+			graph1.larvaData[i] + "," + 
+			graph1.foodData[i];
+		} else {
+			str+="0,0,0";
+		}
+		str += "\n";
 	}
 	str+="\n,Ant+Larva,Food\n";
-	for (var i = 0; i < graph2.bioData.length; i++) {
-		str += i + "," +
-		       graph2.bioData[i] + "," + 
-			   graph2.foodData[i] + "\n";
+	for (var i = 0; i < listNum; i++) {
+		str += i + ",";
+		if (graph1.antData.length > i) {
+			str += graph2.bioData[i] + "," + 
+			graph2.foodData[i];
+		} else {
+			str+="0,0";
+		}
+		str += "\n";
 	}
 	str+="\n,Breed,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Forage\n";
-	for (var i = 0; i < hist1.data.length; i++) {
-		str += i + "," + hist1.data[i] + "\n";
+	for (var i = 0; i < listNum; i++) {
+		str += i + ",";
+		if (graph1.antData.length > i) {
+			str += hist1.data[i] + ",";
+		} else {
+			str+="0";
+		}
+		str += "\n";
 	}
 	str+="\n,Exploit,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Explore\n";
-	for (var i = 0; i < hist2.data.length; i++) {
-		str += i + "," + hist2.data[i] + "\n";
+	for (var i = 0; i < listNum; i++) {
+		str += i + ",";
+		if (graph1.antData.length > i) {
+			str += hist2.data[i] + ",";
+		} else {
+			str+="0";
+		}
+		str += "\n";
 	}
 	
 	return str;
