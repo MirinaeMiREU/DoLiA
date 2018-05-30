@@ -7,10 +7,10 @@ function Graph2(game, mound) {
 	this.larvaData = [];
 	this.foodData = [];
 	this.bioData = [];
-	this.antData.push(mound.antCount);
-	this.larvaData.push(mound.larvaCount);
-	this.bioData.push(this.antData[0]+this.larvaData[0]);
-	this.foodData.push(Math.floor(mound.foodStorage/EAT_AMOUNT));
+//	this.antData.push(mound.antCount);
+//	this.larvaData.push(mound.larvaCount);
+//	this.bioData.push(this.antData[0]+this.larvaData[0]);
+//	this.foodData.push(Math.floor(mound.foodStorage/EAT_AMOUNT));
 	this.maxVal = Math.max(this.antData, 
 						   this.larvaData,
 						   this.foodData); 

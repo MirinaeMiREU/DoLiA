@@ -19,6 +19,8 @@ var GAME_LIFE_TIME = 1000000;
 var UPDATE_PERIOD = 100;
 var DRAW_PERIOD = 10;
 
+var MAX_RUN_COUNT = 10;
+
 // mound
 var INIT_ANTS = 10;
 
