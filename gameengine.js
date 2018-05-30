@@ -25,7 +25,6 @@ function GameEngine() {
 	this.newMap = null;
 	this.newAnt = null;
 	this.mound = null;
-	this.updateCounter = 0;
 }
 
 GameEngine.prototype.init = function (ctx) {
@@ -64,6 +63,7 @@ GameEngine.prototype.setParameters = function() {
 	GENE_TOGGLE = document.getElementById("geneToggle").checked;
 	BREED_TOGGLE = document.getElementById("breedToggle").checked;
 	EFFECT_TOGGLE = document.getElementById("effectToggle").checked;
+	STANDBY_TOGGLE = document.getElementById("breedStandby").checked;
 
 	LAY_TIME = parseInt(document.getElementById("maxEggLayTime").value);
 	MIN_LAY_TIME = parseInt(document.getElementById("minEggLayTime").value);
@@ -413,7 +413,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		if (graph1.antData.length > i) {
 			str += hist1.data[i] + ",";
 		} else {
-			str+="0";
+			str+="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
 		}
 		str += "\n";
 	}
@@ -423,7 +423,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		if (graph1.antData.length > i) {
 			str += hist2.data[i] + ",";
 		} else {
-			str+="0";
+			str+="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
 		}
 		str += "\n";
 	}
