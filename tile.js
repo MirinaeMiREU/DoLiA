@@ -13,18 +13,21 @@ function Tile(game, xPos, yPos) {
 	this.foodReplenishCount = 0;
 	this.neighbors = [];	
 	
-	var rand = Math.random();
-	if (rand < FOOD_ABUNDANCE) {
-		if (MAX_TOTAL_FOOD - foodTotal >= MAX_TILE_FOOD) {
-			this.foodLevel = MAX_TILE_FOOD;
-			foodTotal += MAX_TILE_FOOD;
-		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
-		           MAX_TOTAL_FOOD - foodTotal < MAX_TILE_FOOD){
-			this.foodLevel += MAX_TOTAL_FOOD - foodTotal;
-			foodTotal = MAX_TOTAL_FOOD;
+	if ((this.xPos > 0 && this.xPos < XSIZE-1) && 
+		(this.yPos > 0 && this.yPos < YSIZE-1)) {
+		var rand = Math.random();
+		if (rand < FOOD_ABUNDANCE) {
+			if (MAX_TOTAL_FOOD - foodTotal >= MAX_TILE_FOOD) {
+				this.foodLevel = MAX_TILE_FOOD;
+				foodTotal += MAX_TILE_FOOD;
+			} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
+					   MAX_TOTAL_FOOD - foodTotal < MAX_TILE_FOOD){
+				this.foodLevel += MAX_TOTAL_FOOD - foodTotal;
+				foodTotal = MAX_TOTAL_FOOD;
+			}
+		} else {
+			this.foodLevel = 0;
 		}
-	} else {
-		this.foodLevel = 0;
 	}
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
@@ -61,46 +64,55 @@ Tile.prototype.update = function() {
 }
 
 Tile.prototype.updatePeriod = function() {
-	var neighborsEmpty = true;
-	for (var i = 0; i < this.neighbors.length; i++) {
-		if (this.neighbors[i].foodLevel > 0) {
-			neighborsEmpty = false;
-		}
-		for (var j = 0; j < this.neighbors[i].neighbors.length; j++) {
-			if (this.neighbors[i].neighbors[j].foodLevel > 0) {
+	if ((this.xPos > 0 && this.xPos < XSIZE-1) && 
+		(this.yPos > 0 && this.yPos < YSIZE-1)) {
+		var neighborsEmpty = true;
+		for (var i = 0; neighborsEmpty && i < this.neighbors.length; i++) {
+			if (this.neighbors[i].foodLevel > 0) {
 				neighborsEmpty = false;
 			}
-		}
-	}
-	if (this.foodLevel <= 0 && 
-		Math.random() < FOOD_REGEN_RATE &&
-		neighborsEmpty) {
-		if (MAX_TOTAL_FOOD - foodTotal >= FOOD_REGEN_AMOUNT) {
-			this.foodLevel = FOOD_REGEN_AMOUNT;
-			foodTotal += FOOD_REGEN_AMOUNT;
-		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
-		           MAX_TOTAL_FOOD - foodTotal < FOOD_REGEN_AMOUNT) {
-			this.foodLevel += MAX_TOTAL_FOOD - foodTotal; 
-			foodTotal = MAX_TOTAL_FOOD;
-		}
-	} else if (this.foodLevel > 0 && 
-	           Math.random() < FOOD_REPLENISH_RATE) {
-		if (MAX_TOTAL_FOOD - foodTotal >= FOOD_REPLENISH_AMOUNT) {
-			if (this.foodLevel + FOOD_REPLENISH_AMOUNT > MAX_TILE_FOOD) {
-				foodTotal += MAX_TILE_FOOD - this.foodLevel;
-				this.foodLevel = MAX_TILE_FOOD;
-			} else {
-				this.foodLevel += FOOD_REPLENISH_AMOUNT;
-				foodTotal += FOOD_REPLENISH_AMOUNT;
+			for (var j = 0; neighborsEmpty && j < this.neighbors[i].neighbors.length; j++) {
+				if (this.neighbors[i].neighbors[j].foodLevel > 0) {
+					neighborsEmpty = false;
+				}
+				for (var k = 0; neighborsEmpty && k < this.neighbors[i].neighbors[j].neighbors.length; k++) {
+					if (this.neighbors[i].neighbors[j].neighbors[k].foodLevel > 0) {
+						neighborsEmpty = false;
+					}
+				}
 			}
-		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
-		           MAX_TOTAL_FOOD - foodTotal < FOOD_REPLENISH_AMOUNT) {
-			if (MAX_TOTAL_FOOD - foodTotal >= MAX_TILE_FOOD - this.foodLevel) {
-				foodTotal += MAX_TILE_FOOD - this.foodLevel;
-				this.foodLevel = MAX_TILE_FOOD;
-			} else {
-				this.foodLevel += MAX_TOTAL_FOOD - foodTotal;
+		}
+		if (this.foodLevel <= 0 && 
+			Math.random() < FOOD_REGEN_RATE &&
+			neighborsEmpty) {
+			if (MAX_TOTAL_FOOD - foodTotal >= FOOD_REGEN_AMOUNT) {
+				this.foodLevel = FOOD_REGEN_AMOUNT;
+				foodTotal += FOOD_REGEN_AMOUNT;
+			} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
+					   MAX_TOTAL_FOOD - foodTotal < FOOD_REGEN_AMOUNT) {
+				this.foodLevel += MAX_TOTAL_FOOD - foodTotal; 
 				foodTotal = MAX_TOTAL_FOOD;
+			}
+		} else if (this.foodLevel > 0 && 
+				   this.foodLevel < MAX_TILE_FOOD &&
+				   Math.random() < FOOD_REPLENISH_RATE) {
+			if (MAX_TOTAL_FOOD - foodTotal >= FOOD_REPLENISH_AMOUNT) {
+				if (this.foodLevel + FOOD_REPLENISH_AMOUNT > MAX_TILE_FOOD) {
+					foodTotal += MAX_TILE_FOOD - this.foodLevel;
+					this.foodLevel = MAX_TILE_FOOD;
+				} else {
+					this.foodLevel += FOOD_REPLENISH_AMOUNT;
+					foodTotal += FOOD_REPLENISH_AMOUNT;
+				}
+			} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
+					   MAX_TOTAL_FOOD - foodTotal < FOOD_REPLENISH_AMOUNT) {
+				if (MAX_TOTAL_FOOD - foodTotal >= MAX_TILE_FOOD - this.foodLevel) {
+					foodTotal += MAX_TILE_FOOD - this.foodLevel;
+					this.foodLevel = MAX_TILE_FOOD;
+				} else {
+					this.foodLevel += MAX_TOTAL_FOOD - foodTotal;
+					foodTotal = MAX_TOTAL_FOOD;
+				}
 			}
 		}
 	}

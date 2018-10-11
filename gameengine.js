@@ -43,7 +43,7 @@ GameEngine.prototype.init = function (ctx) {
 	this.setup();
     this.startInput();
 	
-    console.log('game initialized');
+    console.log('sim initialized');
 }
 
 GameEngine.prototype.setParameters = function() {
@@ -190,11 +190,11 @@ GameEngine.prototype.setup = function() {
 }
 
 GameEngine.prototype.start = function () {
-    console.log("starting game");
+    console.log("starting sim");
     var that = this;
-	(function gameLoop() {
+	(function simLoop() {
 		that.loop();
-		requestAnimFrame(gameLoop, that.ctx.canvas);
+		requestAnimFrame(simLoop, that.ctx.canvas);
 	})();
 }
 
@@ -206,7 +206,16 @@ GameEngine.prototype.restart = function() {
 	var runNum = Number(document.getElementById("runNum").innerHTML);
 	runNum++;
 	document.getElementById("runNum").innerHTML = runNum;
-	console.log("restarting game");
+	console.log("restarting sim");
+	foodTotal = 0;
+    this.setParameters();
+	this.setup();
+}
+
+GameEngine.prototype.newGame = function() {
+	console.clear();
+	document.getElementById("runNum").innerHTML = "1";
+	console.log("starting new sim");
 	foodTotal = 0;
     this.setParameters();
 	this.setup();
@@ -223,12 +232,12 @@ GameEngine.prototype.saveGame = function() {
 }
 
 GameEngine.prototype.pauseGame = function() {
-	console.log("pausing game");
+	console.log("pausing sim");
 	this.isPaused = true;
 }
 
 GameEngine.prototype.endGame = function() {
-	console.log("ending game");
+	console.log("ending sim");
 	this.isPaused = true;
 	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
 									 this.mound.roleHistogramData, this.mound.forageHistogramData);
@@ -236,7 +245,7 @@ GameEngine.prototype.endGame = function() {
 }
 
 GameEngine.prototype.resumeGame = function() {
-	console.log("resuming game");
+	console.log("resuming sim");
 	this.isPaused = false;
 }
 
@@ -280,7 +289,7 @@ GameEngine.prototype.startInput = function () {
     }, false);
 	
 	this.newMap.addEventListener("click", function(e) {
-		that.restart();
+		that.newGame();
 	})
 	
 	this.newAnt.addEventListener("click", function(e) {
@@ -366,12 +375,12 @@ GameEngine.prototype.loop = function () {
 		this.updateCounter++;
 		
 		/*
-		if (this.timer.gameTime % 0.05 > 0.025 && !this.ticked) {
+		if (this.timer.simTime % 0.05 > 0.025 && !this.ticked) {
 			this.update();
 			this.draw();
 			this.ticked = true;
 			//console.log("tick");
-		} else if (this.timer.gameTime % 0.05 <= 0.025 && this.ticked){
+		} else if (this.timer.simTime % 0.05 <= 0.025 && this.ticked){
 			this.ticked = false;
 			//console.log("tock");
 		}
@@ -385,7 +394,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	var listNum = GAME_LIFE_TIME/UPDATE_PERIOD;
 	
 	var str = ",Ant,Larva,Food\n";
-	for (var i = 0; i < listNum; i++) {
+	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
 		if (graph1.antData.length > i) {
 			str += graph1.antData[i] + "," + 
@@ -397,7 +406,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		str += "\n";
 	}
 	str+="\n,Ant+Larva,Food\n";
-	for (var i = 0; i < listNum; i++) {
+	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
 		if (graph1.antData.length > i) {
 			str += graph2.bioData[i] + "," + 
@@ -408,7 +417,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		str += "\n";
 	}
 	str+="\n,Breed,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Forage\n";
-	for (var i = 0; i < listNum; i++) {
+	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
 		if (graph1.antData.length > i) {
 			str += hist1.data[i] + ",";
@@ -418,7 +427,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		str += "\n";
 	}
 	str+="\n,Exploit,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Explore\n";
-	for (var i = 0; i < listNum; i++) {
+	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
 		if (graph1.antData.length > i) {
 			str += hist2.data[i] + ",";
@@ -432,7 +441,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 }
 
 function Timer() {
-    this.gameTime = 0;
+    this.simTime = 0;
     this.maxStep = 0.05;
     this.wallLastTimestamp = 0;
 }
@@ -442,7 +451,7 @@ Timer.prototype.tick = function () {
     var wallDelta = (wallCurrent - this.wallLastTimestamp) / 1000;
     this.wallLastTimestamp = wallCurrent;
 
-    var gameDelta = Math.min(wallDelta, this.maxStep);
-    this.gameTime += gameDelta;
-    return gameDelta;
+    var simDelta = Math.min(wallDelta, this.maxStep);
+    this.simTime += simDelta;
+    return simDelta;
 }

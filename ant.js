@@ -42,7 +42,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRoleActual);
 	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRoleActual) <= MIN_ANT_FOOD ?
 				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRoleActual);
-	this.foodCollection = Math.ceil(this.maxFood/1);
+	this.foodCollection = Math.ceil(this.maxFood/5);
 	this.layTimer = 0;
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
