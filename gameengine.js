@@ -242,6 +242,38 @@ GameEngine.prototype.endGame = function() {
 	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
 									 this.mound.roleHistogramData, this.mound.forageHistogramData);
 	this.download(document.getElementById("filename").textContent+".csv", str);
+	this.download(document.getElementById("cellSize").value + "cS_" + 
+				  document.getElementById("simDuration").value + "sD_" +
+				  document.getElementById("updatePeriod").value + "cPT_" +
+				  document.getElementById("drawPeriod").value + "cPSD_" + 
+				  document.getElementById("maxFood").value + "mFV_" +
+				  document.getElementById("maxTotalFood").value + "mTFOM_" +
+				  document.getElementById("foodAbundance").value + "iFA_" +
+				  document.getElementById("foodRegenRate").value + "-" +
+				  document.getElementById("foodRegenAmount").value + "fReg_" +
+				  document.getElementById("foodReplenishRate").value + "-" +
+				  document.getElementById("foodReplenishAmount").value + "fRep_" +
+				  document.getElementById("geneToggle").checked + "-tG_" +
+				  document.getElementById("breedToggle").checked + "-tB_" +
+				  document.getElementById("effectToggle").checked + "-tGE_" +
+				  document.getElementById("breedStandby").checked + "-tBS_" +
+				  document.getElementById("initPop").value + "iP_" +
+				  document.getElementById("maxEnergy").value + "-" +
+				  document.getElementById("minEnergy").value + "E_" +
+				  document.getElementById("maxEggLayTime").value + "-" +
+				  document.getElementById("minEggLayTime").value + "ELT_" +
+				  document.getElementById("forageWeight").value + "fW_" +
+				  document.getElementById("breedWeight").value + "bW_" +
+				  document.getElementById("deathChance").value + "cTD_" +
+				  document.getElementById("minAge").value + "mA_" +
+				  document.getElementById("hungerThreshold").value + "hT_" +
+				  document.getElementById("foodIntake").value + "fI_" +
+				  document.getElementById("mutationRate").value + "mR_" +
+				  document.getElementById("maxDev").value + "mD_" +
+				  document.getElementById("maxCarryingCapacity").value + "-" +
+				  document.getElementById("minCarryingCapacity").value + "CC_" +
+				  document.getElementById("energyDecay").value + "eD_" +
+				  document.getElementById("matureTime").value + "lMIC.txt", "");
 }
 
 GameEngine.prototype.resumeGame = function() {
@@ -335,6 +367,7 @@ GameEngine.prototype.drawPeriod = function() {
 }
 
 GameEngine.prototype.update = function () {
+	foods = 0;
     var entitiesCount = this.entities.length;
 
     for (var i = 0; i < entitiesCount; i++) {
@@ -354,7 +387,9 @@ GameEngine.prototype.updatePeriod = function () {
 				entity.updatePeriod();
 			}
 		}
+		console.log("foods:", foods);
 	}
+	
 }
 
 GameEngine.prototype.loop = function () {
@@ -368,8 +403,8 @@ GameEngine.prototype.loop = function () {
 	}
 	if (!this.isPaused) {
 		this.clockTick = this.timer.tick();
-		this.updatePeriod();
 		this.update();
+		this.updatePeriod();
 		this.draw();
 		this.drawPeriod();
 		this.updateCounter++;
@@ -396,7 +431,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	var str = ",Ant,Larva,Food\n";
 	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
-		if (graph1.antData.length > i) {
+		if (graph1.antData.length >= i) {
 			str += graph1.antData[i] + "," + 
 			graph1.larvaData[i] + "," + 
 			graph1.foodData[i];
@@ -408,7 +443,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	str+="\n,Ant+Larva,Food\n";
 	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
-		if (graph1.antData.length > i) {
+		if (graph1.antData.length >= i) {
 			str += graph2.bioData[i] + "," + 
 			graph2.foodData[i];
 		} else {
@@ -419,7 +454,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	str+="\n,Breed,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Forage\n";
 	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
-		if (graph1.antData.length > i) {
+		if (graph1.antData.length >= i) {
 			str += hist1.data[i] + ",";
 		} else {
 			str+="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
@@ -429,7 +464,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	str+="\n,Exploit,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Explore\n";
 	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
-		if (graph1.antData.length > i) {
+		if (graph1.antData.length >= i) {
 			str += hist2.data[i] + ",";
 		} else {
 			str+="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";

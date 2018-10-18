@@ -275,21 +275,21 @@ Ant.prototype.decide = function() {
 			if ((this.food + this.foodCollection) <= this.maxFood) {
 				curTile.foodLevel -= this.foodCollection;
 				this.food += this.foodCollection;
-				foodTotal -= this.foodCollection;
+				foods -= this.foodCollection;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
-				foodTotal -= this.maxFood - this.food;
+				foods -= this.maxFood - this.food;
 			}
 		} else {
 			if ((this.food + tileFood) <= this.maxFood) {
-				foodTotal -= curTile.foodLevel;
+				foods -= curTile.foodLevel;
 				curTile.foodLevel = 0;
 				this.food += tileFood;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
-				foodTotal -= this.maxFood - this.food;
+				foods -= this.maxFood - this.food;
 			}
 		}
 	} else {
