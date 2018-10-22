@@ -431,10 +431,10 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	var str = ",Ant,Larva,Food\n";
 	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
-		if (graph1.antData.length > i) {
+		if (graph1.antData.length >= i) {
 			str += graph1.antData[i-1] + "," + 
-			graph1.larvaData[i] + "," + 
-			graph1.foodData[i];
+			graph1.larvaData[i-1] + "," + 
+			graph1.foodData[i-1];
 		} else {
 			str+="0,0,0";
 		}
@@ -443,9 +443,9 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	str+="\n,Ant+Larva,Food\n";
 	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
-		if (graph1.antData.length > i) {
+		if (graph1.antData.length >= i) {
 			str += graph2.bioData[i-1] + "," + 
-			graph2.foodData[i];
+			graph2.foodData[i-1];
 		} else {
 			str+="0,0";
 		}
@@ -454,7 +454,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	str+="\n,Breed,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Forage\n";
 	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
-		if (graph1.antData.length > i) {
+		if (graph1.antData.length >= i) {
 			str += hist1.data[i-1] + ",";
 		} else {
 			str+="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
@@ -464,7 +464,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	str+="\n,Exploit,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,Explore\n";
 	for (var i = 1; i <= listNum; i++) {
 		str += i + ",";
-		if (graph1.antData.length > i) {
+		if (graph1.antData.length >= i) {
 			str += hist2.data[i-1] + ",";
 		} else {
 			str+="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0";
