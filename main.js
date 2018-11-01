@@ -53,10 +53,6 @@ AM.downloadAll(function () {
 	DECAY_RATE = Math.ceil(MAX_PHEROMONE/200);
 	MAX_TILE_FOOD = parseInt(document.getElementById("maxFood").value);
 	FOOD_ABUNDANCE = Number(document.getElementById("foodAbundance").value);
-	FOOD_REGEN_AMOUNT = Number(document.getElementById("foodRegenAmount").value);
-	FOOD_REPLENISH_AMOUNT = Number(document.getElementById("foodReplenishAmount").value);
-	FOOD_REGEN_RATE = Number(document.getElementById("foodRegenRate").value);
-	FOOD_REPLENISH_RATE = Number(document.getElementById("foodReplenishRate").value);
 	
     gameEngine.init(ctx);
 	gameEngine.start();

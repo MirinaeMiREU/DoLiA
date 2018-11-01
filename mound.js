@@ -47,7 +47,7 @@ Mound.prototype.updatePeriod = function() {
 	console.log("Min Gen:" + this.minGen +
 				" Avg Gen:" + this.averageGen + 
 				" Max Gen:" + this.maxGen);
-	console.log("Food Total:" + foods);
+	console.log("Food Total: " + foods);
 	this.tick++;
 	this.updateRoleHistogram();
 	this.updateForageHistogram();

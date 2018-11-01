@@ -1,13 +1,16 @@
 window.requestAnimFrame = (function () {
-    return window.requestAnimationFrame ||
+    return function (/* function */ callback, /* DOMElement */ element) {
+		window.setTimeout(callback, 4);
+	};
+            
+})();
+/*
+window.requestAnimationFrame ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame ||
             window.oRequestAnimationFrame ||
             window.msRequestAnimationFrame ||
-            function (/* function */ callback, /* DOMElement */ element) {
-                window.setTimeout(callback, 1000 / 60);
-            };
-})();
+*/
 
 function GameEngine() {
     this.entities = [];
@@ -38,11 +41,16 @@ GameEngine.prototype.init = function (ctx) {
 	this.newAnt = document.getElementById("newAnt");
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
-    this.timer = new Timer();
+	this.timer = new Timer();
+	document.getElementById("seasonDiv").innerHTML = "Season 1<br />" +
+	"<input type='text' id='seasonLength1' value='1000'/>Length<br />" +
+	"<input type='text' id='foodRegenRate1' value='0'/>Food Regen Rate<br />" +
+	"<input type='text' id='foodRegenAmount1' value='0'/>Food Regen Amount<br />" +
+	"<input type='text' id='foodReplenishRate1' value='0'/>Food Replenish Rate<br />" +
+	"<input type='text' id='foodReplenishAmount1' value='0'/>Food Replenish Amount<br />";
 	this.setParameters();
 	this.setup();
     this.startInput();
-	
     console.log('sim initialized');
 }
 
@@ -95,13 +103,18 @@ GameEngine.prototype.setParameters = function() {
 	MAX_TOTAL_FOOD = parseInt(document.getElementById("maxTotalFood").value);
 	MAX_TILE_FOOD = parseInt(document.getElementById("maxFood").value);
 	FOOD_ABUNDANCE = Number(document.getElementById("foodAbundance").value);
-	FOOD_REGEN_AMOUNT = Number(document.getElementById("foodRegenAmount").value);
-	FOOD_REPLENISH_AMOUNT = Number(document.getElementById("foodReplenishAmount").value);
-	FOOD_REGEN_RATE = Number(document.getElementById("foodRegenRate").value);
-	FOOD_REPLENISH_RATE = Number(document.getElementById("foodReplenishRate").value);
+	NUM_OF_SEASONS = Number(document.getElementById("seasons").value);
+
+	SEASON_LENGTH = Number(document.getElementById("seasonLength1").value);
+	FOOD_REGEN_AMOUNT = Number(document.getElementById("foodRegenAmount1").value);
+	FOOD_REPLENISH_AMOUNT = Number(document.getElementById("foodReplenishAmount1").value);
+	FOOD_REGEN_RATE = Number(document.getElementById("foodRegenRate1").value);
+	FOOD_REPLENISH_RATE = Number(document.getElementById("foodReplenishRate1").value);
 	
 	this.entities = [];
 	this.updateCounter = 0;
+	this.seasonCounter = 0;
+	this.currentSeason = 0;
 }
 
 GameEngine.prototype.setup = function() {
@@ -190,7 +203,8 @@ GameEngine.prototype.setup = function() {
 }
 
 GameEngine.prototype.start = function () {
-    console.log("starting sim");
+	console.log("starting sim");
+	this.pauseGame();
     var that = this;
 	(function simLoop() {
 		that.loop();
@@ -368,6 +382,10 @@ GameEngine.prototype.drawPeriod = function() {
 
 GameEngine.prototype.update = function () {
 	foods = 0;
+	if (this.seasonCounter / SEASON_LENGTH >= 1) {
+		this.changeSeason();
+	}
+	
     var entitiesCount = this.entities.length;
 
     for (var i = 0; i < entitiesCount; i++) {
@@ -375,7 +393,24 @@ GameEngine.prototype.update = function () {
 		if (entity != undefined) {
 			entity.update();
 		}
-    }
+	}
+	this.updateCounter++;
+	this.seasonCounter++;
+}
+
+GameEngine.prototype.changeSeason = function () {
+	this.seasonCounter = 0;
+	this.currentSeason = this.currentSeason + 1 > NUM_OF_SEASONS-1 ? 0 : this.currentSeason + 1;
+	var sL = "seasonLength" + Number(this.currentSeason + 1);
+	var regA = "foodRegenAmount" + (this.currentSeason + 1);
+	var repA = "foodReplenishAmount" + (this.currentSeason + 1);
+	var regR = "foodRegenRate" + (this.currentSeason + 1);
+	var repR = "foodReplenishRate" + (this.currentSeason + 1);
+	SEASON_LENGTH = Number(document.getElementById(sL).value);
+	FOOD_REGEN_AMOUNT = Number(document.getElementById(regA).value);
+	FOOD_REPLENISH_AMOUNT = Number(document.getElementById(repA).value);
+	FOOD_REGEN_RATE = Number(document.getElementById(regR).value);
+	FOOD_REPLENISH_RATE = Number(document.getElementById(repR).value);
 }
 
 GameEngine.prototype.updatePeriod = function () {
@@ -387,7 +422,6 @@ GameEngine.prototype.updatePeriod = function () {
 				entity.updatePeriod();
 			}
 		}
-		console.log("foods:", foods);
 	}
 	
 }
@@ -399,7 +433,6 @@ GameEngine.prototype.loop = function () {
 		this.draw();
 		this.drawPeriod();
 		this.isStepping = false;
-		this.updateCounter++;
 	}
 	if (!this.isPaused) {
 		this.clockTick = this.timer.tick();
@@ -407,7 +440,6 @@ GameEngine.prototype.loop = function () {
 		this.updatePeriod();
 		this.draw();
 		this.drawPeriod();
-		this.updateCounter++;
 		
 		/*
 		if (this.timer.simTime % 0.05 > 0.025 && !this.ticked) {

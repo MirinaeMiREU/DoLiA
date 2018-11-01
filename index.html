@@ -14,9 +14,27 @@
 	<script type="text/javascript" src="./graph2.js"></script>
 	<script type="text/javascript" src="./histogram.js"></script>
 	<script type="text/javascript" src="./mound.js"></script>
-    <script type="text/javascript" src="./main.js"></script>
+	<script type="text/javascript" src="./main.js"></script>
+	<script>
+		function setupSeasons(num) {
+			if (num < 1) {
+				num = 1;
+			}
+			var str = "";
+			for (var i = 1; i <= num; i++) {
+				str += "Season " + i + "<br />" +
+					"<input type='text' id='seasonLength" + i +"' value='1000'/>Length<br />" +
+					"<input type='text' id='foodRegenRate" + i +"' value='0'/>Food Regen Rate<br />" +
+					"<input type='text' id='foodRegenAmount" + i +"' value='0'/>Food Regen Amount<br />" +
+					"<input type='text' id='foodReplenishRate" + i +"' value='0'/>Food Replenish Rate<br />" +
+					"<input type='text' id='foodReplenishAmount" + i +"' value='0'/>Food Replenish Amount<br />";
+			}
+
+			document.getElementById("seasonDiv").innerHTML = str;
+		}
+	</script>
 </head>
-<body>
+<body onload="setupSeasons(document.getElementById('seasons').value)">
 	<p id="filename">Run#<span id="runNum">1</span></p>
     <canvas id="gameWorld" tabindex="1" width="1200" height="800" style="border: 1px solid brown; background: white"></canvas>
 	<br>
@@ -28,19 +46,19 @@
 	<div id="environment">
         <p>Environment Parameters</p>
 		
-        <input type="text" id="cellSize" value="12"/>Cell Size<br />
+        <input type="text" id="cellSize" value="10"/>Cell Size<br />
 		<input type="text" id="runCount" value="10"/>Max Run Count<br />
-        <input type="text" id="simDuration" value="25000"/>Simulation Duration<br />
-		<input type="text" id="updatePeriod" value="20"/>Cycles Per Tick<br />
+        <input type="text" id="simDuration" value="50000"/>Simulation Duration<br />
+		<input type="text" id="updatePeriod" value="50"/>Cycles Per Tick<br />
 		<input type="text" id="drawPeriod" value="100"/>Cycles Per Simulation Draw<br />
         <input type="text" id="maxFood" value="20"/>Max Food Value<br />
-		<input type="text" id="maxTotalFood" value="2000"/>Max Total Food On Map<br />
-        <input type="text" id="foodAbundance" value="0.01"/>Initial Food Abundance<br />
-        <input type="text" id="foodRegenRate" value="0.0025"/>Food Regen Rate<br />
-		<input type="text" id="foodRegenAmount" value="20"/>Food Regen Amount<br />
-		<input type="text" id="foodReplenishRate" value="0"/>Food Replenish Rate<br />
-		<input type="text" id="foodReplenishAmount" value="0"/>Food Replenish Amount<br />
-        <div><input type="text" id="mapname" />Map Name<br /></div>
+		<input type="text" id="maxTotalFood" value="1500"/>Max Total Food On Map<br />
+		<input type="text" id="foodAbundance" value="0.01"/>Initial Food Abundance<br />
+
+		<input type="text" id="seasons" onChange="setupSeasons(this.value)" value="2"/>Number of Seasons
+		<div id="seasonDiv">
+			
+		</div>
         <button id="save">Save</button>
 		<button id="load">Load</button>
         <button id="newMap">New</button>
@@ -48,11 +66,11 @@
     <div id="population">
         <p>Population Parameters</p>
 		<input type="checkbox" id="geneToggle" checked="true" />Toggle Gene
-		<input type="checkbox" id="breedToggle" checked="true"/>Toggle Breed 
+		<input type="checkbox" id="breedToggle" />Toggle Breed 
 		<input type="checkbox" id="effectToggle" checked="true"/>Toggle Gene Effects 
 		<input type="checkbox" id="breedStandby" checked="true"/>Toggle Breeder Standby
 		<br />
-        <input type="text" id="initPop" value="50" />Initial Population<br />
+        <input type="text" id="initPop" value="25" />Initial Population<br />
         <input type="text" id="maxEnergy" value="500" />Max Energy<br />
 		<input type="text" id="minEnergy" value="5" />Min Energy<br />
         <input type="text" id="maxEggLayTime" value="100" />Max Egg Laying Time<br />
@@ -61,7 +79,7 @@
 		<input type="text" id="breedWeight" value="5" />Breed Weight<br />
         <input type="text" id="deathChance" value="0.004" />Chance To Die<br />
 		<input type="text" id="minAge" value="100" />Minimum Age<br />
-        <input type="text" id="hungerThreshold" value="300" />Hunger Threshold<br />
+        <input type="text" id="hungerThreshold" value="250" />Hunger Threshold<br />
 		<input type="text" id="foodIntake" value="1" />Food Intake<br />
         <input type="text" id="mutationRate" value="0.1" />Mutation Rate<br />
         <input type="text" id="maxDev" value="0.1" />Max Deviation<br />
