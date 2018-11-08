@@ -27,7 +27,8 @@
 					"<input type='text' id='foodRegenRate" + i +"' value='0'/>Food Regen Rate<br />" +
 					"<input type='text' id='foodRegenAmount" + i +"' value='0'/>Food Regen Amount<br />" +
 					"<input type='text' id='foodReplenishRate" + i +"' value='0'/>Food Replenish Rate<br />" +
-					"<input type='text' id='foodReplenishAmount" + i +"' value='0'/>Food Replenish Amount<br />";
+					"<input type='text' id='foodReplenishAmount" + i +"' value='0'/>Food Replenish Amount<br />" +
+					"<input type='text' id='foodDensity" + i + "' value='0'/>Food Density<br />";
 			}
 
 			document.getElementById("seasonDiv").innerHTML = str;
@@ -51,9 +52,9 @@
         <input type="text" id="simDuration" value="100000"/>Simulation Duration<br />
 		<input type="text" id="updatePeriod" value="50"/>Cycles Per Tick<br />
 		<input type="text" id="drawPeriod" value="100"/>Cycles Per Simulation Draw<br />
-        <input type="text" id="maxFood" value="20"/>Max Food Value<br />
-		<input type="text" id="maxTotalFood" value="1500"/>Max Total Food On Map<br />
-		<input type="text" id="foodAbundance" value="0.01"/>Initial Food Abundance<br />
+        <input type="text" id="maxFood" value="100"/>Max Food Value<br />
+		<input type="text" id="maxTotalFood" value="5000"/>Max Total Food On Map<br />
+		<input type="text" id="foodAbundance" value="0"/>Initial Food Abundance<br />
 
 		<input type="text" id="seasons" onChange="setupSeasons(this.value)" value="2"/>Number of Seasons
 		<div id="seasonDiv">
@@ -81,7 +82,7 @@
 		<input type="text" id="minAge" value="100" />Minimum Age<br />
         <input type="text" id="hungerThreshold" value="250" />Hunger Threshold<br />
 		<input type="text" id="foodIntake" value="1" />Food Intake<br />
-        <input type="text" id="mutationRate" value="0.1" />Mutation Rate<br />
+        <input type="text" id="mutationRate" value="0.05" />Mutation Rate<br />
         <input type="text" id="maxDev" value="0.1" />Max Deviation<br />
         <input type="text" id="maxCarryingCapacity" value="10" />Max Carrying Capacity<br />
 		<input type="text" id="minCarryingCapacity" value="1" />Min Carrying Capacity<br />

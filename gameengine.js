@@ -47,7 +47,8 @@ GameEngine.prototype.init = function (ctx) {
 	"<input type='text' id='foodRegenRate1' value='0'/>Food Regen Rate<br />" +
 	"<input type='text' id='foodRegenAmount1' value='0'/>Food Regen Amount<br />" +
 	"<input type='text' id='foodReplenishRate1' value='0'/>Food Replenish Rate<br />" +
-	"<input type='text' id='foodReplenishAmount1' value='0'/>Food Replenish Amount<br />";
+	"<input type='text' id='foodReplenishAmount1' value='0'/>Food Replenish Amount<br />" +
+	"<input type='text' id='foodDensity1' value='0'/>Food Density<br />";
 	this.setParameters();
 	this.setup();
     this.startInput();
@@ -406,11 +407,13 @@ GameEngine.prototype.changeSeason = function () {
 	var repA = "foodReplenishAmount" + (this.currentSeason + 1);
 	var regR = "foodRegenRate" + (this.currentSeason + 1);
 	var repR = "foodReplenishRate" + (this.currentSeason + 1);
+	var foodD = "foodDensity" + (this.currentSeason + 1);
 	SEASON_LENGTH = Number(document.getElementById(sL).value);
 	FOOD_REGEN_AMOUNT = Number(document.getElementById(regA).value);
 	FOOD_REPLENISH_AMOUNT = Number(document.getElementById(repA).value);
 	FOOD_REGEN_RATE = Number(document.getElementById(regR).value);
 	FOOD_REPLENISH_RATE = Number(document.getElementById(repR).value);
+	FOOD_DENSITY = Number(document.getElementById(foodD).value);
 }
 
 GameEngine.prototype.updatePeriod = function () {

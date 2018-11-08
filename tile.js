@@ -67,22 +67,8 @@ Tile.prototype.update = function() {
 Tile.prototype.updatePeriod = function() {
 	if ((this.xPos > 0 && this.xPos < XSIZE-1) && 
 		(this.yPos > 0 && this.yPos < YSIZE-1)) {
-		var neighborsEmpty = true;
-		for (var i = 0; neighborsEmpty && i < this.neighbors.length; i++) {
-			if (this.neighbors[i].foodLevel > 0) {
-				neighborsEmpty = false;
-			}
-			for (var j = 0; neighborsEmpty && j < this.neighbors[i].neighbors.length; j++) {
-				if (this.neighbors[i].neighbors[j].foodLevel > 0) {
-					neighborsEmpty = false;
-				}
-				for (var k = 0; neighborsEmpty && k < this.neighbors[i].neighbors[j].neighbors.length; k++) {
-					if (this.neighbors[i].neighbors[j].neighbors[k].foodLevel > 0) {
-						neighborsEmpty = false;
-					}
-				}
-			}
-		}
+		var neighborsEmpty = this.noNeighborsWithin(FOOD_DENSITY);
+
 		if (this.foodLevel <= 0 && 
 			Math.random() < FOOD_REGEN_RATE &&
 			neighborsEmpty) {
@@ -205,6 +191,18 @@ Tile.prototype.drawPeriod = function() {
 
 Tile.prototype.setNeighbors = function(neighbors) {
 	this.neighbors = neighbors;
+}
+
+Tile.prototype.noNeighborsWithin = function(density) {
+	for (var i = this.yPos-density; i < this.yPos+density; i++) {
+		for (var j = this.xPos-density; j < this.xPos+density; j++) {
+			if (i >= 0 && i < YSIZE && j >= 0 && j < XSIZE &&
+				this.game.mound.tiles[i][j].foodLevel > 0) {
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 Tile.prototype.setHome = function() {

@@ -62,7 +62,7 @@ Ant.prototype.update = function() {
 			this.layTimer++;
 		}
 	} else {
-		this.diverge();
+		//this.diverge();
 		this.decide();
 		
 		if (this.energy > 0) {
@@ -71,12 +71,13 @@ Ant.prototype.update = function() {
 	}
 	this.hunger++;
 	this.age++;
+
+	this.overallFitness = ((FORAGE_WEIGHT * this.totalFood) + 
+		(BREED_WEIGHT * this.totalOffspring)) / (this.age+1); 
+	this.forageFitness = FORAGE_WEIGHT * this.totalFood / (this.age+1);
 }
 
 Ant.prototype.updatePeriod = function() {
-	this.overallFitness = ((FORAGE_WEIGHT * this.totalFood) + 
-						   (BREED_WEIGHT * this.totalOffspring)) / (this.age+1); 
-	this.forageFitness = FORAGE_WEIGHT * this.totalFood / (this.age+1);
 }
 
 Ant.prototype.draw = function() {
@@ -241,7 +242,7 @@ Ant.prototype.decide = function() {
 	var curTile = this.tiles[this.yPos][this.xPos];
 	var tileFood = curTile.foodLevel;
 	
-	if ((this.hunger > HUNGER_THRESHHOLD || this.energy === 0) && 
+	if ((this.hunger > HUNGER_THRESHHOLD || this.energy <= 0) && 
 		this.action === OUTBOUND) {
 		this.energy = 0;
 		this.action = INBOUND;
@@ -256,8 +257,6 @@ Ant.prototype.decide = function() {
 		} else {
 			if (this.hunger > HUNGER_THRESHHOLD) {
 				this.eat();
-				this.hunger = 0;
-				//console.log(this.mound.foodStorage);
 			}
 			this.chooseRole();
 			this.food = 0;
@@ -275,21 +274,21 @@ Ant.prototype.decide = function() {
 			if ((this.food + this.foodCollection) <= this.maxFood) {
 				curTile.foodLevel -= this.foodCollection;
 				this.food += this.foodCollection;
-				foods -= this.foodCollection;
+				//foods -= this.foodCollection;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
-				foods -= this.maxFood - this.food;
+				//foods -= this.maxFood - this.food;
 			}
 		} else {
 			if ((this.food + tileFood) <= this.maxFood) {
-				foods -= curTile.foodLevel;
+				//foods -= curTile.foodLevel;
 				curTile.foodLevel = 0;
 				this.food += tileFood;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
-				foods -= this.maxFood - this.food;
+				//foods -= this.maxFood - this.food;
 			}
 		}
 	} else {
@@ -308,8 +307,8 @@ Ant.prototype.decide = function() {
 		} else if (this.role === EXPLORE) {
 			if (this.action === OUTBOUND) {
 				var rand = Math.random();
-				if (rand > 0.85) {
-					if (rand > 0.925) {
+				if (rand > 0.90) {
+					if (rand > 0.95) {
 						this.turnRight();
 					} else {
 						this.turnLeft();
@@ -391,6 +390,7 @@ Ant.prototype.decideDir = function(action) {
 
 Ant.prototype.eat = function() {
 	this.mound.foodStorage -= EAT_AMOUNT;
+	this.hunger = 0;
 }
 
 Ant.prototype.eggLay = function() {
