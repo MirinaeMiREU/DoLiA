@@ -55,3 +55,19 @@ wed/friday at the latest
 
 technical and scenarios
 quick intro/conclusion
+
+---------------------------------
+data object = {
+id:{params:values
+	test or not}
+pop:[]
+larva:[]
+food:[]
+breed:[[]]
+forage:[[]]
+
+penalize waiting - toggle, parameter
+lengthening lifespan of breeders - toggle
+breed from pool of breeders - toggle
+
+second page for analyzing data
