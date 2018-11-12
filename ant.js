@@ -8,7 +8,8 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.food = 0;
 	this.consecutiveTurns = 0;
 	this.overallFitness = 0;
-	this.forageFitness = 0;
+	//this.forageFitness = 0;
+	this.standbyPenalty = 0;
 	this.totalFood = 0;
 	this.totalOffspring = 0;
 	this.hunger = 0;
@@ -51,15 +52,27 @@ Ant.prototype = new Entity();
 Ant.prototype.constructor = Ant;
 
 Ant.prototype.update = function() {
-	if (Math.random() < CHANCE_TO_DIE && this.age > MIN_AGE) {
+	var actualDeathChance = BREEDER_LIFE_TOGGLE ? CHANCE_TO_DIE * this.geneRole : CHANCE_TO_DIE;
+	var actualMinAge = BREEDER_LIFE_TOGGLE ? Math.ceil(MIN_AGE * 1.5-this.geneRole) : MIN_AGE;
+	if (Math.random() < actualDeathChance && this.age > actualMinAge) {
 		this.die(DEATH_AGE);
 	} else if (this.role === LAY_EGG) {
-		if (this.layTimer >= this.layTime) {
-			this.eggLay();
-			this.chooseRole();
-			this.layTimer = 0;
+		if (this.hunger >= HUNGER_THRESHHOLD) {
+			this.eat();
+		} else if (this.mound.canGrow()) {
+			if (this.layTimer >= this.layTime) {
+				this.eggLay();
+				this.chooseRole();
+				this.layTimer = 0;
+			} else {
+				this.layTimer++;
+			}
+		} else if (BREEDER_STANDBY){
+			if (BREEDER_PENALTY_TOGGLE) {
+				this.standbyPenalty += BREEDER_PENALTY_AMOUNT;
+			}
 		} else {
-			this.layTimer++;
+			this.chooseRole();
 		}
 	} else {
 		//this.diverge();
@@ -74,7 +87,10 @@ Ant.prototype.update = function() {
 
 	this.overallFitness = ((FORAGE_WEIGHT * this.totalFood) + 
 		(BREED_WEIGHT * this.totalOffspring)) / (this.age+1); 
-	this.forageFitness = FORAGE_WEIGHT * this.totalFood / (this.age+1);
+	if (BREEDER_PENALTY_TOGGLE) {
+		this.overallFitness -= this.standbyPenalty / (this.age+1);
+	}
+	//this.forageFitness = FORAGE_WEIGHT * this.totalFood / (this.age+1);
 }
 
 Ant.prototype.updatePeriod = function() {
@@ -251,13 +267,9 @@ Ant.prototype.decide = function() {
 	if (curTile.isHome && this.action === INBOUND) {
 		this.mound.foodStorage += this.food;
 		this.totalFood += this.food;
-		if (this.hunger > HUNGER_THRESHHOLD &&
-			this.mound.foodStorage < EAT_AMOUNT) {
-			this.die(DEATH_HUNGER);
+		if (this.hunger > HUNGER_THRESHHOLD) {
+			this.eat();
 		} else {
-			if (this.hunger > HUNGER_THRESHHOLD) {
-				this.eat();
-			}
 			this.chooseRole();
 			this.food = 0;
 			this.energy = this.maxEnergy;
@@ -389,8 +401,12 @@ Ant.prototype.decideDir = function(action) {
 }
 
 Ant.prototype.eat = function() {
-	this.mound.foodStorage -= EAT_AMOUNT;
-	this.hunger = 0;
+	if (this.mound.foodStorage < EAT_AMOUNT) {
+		this.die(DEATH_HUNGER);
+	} else {
+		this.mound.foodStorage -= EAT_AMOUNT;
+		this.hunger = 0;
+	}
 }
 
 Ant.prototype.eggLay = function() {
@@ -404,7 +420,7 @@ Ant.prototype.die = function(reason) {
 
 Ant.prototype.chooseRole = function() {
 	// if over threshold for egg laying, lay egg
-	if (Math.random() >= this.geneRole && this.mound.canGrow()) {
+	if (Math.random() >= this.geneRole) {
 		this.role = LAY_EGG;
 	} else { // forage otherwise
 		if (Math.random() >= this.geneForageActual) {

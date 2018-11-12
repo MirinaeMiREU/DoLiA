@@ -66,10 +66,12 @@
     </div>
     <div id="population">
         <p>Population Parameters</p>
-		<input type="checkbox" id="geneToggle" checked="true" />Toggle Gene
-		<input type="checkbox" id="breedToggle" />Toggle Breed 
-		<input type="checkbox" id="effectToggle" checked="true"/>Toggle Gene Effects 
-		<input type="checkbox" id="breedStandby" checked="true"/>Toggle Breeder Standby
+		<input type="checkbox" id="geneToggle" checked />Genes are expressed more extremely
+		<input type="checkbox" id="breedToggle" />Breed without checking for enough food
+		<input type="checkbox" id="effectToggle" checked />Genes give respective benefits/penalties
+		<input type="checkbox" id="breedStandby" checked />Breeders wait when not able to breed
+		<br />
+		<input type="checkbox" id="breederLifeToggle" checked />Breeders live longer
 		<br />
         <input type="text" id="initPop" value="25" />Initial Population<br />
         <input type="text" id="maxEnergy" value="500" />Max Energy<br />
@@ -78,7 +80,12 @@
 		<input type="text" id="minEggLayTime" value="10" />Min Egg Laying Time<br />
 		<input type="text" id="forageWeight" value="1" />Forage Weight<br />
 		<input type="text" id="breedWeight" value="5" />Breed Weight<br />
-        <input type="text" id="deathChance" value="0.004" />Chance To Die<br />
+		
+		<input type="text" id="standbyPenalty" value="0" />Breeder Standby Penalty
+		<input type="checkbox" id="standbyPenaltyToggle" />
+		<br />
+		
+		<input type="text" id="deathChance" value="0.004" />Chance To Die<br />
 		<input type="text" id="minAge" value="100" />Minimum Age<br />
         <input type="text" id="hungerThreshold" value="250" />Hunger Threshold<br />
 		<input type="text" id="foodIntake" value="1" />Food Intake<br />

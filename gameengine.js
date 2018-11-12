@@ -72,7 +72,11 @@ GameEngine.prototype.setParameters = function() {
 	GENE_TOGGLE = document.getElementById("geneToggle").checked;
 	BREED_TOGGLE = document.getElementById("breedToggle").checked;
 	EFFECT_TOGGLE = document.getElementById("effectToggle").checked;
-	STANDBY_TOGGLE = document.getElementById("breedStandby").checked;
+	BREEDER_STANDBY = document.getElementById("breedStandby").checked;
+	BREEDER_LIFE_TOGGLE = document.getElementById("breederLifeToggle").checked;
+
+	BREEDER_PENALTY_TOGGLE = document.getElementById("standbyPenaltyToggle").checked;
+	BREEDER_PENALTY_AMOUNT = Number(document.getElementById("standbyPenalty").value);
 
 	LAY_TIME = parseInt(document.getElementById("maxEggLayTime").value);
 	MIN_LAY_TIME = parseInt(document.getElementById("minEggLayTime").value);

@@ -34,6 +34,11 @@ var BREED_TOGGLE = true;
 var EFFECT_TOGGLE = true;
 var BREEDER_STANDBY = true;
 
+var BREEDER_PENALTY_TOGGLE = true;
+var BREEDER_PENALTY_AMOUNT = 0;
+
+var BREEDER_LIFE_TOGGLE = true;
+
 var LAY_TIME = 100;
 var MIN_LAY_TIME = 10;
 
