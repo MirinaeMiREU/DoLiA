@@ -33,6 +33,7 @@ var GENE_TOGGLE = true;
 var BREED_TOGGLE = true;
 var EFFECT_TOGGLE = true;
 var BREEDER_STANDBY = true;
+var STANDBY_THRESHOLD = 0;
 
 var BREEDER_PENALTY_TOGGLE = true;
 var BREEDER_PENALTY_AMOUNT = 0;

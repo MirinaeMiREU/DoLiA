@@ -73,6 +73,7 @@ GameEngine.prototype.setParameters = function() {
 	BREED_TOGGLE = document.getElementById("breedToggle").checked;
 	EFFECT_TOGGLE = document.getElementById("effectToggle").checked;
 	BREEDER_STANDBY = document.getElementById("breedStandby").checked;
+	STANDBY_THRESHOLD = parseInt(document.getElementById("standbyThreshold").value);
 	BREEDER_LIFE_TOGGLE = document.getElementById("breederLifeToggle").checked;
 
 	BREEDER_PENALTY_TOGGLE = document.getElementById("standbyPenaltyToggle").checked;
@@ -115,6 +116,7 @@ GameEngine.prototype.setParameters = function() {
 	FOOD_REPLENISH_AMOUNT = Number(document.getElementById("foodReplenishAmount1").value);
 	FOOD_REGEN_RATE = Number(document.getElementById("foodRegenRate1").value);
 	FOOD_REPLENISH_RATE = Number(document.getElementById("foodReplenishRate1").value);
+	FOOD_DENSITY = Number(document.getElementById("foodDensity1").value);
 	
 	this.entities = [];
 	this.updateCounter = 0;
@@ -261,6 +263,7 @@ GameEngine.prototype.endGame = function() {
 	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
 									 this.mound.roleHistogramData, this.mound.forageHistogramData);
 	this.download(document.getElementById("filename").textContent+".csv", str);
+	/*
 	this.download(document.getElementById("cellSize").value + "cS_" + 
 				  document.getElementById("simDuration").value + "sD_" +
 				  document.getElementById("updatePeriod").value + "cPT_" +
@@ -293,6 +296,7 @@ GameEngine.prototype.endGame = function() {
 				  document.getElementById("minCarryingCapacity").value + "CC_" +
 				  document.getElementById("energyDecay").value + "eD_" +
 				  document.getElementById("matureTime").value + "lMIC.txt", "");
+				  */
 }
 
 GameEngine.prototype.resumeGame = function() {

@@ -10,6 +10,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.overallFitness = 0;
 	//this.forageFitness = 0;
 	this.standbyPenalty = 0;
+	this.standbyCounter = 0;
 	this.totalFood = 0;
 	this.totalOffspring = 0;
 	this.hunger = 0;
@@ -71,6 +72,10 @@ Ant.prototype.update = function() {
 			if (BREEDER_PENALTY_TOGGLE) {
 				this.standbyPenalty += BREEDER_PENALTY_AMOUNT;
 			}
+			if (this.standbyCounter > STANDBY_THRESHOLD*(1-this.geneRole)) {
+				this.chooseRole();
+			}
+			this.standbyCounter++;
 		} else {
 			this.chooseRole();
 		}
