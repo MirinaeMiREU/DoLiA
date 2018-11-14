@@ -181,18 +181,34 @@ Ant.prototype.move = function() {
 		case NORTH:
 			this.yPos--;
 			this.y -= CELL_SIZE;
+			if (this.yPos < 0) {
+				this.yPos = YSIZE-1;
+				this.y = this.yPos * CELL_SIZE;
+			}
 			break;
 		case WEST:
 			this.xPos--;
 			this.x -= CELL_SIZE;
+			if (this.xPos < 0) {
+				this.xPos = XSIZE-1;
+				this.x = this.xPos * CELL_SIZE;
+			}
 			break;
 		case EAST:
 			this.xPos++;
 			this.x += CELL_SIZE;
+			if (this.xPos >= XSIZE) {
+				this.xPos = 0;
+				this.x = 0;
+			}
 			break;
 		case SOUTH:
 			this.yPos++;
 			this.y += CELL_SIZE;
+			if (this.yPos >= YSIZE) {
+				this.yPos = 0;
+				this.y = 0;
+			}
 	}
 }
 
@@ -342,8 +358,6 @@ Ant.prototype.decide = function() {
 			}
 		}
 	}
-	
-	this.wrapAround();
 }
 
 Ant.prototype.wrapAround = function() {

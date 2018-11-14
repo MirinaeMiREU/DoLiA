@@ -150,7 +150,7 @@ Mound.prototype.removeLarva = function(larva) {
 }
 
 Mound.prototype.canGrow = function() {
-	return this.foodStorage > (((this.larvaCount*2)+this.antCount)*EAT_AMOUNT) ||
+	return this.foodStorage > ((this.larvaCount+this.antCount)*EAT_AMOUNT*2) ||
 		   (BREED_TOGGLE) /*&& this.foodStorage > EAT_AMOUNT)*/;
 }
 

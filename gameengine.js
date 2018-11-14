@@ -136,6 +136,7 @@ GameEngine.prototype.setup = function() {
 		}
 	}
 	
+	/*
 	for (var i = 0; i < YSIZE; i++) {
 		for (var j = 0; j < XSIZE; j++) {
 			if (i == 0 || i == YSIZE-1 || j == 0 || j == XSIZE-1) {
@@ -143,7 +144,7 @@ GameEngine.prototype.setup = function() {
 			}
 		}
 	}
-	
+	*/
 	
 	for (var i = 0; i < YSIZE; i++) {
 		for (var j = 0; j < XSIZE; j++) {
