@@ -31,7 +31,8 @@ function GameEngine() {
 }
 
 GameEngine.prototype.init = function (ctx) {
-    this.ctx = ctx;
+	this.ctx = ctx;
+	this.socket = io.connect("http://24.16.255.56:8888");
 	this.play = document.getElementById("play");
 	this.pause = document.getElementById("pause");
 	this.step = document.getElementById("step");
@@ -51,7 +52,10 @@ GameEngine.prototype.init = function (ctx) {
 	"<input type='text' id='foodDensity1' value='0'/>Food Density<br />";
 	this.setParameters();
 	this.setup();
-    this.startInput();
+	this.startInput();
+	this.socket.on("connect", function () {
+        console.log("Socket connected.")
+    });
     console.log('sim initialized');
 }
 
@@ -471,6 +475,62 @@ GameEngine.prototype.loop = function () {
 
 GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) {
 	var listNum = GAME_LIFE_TIME/UPDATE_PERIOD;
+	var seasonNum = document.getElementById("seasons").value;
+	var regenRate = [];
+	var regenAmount = [];
+	var replenishRate = [];
+	var replenishAmount = [];
+	for (var i = 1; i <= seasonNum; i++) {
+		regenRate.push(document.getElementById("foodRegenRate"+i).value);
+		regenAmount.push(document.getElementById("foodRegenAmount"+i).value);
+		replenishRate.push(document.getElementById("foodReplenishRate"+i).value);
+		replenishAmount.push(document.getElementById("foodReplenishAmount"+i).value);
+	}
+	var dataObj = {
+		params: {
+			run: document.getElementById("filename").textContent,
+			cellSize: document.getElementById("cellSize").value, 
+			simDuration: document.getElementById("simDuration").value,
+			updatePeriod: document.getElementById("updatePeriod").value,
+			drawPeriod: document.getElementById("drawPeriod").value,
+			maxFood: document.getElementById("maxFood").value,
+			maxTotalFood: document.getElementById("maxTotalFood").value,
+			foodAbundance: document.getElementById("foodAbundance").value,
+			seasons: seasonNum,
+			foodRegenRate: regenRate,
+			foodRegenAmount: regenAmount,
+			foodReplenishRate: replenishRate,
+			foodReplenishAmount: replenishAmount,
+			geneToggle: document.getElementById("geneToggle").checked,
+			breedToggle: document.getElementById("breedToggle").checked,
+			effectToggle: document.getElementById("effectToggle").checked,
+			breedStandby: document.getElementById("breedStandby").checked,
+			initPop: document.getElementById("initPop").value,
+			maxEnergy: document.getElementById("maxEnergy").value,
+			minEnergy: document.getElementById("minEnergy").value,
+			maxEggLayTime: document.getElementById("maxEggLayTime").value,
+			minEggLayTime: document.getElementById("minEggLayTime").value,
+			forageWeight: document.getElementById("forageWeight").value,
+			breedWeight: document.getElementById("breedWeight").value,
+			deathChance: document.getElementById("deathChance").value,
+			minAge: document.getElementById("minAge").value,
+			hungerThreshold: document.getElementById("hungerThreshold").value,
+			foodIntake: document.getElementById("foodIntake").value,
+			mutationRate: document.getElementById("mutationRate").value,
+			maxDev: document.getElementById("maxDev").value,
+			maxCarryingCapacity: document.getElementById("maxCarryingCapacity").value,
+			minCarryingCapacity: document.getElementById("minCarryingCapacity").value,
+			energyDecay: document.getElementById("energyDecay").value,
+			matureTime: document.getElementById("matureTime").value
+		},
+		ants: graph1.antData,
+		larva: graph1.larvaData,
+		food: graph1.foodData,
+		roleHistogram: hist1.data,
+		forageHistogram: hist2.data
+	};
+
+	this.socket.emit('save', {studentname: "Peter Bae", statename: dataObj.params, state: dataObj});
 	
 	var str = ",Ant,Larva,Food\n";
 	for (var i = 1; i <= listNum; i++) {
