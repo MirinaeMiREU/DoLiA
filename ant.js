@@ -8,7 +8,9 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.food = 0;
 	this.consecutiveTurns = 0;
 	this.overallFitness = 0;
-	this.forageFitness = 0;
+	//this.forageFitness = 0;
+	this.standbyPenalty = 0;
+	this.standbyCounter = 0;
 	this.totalFood = 0;
 	this.totalOffspring = 0;
 	this.hunger = 0;
@@ -42,7 +44,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRoleActual);
 	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRoleActual) <= MIN_ANT_FOOD ?
 				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRoleActual);
-	this.foodCollection = Math.ceil(this.maxFood/1);
+	this.foodCollection = Math.ceil(this.maxFood/5);
 	this.layTimer = 0;
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
@@ -51,18 +53,34 @@ Ant.prototype = new Entity();
 Ant.prototype.constructor = Ant;
 
 Ant.prototype.update = function() {
-	if (Math.random() < CHANCE_TO_DIE && this.age > MIN_AGE) {
+	var actualDeathChance = BREEDER_LIFE_TOGGLE ? CHANCE_TO_DIE * this.geneRole : CHANCE_TO_DIE;
+	var actualMinAge = BREEDER_LIFE_TOGGLE ? Math.ceil(MIN_AGE * 1.5-this.geneRole) : MIN_AGE;
+	if (Math.random() < actualDeathChance && this.age > actualMinAge) {
 		this.die(DEATH_AGE);
 	} else if (this.role === LAY_EGG) {
-		if (this.layTimer >= this.layTime) {
-			this.eggLay();
-			this.chooseRole();
-			this.layTimer = 0;
+		if (this.hunger >= HUNGER_THRESHHOLD) {
+			this.eat();
+		} else if (this.mound.canGrow()) {
+			if (this.layTimer >= this.layTime) {
+				this.eggLay();
+				this.chooseRole();
+				this.layTimer = 0;
+			} else {
+				this.layTimer++;
+			}
+		} else if (BREEDER_STANDBY){
+			if (BREEDER_PENALTY_TOGGLE) {
+				this.standbyPenalty += BREEDER_PENALTY_AMOUNT;
+			}
+			if (this.standbyCounter > STANDBY_THRESHOLD*(1-this.geneRole)) {
+				this.chooseRole();
+			}
+			this.standbyCounter++;
 		} else {
-			this.layTimer++;
+			this.chooseRole();
 		}
 	} else {
-		this.diverge();
+		//this.diverge();
 		this.decide();
 		
 		if (this.energy > 0) {
@@ -71,12 +89,16 @@ Ant.prototype.update = function() {
 	}
 	this.hunger++;
 	this.age++;
+
+	this.overallFitness = ((FORAGE_WEIGHT * this.totalFood) + 
+		(BREED_WEIGHT * this.totalOffspring)) / (this.age+1); 
+	if (BREEDER_PENALTY_TOGGLE) {
+		this.overallFitness -= this.standbyPenalty / (this.age+1);
+	}
+	//this.forageFitness = FORAGE_WEIGHT * this.totalFood / (this.age+1);
 }
 
 Ant.prototype.updatePeriod = function() {
-	this.overallFitness = ((FORAGE_WEIGHT * this.totalFood) + 
-						   (BREED_WEIGHT * this.totalOffspring)) / (this.age+1); 
-	this.forageFitness = FORAGE_WEIGHT * this.totalFood / (this.age+1);
 }
 
 Ant.prototype.draw = function() {
@@ -159,18 +181,34 @@ Ant.prototype.move = function() {
 		case NORTH:
 			this.yPos--;
 			this.y -= CELL_SIZE;
+			if (this.yPos < 0) {
+				this.yPos = YSIZE-1;
+				this.y = this.yPos * CELL_SIZE;
+			}
 			break;
 		case WEST:
 			this.xPos--;
 			this.x -= CELL_SIZE;
+			if (this.xPos < 0) {
+				this.xPos = XSIZE-1;
+				this.x = this.xPos * CELL_SIZE;
+			}
 			break;
 		case EAST:
 			this.xPos++;
 			this.x += CELL_SIZE;
+			if (this.xPos >= XSIZE) {
+				this.xPos = 0;
+				this.x = 0;
+			}
 			break;
 		case SOUTH:
 			this.yPos++;
 			this.y += CELL_SIZE;
+			if (this.yPos >= YSIZE) {
+				this.yPos = 0;
+				this.y = 0;
+			}
 	}
 }
 
@@ -241,7 +279,7 @@ Ant.prototype.decide = function() {
 	var curTile = this.tiles[this.yPos][this.xPos];
 	var tileFood = curTile.foodLevel;
 	
-	if ((this.hunger > HUNGER_THRESHHOLD || this.energy === 0) && 
+	if ((this.hunger > HUNGER_THRESHHOLD || this.energy <= 0) && 
 		this.action === OUTBOUND) {
 		this.energy = 0;
 		this.action = INBOUND;
@@ -250,15 +288,9 @@ Ant.prototype.decide = function() {
 	if (curTile.isHome && this.action === INBOUND) {
 		this.mound.foodStorage += this.food;
 		this.totalFood += this.food;
-		if (this.hunger > HUNGER_THRESHHOLD &&
-			this.mound.foodStorage < EAT_AMOUNT) {
-			this.die(DEATH_HUNGER);
+		if (this.hunger > HUNGER_THRESHHOLD) {
+			this.eat();
 		} else {
-			if (this.hunger > HUNGER_THRESHHOLD) {
-				this.eat();
-				this.hunger = 0;
-				//console.log(this.mound.foodStorage);
-			}
 			this.chooseRole();
 			this.food = 0;
 			this.energy = this.maxEnergy;
@@ -275,21 +307,21 @@ Ant.prototype.decide = function() {
 			if ((this.food + this.foodCollection) <= this.maxFood) {
 				curTile.foodLevel -= this.foodCollection;
 				this.food += this.foodCollection;
-				foodTotal -= this.foodCollection;
+				//foods -= this.foodCollection;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
-				foodTotal -= this.maxFood - this.food;
+				//foods -= this.maxFood - this.food;
 			}
 		} else {
 			if ((this.food + tileFood) <= this.maxFood) {
-				foodTotal -= curTile.foodLevel;
+				//foods -= curTile.foodLevel;
 				curTile.foodLevel = 0;
 				this.food += tileFood;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
-				foodTotal -= this.maxFood - this.food;
+				//foods -= this.maxFood - this.food;
 			}
 		}
 	} else {
@@ -308,8 +340,8 @@ Ant.prototype.decide = function() {
 		} else if (this.role === EXPLORE) {
 			if (this.action === OUTBOUND) {
 				var rand = Math.random();
-				if (rand > 0.85) {
-					if (rand > 0.925) {
+				if (rand > 0.90) {
+					if (rand > 0.95) {
 						this.turnRight();
 					} else {
 						this.turnLeft();
@@ -326,8 +358,6 @@ Ant.prototype.decide = function() {
 			}
 		}
 	}
-	
-	this.wrapAround();
 }
 
 Ant.prototype.wrapAround = function() {
@@ -390,7 +420,12 @@ Ant.prototype.decideDir = function(action) {
 }
 
 Ant.prototype.eat = function() {
-	this.mound.foodStorage -= EAT_AMOUNT;
+	if (this.mound.foodStorage < EAT_AMOUNT) {
+		this.die(DEATH_HUNGER);
+	} else {
+		this.mound.foodStorage -= EAT_AMOUNT;
+		this.hunger = 0;
+	}
 }
 
 Ant.prototype.eggLay = function() {
@@ -404,7 +439,7 @@ Ant.prototype.die = function(reason) {
 
 Ant.prototype.chooseRole = function() {
 	// if over threshold for egg laying, lay egg
-	if (Math.random() >= this.geneRole && this.mound.canGrow()) {
+	if (Math.random() >= this.geneRole) {
 		this.role = LAY_EGG;
 	} else { // forage otherwise
 		if (Math.random() >= this.geneForageActual) {

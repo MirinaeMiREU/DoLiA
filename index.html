@@ -2,7 +2,8 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Division of Labor in Ants</title>
+	<title>Division of Labor in Ants</title>
+	<script type="text/javascript" src="http://24.16.255.56:8888/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="./gameengine.js"></script>
     <script type="text/javascript" src="./assetmanager.js"></script>
 	<script type="text/javascript" src="./parameters.js"></script>
@@ -14,9 +15,28 @@
 	<script type="text/javascript" src="./graph2.js"></script>
 	<script type="text/javascript" src="./histogram.js"></script>
 	<script type="text/javascript" src="./mound.js"></script>
-    <script type="text/javascript" src="./main.js"></script>
+	<script type="text/javascript" src="./main.js"></script>
+	<script>
+		function setupSeasons(num) {
+			if (num < 1) {
+				num = 1;
+			}
+			var str = "";
+			for (var i = 1; i <= num; i++) {
+				str += "Season " + i + "<br />" +
+					"<input type='text' id='seasonLength" + i +"' value='1000'/>Length<br />" +
+					"<input type='text' id='foodRegenRate" + i +"' value='0'/>Food Regen Rate<br />" +
+					"<input type='text' id='foodRegenAmount" + i +"' value='0'/>Food Regen Amount<br />" +
+					"<input type='text' id='foodReplenishRate" + i +"' value='0'/>Food Replenish Rate<br />" +
+					"<input type='text' id='foodReplenishAmount" + i +"' value='0'/>Food Replenish Amount<br />" +
+					"<input type='text' id='foodDensity" + i + "' value='0'/>Food Density<br />";
+			}
+
+			document.getElementById("seasonDiv").innerHTML = str;
+		}
+	</script>
 </head>
-<body>
+<body onload="setupSeasons(document.getElementById('seasons').value)">
 	<p id="filename">Run#<span id="runNum">1</span></p>
     <canvas id="gameWorld" tabindex="1" width="1200" height="800" style="border: 1px solid brown; background: white"></canvas>
 	<br>
@@ -28,49 +48,61 @@
 	<div id="environment">
         <p>Environment Parameters</p>
 		
-        <input type="text" id="cellSize" value="12"/>Cell Size<br />
+        <input type="text" id="cellSize" value="10"/>Cell Size<br />
 		<input type="text" id="runCount" value="10"/>Max Run Count<br />
-        <input type="text" id="simDuration" value="5000"/>Simulation Duration<br />
-		<input type="text" id="updatePeriod" value="20"/>Cycles Per Tick<br />
+        <input type="text" id="simDuration" value="100000"/>Simulation Duration<br />
+		<input type="text" id="updatePeriod" value="50"/>Cycles Per Tick<br />
 		<input type="text" id="drawPeriod" value="100"/>Cycles Per Simulation Draw<br />
-        <input type="text" id="maxFood" value="5000"/>Max Food Value<br />
-		<input type="text" id="maxTotalFood" value="250000"/>Max Total Food On Map<br />
-        <input type="text" id="foodAbundance" value="0.01"/>Initial Food Abundance<br />
-        <input type="text" id="foodRegenRate" value="0.0005"/>Food Regen Rate<br />
-		<input type="text" id="foodRegenAmount" value="500"/>Food Regen Amount<br />
-		<input type="text" id="foodReplenishRate" value="0.5"/>Food Replenish Rate<br />
-		<input type="text" id="foodReplenishAmount" value="500"/>Food Replenish Amount<br />
-        <div><input type="text" id="mapname" />Map Name<br /></div>
+        <input type="text" id="maxFood" value="100"/>Max Food Value<br />
+		<input type="text" id="maxTotalFood" value="5000"/>Max Total Food On Map<br />
+		<input type="text" id="foodAbundance" value="0"/>Initial Food Abundance<br />
+
+		<input type="text" id="seasons" onChange="setupSeasons(this.value)" value="2"/>Number of Seasons
+		<div id="seasonDiv">
+			
+		</div>
         <button id="save">Save</button>
 		<button id="load">Load</button>
         <button id="newMap">New</button>
     </div>
     <div id="population">
         <p>Population Parameters</p>
-		<input type="checkbox" id="geneToggle" checked="true" />Toggle Gene
-		<input type="checkbox" id="breedToggle" checked="true"/>Toggle Breed 
-		<input type="checkbox" id="effectToggle" checked="true"/>Toggle Gene Effects 
-		<input type="checkbox" id="breedStandby" checked="true"/>Toggle Breeder Standby
+		<input type="checkbox" id="geneToggle" checked />Genes are expressed more extremely
+		<input type="checkbox" id="breedToggle" />Breed without checking for enough food
+		<input type="checkbox" id="effectToggle" checked />Genes give respective benefits/penalties
+		<input type="checkbox" id="breedStandby" checked />Breeders wait when not able to breed
 		<br />
-        <input type="text" id="initPop" value="50" />Initial Population<br />
+		<input type="checkbox" id="breederLifeToggle" checked />Breeders live longer
+		<br />
+        <input type="text" id="initPop" value="25" />Initial Population<br />
         <input type="text" id="maxEnergy" value="500" />Max Energy<br />
 		<input type="text" id="minEnergy" value="5" />Min Energy<br />
         <input type="text" id="maxEggLayTime" value="100" />Max Egg Laying Time<br />
 		<input type="text" id="minEggLayTime" value="10" />Min Egg Laying Time<br />
 		<input type="text" id="forageWeight" value="1" />Forage Weight<br />
-		<input type="text" id="breedWeight" value="40" />Breed Weight<br />
-        <input type="text" id="deathChance" value="0.004" />Chance To Die<br />
+		<input type="text" id="breedWeight" value="5" />Breed Weight<br />
+		
+		<input type="text" id="standbyPenalty" value="0" />Breeder Standby Penalty
+		<input type="checkbox" id="standbyPenaltyToggle" />
+		<br />
+		<input type="text" id="standbyThreshold" value="1000" />Max Standby Threshold <br />
+		
+		<input type="text" id="deathChance" value="0.004" />Chance To Die<br />
 		<input type="text" id="minAge" value="100" />Minimum Age<br />
-        <input type="text" id="hungerThreshold" value="300" />Hunger Threshold<br />
-		<input type="text" id="foodIntake" value="10" />Food Intake<br />
+        <input type="text" id="hungerThreshold" value="250" />Hunger Threshold<br />
+		<input type="text" id="foodIntake" value="1" />Food Intake<br />
         <input type="text" id="mutationRate" value="0.05" />Mutation Rate<br />
         <input type="text" id="maxDev" value="0.1" />Max Deviation<br />
-        <input type="text" id="maxCarryingCapacity" value="20" />Max Carrying Capacity<br />
-		<input type="text" id="minCarryingCapacity" value="2" />Min Carrying Capacity<br />
+        <input type="text" id="maxCarryingCapacity" value="10" />Max Carrying Capacity<br />
+		<input type="text" id="minCarryingCapacity" value="1" />Min Carrying Capacity<br />
         <input type="text" id="energyDecay" value="5" />Energy Decay<br />
 		<input type="text" id="matureTime" value="100" />Larva Maturation In Cycles<br />
         <button id="newAnt">New</button>
-    </div>
+	</div>
+	
+	<p>
+		<a href="showGraphs.html">Graphs</a>
+	</p>
 
 </body>
 </html>

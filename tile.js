@@ -1,4 +1,4 @@
-var foodTotal = 0;
+var foods = 0;
 
 function Tile(game, xPos, yPos) {
 	this.game = game;
@@ -13,18 +13,21 @@ function Tile(game, xPos, yPos) {
 	this.foodReplenishCount = 0;
 	this.neighbors = [];	
 	
-	var rand = Math.random();
-	if (rand < FOOD_ABUNDANCE) {
-		if (MAX_TOTAL_FOOD - foodTotal >= MAX_TILE_FOOD) {
-			this.foodLevel = MAX_TILE_FOOD;
-			foodTotal += MAX_TILE_FOOD;
-		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
-		           MAX_TOTAL_FOOD - foodTotal < MAX_TILE_FOOD){
-			this.foodLevel += MAX_TOTAL_FOOD - foodTotal;
-			foodTotal = MAX_TOTAL_FOOD;
+	if ((this.xPos > 0 && this.xPos < XSIZE-1) && 
+		(this.yPos > 0 && this.yPos < YSIZE-1)) {
+		var rand = Math.random();
+		if (rand < FOOD_ABUNDANCE) {
+			if (MAX_TOTAL_FOOD - foods >= MAX_TILE_FOOD) {
+				this.foodLevel = MAX_TILE_FOOD;
+				foods += MAX_TILE_FOOD;
+			} else if (MAX_TOTAL_FOOD - foods > 0 &&
+					   MAX_TOTAL_FOOD - foods < MAX_TILE_FOOD){
+				this.foodLevel += MAX_TOTAL_FOOD - foods;
+				foods = MAX_TOTAL_FOOD;
+			}
+		} else {
+			this.foodLevel = 0;
 		}
-	} else {
-		this.foodLevel = 0;
 	}
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
@@ -33,6 +36,7 @@ Tile.prototype = new Entity();
 Tile.prototype.constructor = Tile;
 
 Tile.prototype.update = function() {
+	foods += this.foodLevel;
 	for (var i = 0; i < this.neighbors.length; i++) {
 		var tile = this.neighbors[i];
 		tile.outPheromone = (Math.floor(this.outPheromone/2)) > tile.outPheromone ?
@@ -61,46 +65,41 @@ Tile.prototype.update = function() {
 }
 
 Tile.prototype.updatePeriod = function() {
-	var neighborsEmpty = true;
-	for (var i = 0; i < this.neighbors.length; i++) {
-		if (this.neighbors[i].foodLevel > 0) {
-			neighborsEmpty = false;
-		}
-		for (var j = 0; j < this.neighbors[i].neighbors.length; j++) {
-			if (this.neighbors[i].neighbors[j].foodLevel > 0) {
-				neighborsEmpty = false;
+	if ((this.xPos > 0 && this.xPos < XSIZE-1) && 
+		(this.yPos > 0 && this.yPos < YSIZE-1)) {
+		var neighborsEmpty = this.noNeighborsWithin(FOOD_DENSITY);
+
+		if (this.foodLevel <= 0 && 
+			Math.random() < FOOD_REGEN_RATE &&
+			neighborsEmpty) {
+			if (MAX_TOTAL_FOOD - foods >= FOOD_REGEN_AMOUNT) {
+				this.foodLevel = FOOD_REGEN_AMOUNT;
+				foods += FOOD_REGEN_AMOUNT;
+			} else if (MAX_TOTAL_FOOD - foods > 0 &&
+					   MAX_TOTAL_FOOD - foods < FOOD_REGEN_AMOUNT) {
+				this.foodLevel += MAX_TOTAL_FOOD - foods; 
+				foods = MAX_TOTAL_FOOD;
 			}
-		}
-	}
-	if (this.foodLevel <= 0 && 
-		Math.random() < FOOD_REGEN_RATE &&
-		neighborsEmpty) {
-		if (MAX_TOTAL_FOOD - foodTotal >= FOOD_REGEN_AMOUNT) {
-			this.foodLevel = FOOD_REGEN_AMOUNT;
-			foodTotal += FOOD_REGEN_AMOUNT;
-		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
-		           MAX_TOTAL_FOOD - foodTotal < FOOD_REGEN_AMOUNT) {
-			this.foodLevel += MAX_TOTAL_FOOD - foodTotal; 
-			foodTotal = MAX_TOTAL_FOOD;
-		}
-	} else if (this.foodLevel > 0 && 
-	           Math.random() < FOOD_REPLENISH_RATE) {
-		if (MAX_TOTAL_FOOD - foodTotal >= FOOD_REPLENISH_AMOUNT) {
-			if (this.foodLevel + FOOD_REPLENISH_AMOUNT > MAX_TILE_FOOD) {
-				foodTotal += MAX_TILE_FOOD - this.foodLevel;
-				this.foodLevel = MAX_TILE_FOOD;
-			} else {
-				this.foodLevel += FOOD_REPLENISH_AMOUNT;
-				foodTotal += FOOD_REPLENISH_AMOUNT;
-			}
-		} else if (MAX_TOTAL_FOOD - foodTotal > 0 &&
-		           MAX_TOTAL_FOOD - foodTotal < FOOD_REPLENISH_AMOUNT) {
-			if (MAX_TOTAL_FOOD - foodTotal >= MAX_TILE_FOOD - this.foodLevel) {
-				foodTotal += MAX_TILE_FOOD - this.foodLevel;
-				this.foodLevel = MAX_TILE_FOOD;
-			} else {
-				this.foodLevel += MAX_TOTAL_FOOD - foodTotal;
-				foodTotal = MAX_TOTAL_FOOD;
+		} else if (this.foodLevel > 0 && 
+				   this.foodLevel < MAX_TILE_FOOD &&
+				   Math.random() < FOOD_REPLENISH_RATE) {
+			if (MAX_TOTAL_FOOD - foods >= FOOD_REPLENISH_AMOUNT) {
+				if (this.foodLevel + FOOD_REPLENISH_AMOUNT > MAX_TILE_FOOD) {
+					foods += MAX_TILE_FOOD - this.foodLevel;
+					this.foodLevel = MAX_TILE_FOOD;
+				} else {
+					this.foodLevel += FOOD_REPLENISH_AMOUNT;
+					foods += FOOD_REPLENISH_AMOUNT;
+				}
+			} else if (MAX_TOTAL_FOOD - foods > 0 &&
+					   MAX_TOTAL_FOOD - foods < FOOD_REPLENISH_AMOUNT) {
+				if (MAX_TOTAL_FOOD - foods >= MAX_TILE_FOOD - this.foodLevel) {
+					foods += MAX_TILE_FOOD - this.foodLevel;
+					this.foodLevel = MAX_TILE_FOOD;
+				} else {
+					this.foodLevel += MAX_TOTAL_FOOD - foods;
+					foods = MAX_TOTAL_FOOD;
+				}
 			}
 		}
 	}
@@ -192,6 +191,18 @@ Tile.prototype.drawPeriod = function() {
 
 Tile.prototype.setNeighbors = function(neighbors) {
 	this.neighbors = neighbors;
+}
+
+Tile.prototype.noNeighborsWithin = function(density) {
+	for (var i = this.yPos-density; i < this.yPos+density; i++) {
+		for (var j = this.xPos-density; j < this.xPos+density; j++) {
+			if (i >= 0 && i < YSIZE && j >= 0 && j < XSIZE &&
+				this.game.mound.tiles[i][j].foodLevel > 0) {
+				return false;
+			}
+		}
+	}
+	return true;
 }
 
 Tile.prototype.setHome = function() {

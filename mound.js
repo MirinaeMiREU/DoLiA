@@ -47,7 +47,7 @@ Mound.prototype.updatePeriod = function() {
 	console.log("Min Gen:" + this.minGen +
 				" Avg Gen:" + this.averageGen + 
 				" Max Gen:" + this.maxGen);
-	console.log("Food Total:" + foodTotal);
+	console.log("Food Total: " + foods);
 	this.tick++;
 	this.updateRoleHistogram();
 	this.updateForageHistogram();
@@ -150,7 +150,7 @@ Mound.prototype.removeLarva = function(larva) {
 }
 
 Mound.prototype.canGrow = function() {
-	return this.foodStorage > ((this.larvaCount+this.antCount)*EAT_AMOUNT) ||
+	return this.foodStorage > ((this.larvaCount+this.antCount)*EAT_AMOUNT*2) ||
 		   (BREED_TOGGLE) /*&& this.foodStorage > EAT_AMOUNT)*/;
 }
 
