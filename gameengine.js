@@ -55,7 +55,29 @@ GameEngine.prototype.init = function (ctx) {
 	this.startInput();
 	this.socket.on("connect", function () {
         console.log("Socket connected.")
-    });
+	});
+	this.socket.on('saveAnts', function (data) {
+		if (!data) console.log("Ants null data");
+		else {
+			console.log(data.params);
+			db2.Ants.insert(data);
+		}
+	});
+
+	this.socket.on('loadAnts', function (data) {
+		var query = data;
+
+		var fields = {
+		};
+
+		console.log("Ants request:");
+		console.log(data);
+		db2.Ants.find(query, fields, function (err, populations) {
+			console.log("Ants query completeded. " + populations.length + " records found.");
+			var count = 0;
+			setTimeout(function () { socket.emit('loadAnts', populations); }, 1);
+		});
+	});
     console.log('sim initialized');
 }
 
@@ -487,6 +509,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		replenishAmount.push(document.getElementById("foodReplenishAmount"+i).value);
 	}
 	var dataObj = {
+		run: "test",
 		params: {
 			run: document.getElementById("filename").textContent,
 			cellSize: document.getElementById("cellSize").value, 
@@ -530,7 +553,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		forageHistogram: hist2.data
 	};
 
-	this.socket.emit('save', {studentname: "Peter Bae", statename: dataObj.params, state: dataObj});
+	this.socket.emit('saveAnts', {statename: dataObj.params, state: dataObj});
 	
 	var str = ",Ant,Larva,Food\n";
 	for (var i = 1; i <= listNum; i++) {
