@@ -30,15 +30,24 @@ var EXPLOIT = 1;
 var LAY_EGG = 2;
 
 var GENE_TOGGLE = true;
-var BREED_TOGGLE = true;
+
+var EXTREME_GENE_TOGGLE = true;
+var GENE_LIFE_TOGGLE = true;
+var GENE_BREED_SPEED_TOGGLE = true;
+var GENE_FOOD_CARRY_TOGGLE = true;
+var GENE_
+
 var EFFECT_TOGGLE = true;
+
+var BREED_TOGGLE = true;
+
 var BREEDER_STANDBY = true;
 var STANDBY_THRESHOLD = 0;
 
 var BREEDER_PENALTY_TOGGLE = true;
 var BREEDER_PENALTY_AMOUNT = 0;
 
-var BREEDER_LIFE_TOGGLE = true;
+
 
 var LAY_TIME = 100;
 var MIN_LAY_TIME = 10;
@@ -46,13 +55,15 @@ var MIN_LAY_TIME = 10;
 var FORAGE_WEIGHT = 5;
 var BREED_WEIGHT = 100;
 
-var DEATH_AGE = 0;
-var DEATH_HUNGER = 1;
+
 
 var MIN_AGE = 100;
-var CHANCE_TO_DIE = 0.001;
+var MIN_CHANCE_TO_DIE = 0.001;
+var MAX_CHANCE_TO_DIE = 0.004;
+
 var HUNGER_THRESHHOLD = 500;
-var EAT_AMOUNT = 10;
+
+var EAT_AMOUNT = 1;
 var MUTATION_RATE = 0.05;
 var MAX_DEVIATION = 0.1;
 
@@ -61,10 +72,12 @@ var INBOUND = 1;
 
 var MAX_ENERGY = 500;
 var MIN_ENERGY = 50;
-var MAX_ANT_FOOD = 20;
-var MIN_ANT_FOOD = 2;
+var MAX_ANT_FOOD = 10;
+var MIN_ANT_FOOD = 1;
 var ENERGY_DECAY = 5;
 
+var DEATH_AGE = 0;
+var DEATH_HUNGER = 1;
 // larva
 
 var MATURE_TIME = 100;

@@ -56,28 +56,6 @@ GameEngine.prototype.init = function (ctx) {
 	this.socket.on("connect", function () {
         console.log("Socket connected.")
 	});
-	this.socket.on('saveAnts', function (data) {
-		if (!data) console.log("Ants null data");
-		else {
-			console.log(data.params);
-			db2.Ants.insert(data);
-		}
-	});
-
-	this.socket.on('loadAnts', function (data) {
-		var query = data;
-
-		var fields = {
-		};
-
-		console.log("Ants request:");
-		console.log(data);
-		db2.Ants.find(query, fields, function (err, populations) {
-			console.log("Ants query completeded. " + populations.length + " records found.");
-			var count = 0;
-			setTimeout(function () { socket.emit('loadAnts', populations); }, 1);
-		});
-	});
     console.log('sim initialized');
 }
 

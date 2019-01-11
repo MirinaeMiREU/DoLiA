@@ -66,11 +66,14 @@
         <button id="newMap">New</button>
     </div>
     <div id="population">
-        <p>Population Parameters</p>
-		<input type="checkbox" id="geneToggle" checked />Genes are expressed more extremely
+		<p>Population Parameters</p>
 		<input type="checkbox" id="breedToggle" />Breed without checking for enough food
-		<input type="checkbox" id="effectToggle" checked />Genes give respective benefits/penalties
 		<input type="checkbox" id="breedStandby" checked />Breeders wait when not able to breed
+		<br/>
+		<input type="checkbox" id="geneToggle" checked />Genes are expressed more extremely
+		
+		<input type="checkbox" id="effectToggle" checked />Genes give respective benefits/penalties
+		
 		<br />
 		<input type="checkbox" id="breederLifeToggle" checked />Breeders live longer
 		<br />
@@ -87,8 +90,10 @@
 		<br />
 		<input type="text" id="standbyThreshold" value="1000" />Max Standby Threshold <br />
 		
-		<input type="text" id="deathChance" value="0.004" />Chance To Die<br />
+		<input type="text" id="minDeathChance" value="0.004" />Minimum Chance To Die<br />
+		<input type="text" id="maxDeathChance" value="0.001" />Maximum Chance To Die<br />
 		<input type="text" id="minAge" value="100" />Minimum Age<br />
+		
         <input type="text" id="hungerThreshold" value="250" />Hunger Threshold<br />
 		<input type="text" id="foodIntake" value="1" />Food Intake<br />
         <input type="text" id="mutationRate" value="0.05" />Mutation Rate<br />
