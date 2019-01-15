@@ -10,6 +10,7 @@ function Mound(game, xPos, yPos) {
 	this.tick = 0;
 	this.colony = [];
 	this.breedable = [];
+	this.standby = [];
 	this.larvae = [];
 	this.roleHistogram = [];
 	this.forageHistogram = [];
@@ -36,6 +37,35 @@ Mound.prototype.update = function() {
 			this.game.endGame();
 		}
 	}	
+
+	//console.log("Standby: " + this.standby.length);
+	while (this.canGrow() && this.standby.length > 0) {
+		var size = this.standby.length;
+		
+		var rng = Math.floor(size * Math.random());
+		this.standby[rng].eggLay();
+		this.standby.splice(rng, 1);
+	}
+
+	if (BREEDER_PENALTY_TOGGLE) {
+		for (var i = 0; i < this.standby.length; i++) {
+			this.standby[i].standbyPenalty += BREEDER_PENALTY_AMOUNT;
+		}
+	}
+
+	if (BREEDER_STANDBY) {
+		var size = this.standby.length;
+		for (var i = 0; i < size; i++) {
+			var ant = this.standby[i];
+			if (ant.standbyCounter > STANDBY_THRESHOLD) {
+				ant.standbyCounter = 0;
+				ant.role = INTERIM;
+				this.standby.splice(i, 1);
+				i--;
+				size--;
+			}
+		}
+	}
 }
 
 Mound.prototype.updatePeriod = function() {
@@ -48,6 +78,15 @@ Mound.prototype.updatePeriod = function() {
 				" Avg Gen:" + this.averageGen + 
 				" Max Gen:" + this.maxGen);
 	console.log("Food Total: " + foods);
+	console.log("Standby Total: " + this.standby.length);
+	var cd = 0;
+	for (var i = 0; i < this.colony.length; i++) {
+		if (this.colony[i].role === EGG_DOWN_TIME) {
+			cd++;
+		}
+	}
+	console.log(cd);
+	
 	this.tick++;
 	this.updateRoleHistogram();
 	this.updateForageHistogram();
@@ -67,10 +106,10 @@ Mound.prototype.drawPeriod = function() {
 	this.ctx.strokeStyle = "#000000";
 	this.ctx.fillSytle = "#000000";
 	this.ctx.font = "20px Courier";
-	this.ctx.fillText("Min Gen:" + this.minGen,500, 630);
-	this.ctx.fillText("Average Gen:" + this.averageGen,500, 650);
-	this.ctx.fillText("Max Gen:" + this.maxGen,500, 670);
-	this.ctx.fillText("Cycle# :" + this.lifeTimeCount,500, 690);
+	this.ctx.fillText("Min Gen:" + this.minGen,600, 630);
+	this.ctx.fillText("Average Gen:" + this.averageGen,600, 650);
+	this.ctx.fillText("Max Gen:" + this.maxGen,600, 670);
+	this.ctx.fillText("Cycle# :" + this.lifeTimeCount,600, 690);
 	this.ctx.font = "10px sans-serif";
 }
 
@@ -126,13 +165,6 @@ Mound.prototype.removeAnt = function(ant, reason) {
 	var colIndex = this.colony.indexOf(ant);
 	this.colony.splice(colIndex, 1);
 	this.game.removeEntity(ant);
-	/*
-	if (reason === DEATH_AGE) {
-		console.log("age");
-	} else if (reason === DEATH_HUNGER) {
-		console.log("hunger");
-	}
-	*/
 	this.antCount--;
 }
 

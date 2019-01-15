@@ -4,6 +4,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.ctx = game.ctx;
 	this.dir = Math.floor(Math.random() * 4);
 	this.age = 0;
+	this.deathChance = 0;
 	this.generation = generation;
 	this.food = 0;
 	this.consecutiveTurns = 0;
@@ -25,7 +26,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	this.geneForage = this.geneForage < 0 ? 0 : this.geneForage;
 	this.geneRoleActual = this.geneRole;
 	this.geneForageActual = this.geneForage;
-	if (GENE_TOGGLE) {
+	if (EXTREME_GENE_TOGGLE) {
 		this.geneRoleActual = this.geneRole < 0.5 ?
 							  Math.pow(this.geneRole,2)*2:
 							  1-(Math.pow(1-this.geneRole,2)*2);
@@ -33,19 +34,28 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 							  Math.pow(this.geneForage,2)*2:
 							  1-(Math.pow(1-this.geneForage,2)*2);
 	}	
-	if (!EFFECT_TOGGLE) {
-		this.geneRoleActual = 0.5;
-		this.geneForageActual = 0.5;
-	}
-	this.energy = Math.ceil(MAX_ENERGY*this.geneRoleActual) <= MIN_ENERGY ? 
-				  MIN_ENERGY : Math.ceil(MAX_ENERGY*this.geneRoleActual);
-	this.maxEnergy = this.energy;
-	this.layTime = Math.ceil(LAY_TIME*this.geneRoleActual) <= MIN_LAY_TIME ?
-				   MIN_LAY_TIME : Math.ceil(LAY_TIME*this.geneRoleActual);
-	this.maxFood = Math.ceil(MAX_ANT_FOOD*this.geneRoleActual) <= MIN_ANT_FOOD ?
-				   MIN_ANT_FOOD : Math.ceil(MAX_ANT_FOOD*this.geneRoleActual);
+
+	this.deathChance = GENE_LIFE_TOGGLE
+						? (MAX_CHANCE_TO_DIE - MIN_CHANCE_TO_DIE) * this.geneRoleActual + MIN_CHANCE_TO_DIE
+						: MAX_CHANCE_TO_DIE/2;
+	this.maxEnergy = GENE_ENERGY_TOGGLE 
+					? Math.ceil((MAX_ENERGY - MIN_ENERGY) * this.geneRoleActual + MIN_ENERGY)
+					: Math.ceil(MAX_ENERGY/2);
+	
+	this.energy = this.maxEnergy;
+
+	this.layTime = GENE_BREED_SPEED_TOGGLE
+					? Math.ceil((MAX_LAY_TIME - MIN_LAY_TIME) * this.geneRoleActual + MIN_LAY_TIME) 
+					: Math.ceil(MAX_LAY_TIME/2);
+
+	this.maxFood = GENE_FOOD_CARRY_TOGGLE
+					? Math.ceil((MAX_ANT_FOOD - MIN_ANT_FOOD) * this.geneRoleActual + MIN_ANT_FOOD)
+					: Math.ceil(MAX_ANT_FOOD/2);
+
 	this.foodCollection = Math.ceil(this.maxFood/5);
+
 	this.layTimer = 0;
+
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -53,32 +63,27 @@ Ant.prototype = new Entity();
 Ant.prototype.constructor = Ant;
 
 Ant.prototype.update = function() {
-	var actualDeathChance = BREEDER_LIFE_TOGGLE ? CHANCE_TO_DIE * this.geneRole : CHANCE_TO_DIE;
-	var actualMinAge = BREEDER_LIFE_TOGGLE ? Math.ceil(MIN_AGE * 1.5-this.geneRole) : MIN_AGE;
-	if (Math.random() < actualDeathChance && this.age > actualMinAge) {
+	if (Math.random() < this.deathChance && this.age > MIN_AGE) {
 		this.die(DEATH_AGE);
-	} else if (this.role === LAY_EGG) {
-		if (this.hunger >= HUNGER_THRESHHOLD) {
-			this.eat();
-		} else if (this.mound.canGrow()) {
-			if (this.layTimer >= this.layTime) {
-				this.eggLay();
-				this.chooseRole();
-				this.layTimer = 0;
-			} else {
-				this.layTimer++;
-			}
-		} else if (BREEDER_STANDBY){
-			if (BREEDER_PENALTY_TOGGLE) {
-				this.standbyPenalty += BREEDER_PENALTY_AMOUNT;
-			}
-			if (this.standbyCounter > STANDBY_THRESHOLD*(1-this.geneRole)) {
-				this.chooseRole();
-			}
-			this.standbyCounter++;
-		} else {
+	} else if (this.role === STANDBY) {
+		this.standbyCounter++;
+	} else if (this.role === EGG_DOWN_TIME) {
+		/*
+		if (this.layTimer > MIN_LAY_TIME) {
 			this.chooseRole();
+			this.layTimer = 0;
+		} else
+			this.layTimer++;
+		*/
+		if (this.layTimer >= this.layTime) {
+			this.chooseRole();
+			this.layTimer = 0;
+		} else {
+			this.layTimer++;
 		}
+		
+	} else if (this.role === INTERIM) {
+		this.chooseRole();
 	} else {
 		//this.diverge();
 		this.decide();
@@ -123,8 +128,12 @@ Ant.prototype.draw = function() {
 		else if (this.role === EXPLORE)
 			this.ctx.fillStyle = "#00FFFF";
 	}
-	if (this.role === LAY_EGG) {
+	if (this.role === STANDBY) {
 		this.ctx.fillStyle = "#FF0000";
+	}
+
+	if (this.role === EGG_DOWN_TIME) {
+		this.ctx.fillStyle = "#AA00AA";
 	}
 
 	this.ctx.fillRect(this.x+Math.round(CELL_SIZE/5), 
@@ -429,8 +438,9 @@ Ant.prototype.eat = function() {
 }
 
 Ant.prototype.eggLay = function() {
+	this.standbyCounter = 0;
 	this.mound.spawnLarva(this);
-	//console.log("laid");
+	this.role = EGG_DOWN_TIME;
 }
 
 Ant.prototype.die = function(reason) {
@@ -438,16 +448,36 @@ Ant.prototype.die = function(reason) {
 }
 
 Ant.prototype.chooseRole = function() {
-	// if over threshold for egg laying, lay egg
-	if (Math.random() >= this.geneRole) {
-		this.role = LAY_EGG;
+	// if over threshold for egg laying, attempt to lay egg
+	if (Math.random() >= this.geneRoleActual) {
+		this.attemptBreed();
 	} else { // forage otherwise
-		if (Math.random() >= this.geneForageActual) {
-			this.role = EXPLOIT;
-		} else {
-			this.role = EXPLORE;
-		}
-		this.action = OUTBOUND;
-		this.turnAround();		
+		this.forage();
 	}	
+}
+
+Ant.prototype.attemptBreed = function() {
+	if (BREEDER_STANDBY) {
+		if (this.hunger >= HUNGER_THRESHHOLD) {
+			this.eat();
+		}
+		this.mound.standby.push(this);
+		this.role = STANDBY;
+	} else {
+		if (this.mound.canGrow()) {
+			this.eggLay();
+		} else {
+			this.forage();
+		}
+	}
+}
+
+Ant.prototype.forage = function() {
+	if (Math.random() >= this.geneForageActual) {
+		this.role = EXPLOIT;
+	} else {
+		this.role = EXPLORE;
+	}
+	this.action = OUTBOUND;
+	this.turnAround();		
 }
