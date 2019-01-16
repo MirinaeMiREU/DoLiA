@@ -32,6 +32,8 @@ var EGG_DOWN_TIME = 3;
 var STANDBY = 4;
 var INTERIM = 5;
 
+var BREED_AGE = 100;
+
 var EXTREME_GENE_TOGGLE = true;
 
 var GENE_LIFE_TOGGLE = true;

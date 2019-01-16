@@ -73,6 +73,8 @@ GameEngine.prototype.setParameters = function() {
 	MAX_RUN_COUNT = parseInt(document.getElementById("runCount").value);
 
 	// mound
+	BREED_AGE = parseInt(document.getElementById("breedAge").value);
+
 	INIT_ANTS = parseInt(document.getElementById("initPop").value);
 	
 	EXTREME_GENE_TOGGLE = document.getElementById("geneToggle").checked;

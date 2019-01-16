@@ -297,7 +297,7 @@ Mound.prototype.updateBreedableAnts = function() {
 	var breed2 = [];
 	
 	// first pass to get better half
-	var cutoff = this.getAverageFitness(this.colony);
+	var cutoff = this.getAverageFitness(this.getBreedableAnts());
 	for (var i = 0; i < this.colony.length; i++) {
 		if (this.colony[i] !== undefined && 
 			this.colony[i].overallFitness >= cutoff) {
@@ -328,6 +328,17 @@ Mound.prototype.getAverageFitness = function(arr) {
 		}
 	}
 	return total/count;
+}
+
+Mound.prototype.getBreedableAnts = function() {
+	var ofAge = [];
+	for (var i = 0; i < this.colony.length; i++) {
+		if (this.colony[i].age >= BREED_AGE) {
+			ofAge.push(this.colony[i]);
+		}
+	}
+	
+	return ofAge;
 }
 
 Mound.prototype.updateGeneration = function() {

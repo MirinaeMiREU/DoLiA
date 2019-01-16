@@ -95,7 +95,7 @@ Ant.prototype.update = function() {
 	this.hunger++;
 	this.age++;
 
-	this.overallFitness = ((FORAGE_WEIGHT * this.totalFood) + 
+	this.overallFitness = ((FORAGE_WEIGHT * (this.totalFood/EAT_AMOUNT)) + 
 		(BREED_WEIGHT * this.totalOffspring)) / (this.age+1); 
 	if (BREEDER_PENALTY_TOGGLE) {
 		this.overallFitness -= this.standbyPenalty / (this.age+1);
@@ -332,6 +332,12 @@ Ant.prototype.decide = function() {
 				this.food = this.maxFood;
 				//foods -= this.maxFood - this.food;
 			}
+		}
+		if (tileFood <= 0) { // if food tile depleted
+			this.action = INBOUND;
+			this.energy = this.maxEnergy;
+			curTile.inPheromone = this.energy;
+			this.turnAround();
 		}
 	} else {
 		if (this.role === EXPLOIT) {
