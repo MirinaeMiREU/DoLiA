@@ -33,8 +33,11 @@ var STANDBY = 4;
 var INTERIM = 5;
 
 var BREED_AGE = 100;
+var BREED_AGE_TOGGLE = true;
 
 var EXTREME_GENE_TOGGLE = true;
+var RANDOM_OR_QUEUE_TOGGLE = true;
+var SUM_OR_MAX_FITNESS_TOGGLE = true;
 
 var GENE_LIFE_TOGGLE = true;
 var MIN_AGE = 100;

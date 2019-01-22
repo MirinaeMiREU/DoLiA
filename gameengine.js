@@ -74,10 +74,13 @@ GameEngine.prototype.setParameters = function() {
 
 	// mound
 	BREED_AGE = parseInt(document.getElementById("breedAge").value);
+	BREED_AGE_TOGGLE = document.getElementById("breedAgeToggle").checked;
 
 	INIT_ANTS = parseInt(document.getElementById("initPop").value);
 	
 	EXTREME_GENE_TOGGLE = document.getElementById("geneToggle").checked;
+	RANDOM_OR_QUEUE_TOGGLE = document.getElementById("randomOrQueueToggle").checked;
+	SUM_OR_MAX_FITNESS_TOGGLE = document.getElementById("sumOrMaxToggle").checked;
 
 	GENE_LIFE_TOGGLE = document.getElementById("geneLifeToggle").checked;
 	MIN_AGE = parseInt(document.getElementById("minAge").value);

@@ -36,7 +36,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 	}	
 
 	this.deathChance = GENE_LIFE_TOGGLE
-						? (MAX_CHANCE_TO_DIE - MIN_CHANCE_TO_DIE) * this.geneRoleActual + MIN_CHANCE_TO_DIE
+						? ((MAX_CHANCE_TO_DIE - MIN_CHANCE_TO_DIE) * this.geneRoleActual) + MIN_CHANCE_TO_DIE
 						: MAX_CHANCE_TO_DIE/2;
 	this.maxEnergy = GENE_ENERGY_TOGGLE 
 					? Math.ceil((MAX_ENERGY - MIN_ENERGY) * this.geneRoleActual + MIN_ENERGY)
@@ -94,9 +94,11 @@ Ant.prototype.update = function() {
 	}
 	this.hunger++;
 	this.age++;
+	this.overallFitness = SUM_OR_MAX_FITNESS_TOGGLE 
+		? ((FORAGE_WEIGHT * (this.totalFood/EAT_AMOUNT)) + (BREED_WEIGHT * this.totalOffspring)) / (this.age+1)
+		: Math.max((FORAGE_WEIGHT * (this.totalFood/EAT_AMOUNT)), BREED_WEIGHT * this.totalOffspring) / (this.age+1); 
 
-	this.overallFitness = ((FORAGE_WEIGHT * (this.totalFood/EAT_AMOUNT)) + 
-		(BREED_WEIGHT * this.totalOffspring)) / (this.age+1); 
+
 	if (BREEDER_PENALTY_TOGGLE) {
 		this.overallFitness -= this.standbyPenalty / (this.age+1);
 	}

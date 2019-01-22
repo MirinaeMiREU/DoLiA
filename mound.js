@@ -39,13 +39,21 @@ Mound.prototype.update = function() {
 	}	
 
 	//console.log("Standby: " + this.standby.length);
-	while (this.canGrow() && this.standby.length > 0) {
-		var size = this.standby.length;
-		
-		var rng = Math.floor(size * Math.random());
-		this.standby[rng].eggLay();
-		this.standby.splice(rng, 1);
+	if (RANDOM_OR_QUEUE_TOGGLE) {
+		while (this.canGrow() && this.standby.length > 0) {
+			var size = this.standby.length;
+			
+			var rng = Math.floor(size * Math.random());
+			this.standby[rng].eggLay();
+			this.standby.splice(rng, 1);
+		}
+	} else {
+		while (this.canGrow() && this.standby.length > 0) {
+			this.standby[0].eggLay();
+			this.standby.shift();
+		}
 	}
+	
 
 	if (BREEDER_PENALTY_TOGGLE) {
 		for (var i = 0; i < this.standby.length; i++) {
@@ -332,12 +340,15 @@ Mound.prototype.getAverageFitness = function(arr) {
 
 Mound.prototype.getBreedableAnts = function() {
 	var ofAge = [];
-	for (var i = 0; i < this.colony.length; i++) {
-		if (this.colony[i].age >= BREED_AGE) {
-			ofAge.push(this.colony[i]);
+	if (BREED_AGE_TOGGLE) {
+		for (var i = 0; i < this.colony.length; i++) {
+			if (this.colony[i].age >= BREED_AGE) {
+				ofAge.push(this.colony[i]);
+			}
 		}
+	} else {
+		ofAge = this.colony;
 	}
-	
 	return ofAge;
 }
 
