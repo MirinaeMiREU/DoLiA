@@ -85,3 +85,8 @@ live longer - on,off
 quad toggle - on,off
 x5 on all runs
 32 x 5 = 160
+------------------------------
+queue - random breeder
+different way of fitness function
+max of forage/breed as fitness
+toggle min age to breed
