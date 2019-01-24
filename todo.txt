@@ -90,3 +90,8 @@ queue - random breeder
 different way of fitness function
 max of forage/breed as fitness
 toggle min age to breed
+
+-----------------------------
+climbinggiants.com/gs/analyze.html
+normalize
+different environment
