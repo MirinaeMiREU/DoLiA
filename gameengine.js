@@ -322,7 +322,7 @@ GameEngine.prototype.setSettings = function() {
 GameEngine.prototype.runNextSetting = function() {
 	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
 		this.mound.roleHistogramData, this.mound.forageHistogramData);
-	his.download(document.getElementById("runName").textContent+".csv", str);
+	this.download(document.getElementById("runName").textContent+".csv", str);
 
 	this.currentSetting = (this.currentSetting + 1) % this.settings.length;
 	if (this.settings[this.currentSetting].scatteredOrDense) {
