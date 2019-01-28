@@ -252,6 +252,74 @@ GameEngine.prototype.restart = function() {
 	this.setup();
 }
 
+GameEngine.prototype.setSettings = function() {
+	var settings = [];
+
+	var setting = {
+		sparseOrDense: true,
+		breedSpeed: false, 
+		foodCarry: false, 
+		energy: false};
+
+	var setting2 = {
+		sparseOrDense: false,
+		breedSpeed: false, 
+		foodCarry: false, 
+		energy: false};
+
+	for (var i = 0; i < 8; i++) {
+		settings.push(setting);
+	}
+
+	for (var i = 0; i < 8; i++) {
+		settings.push(setting2);
+	}
+
+	settings[1].breedSpeed = true;
+
+	settings[2].foodCarry = true;
+
+	settings[3].energy = true;
+
+	settings[4].breedSpeed = true;
+	settings[4].foodCarry = true;
+
+	settings[5].breedSpeed = true;
+	settings[5].energy = true;
+
+	settings[6].foodCarry = true;
+	settings[6].energy = true;
+
+	settings[7].breedSpeed = true;
+	settings[7].foodCarry = true;
+	settings[7].energy = true;
+
+	settings[9].breedSpeed = true;
+
+	settings[10].foodCarry = true;
+
+	settings[11].energy = true;
+
+	settings[12].breedSpeed = true;
+	settings[12].foodCarry = true;
+
+	settings[13].breedSpeed = true;
+	settings[13].energy = true;
+
+	settings[14].foodCarry = true;
+	settings[14].energy = true;
+
+	settings[15].breedSpeed = true;
+	settings[15].foodCarry = true;
+	settings[15].energy = true;
+
+	return settings;
+}
+
+GameEngine.prototype.runNextSetting = function() {
+
+}
+
 GameEngine.prototype.newGame = function() {
 	console.clear();
 	document.getElementById("runNum").innerHTML = "1";
@@ -509,36 +577,21 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		mode: "test",
 		params: {
 			run: document.getElementById("filename").textContent,
-			cellSize: document.getElementById("cellSize").value, 
-			simDuration: document.getElementById("simDuration").value,
-			updatePeriod: document.getElementById("updatePeriod").value,
-			drawPeriod: document.getElementById("drawPeriod").value,
 			maxFood: document.getElementById("maxFood").value,
 			maxTotalFood: document.getElementById("maxTotalFood").value,
-			foodAbundance: document.getElementById("foodAbundance").value,
 			seasonNum: seasonNum,
 			seasons: seasons,
 			geneToggle: document.getElementById("geneToggle").checked,
 			breedToggle: document.getElementById("breedToggle").checked,
+			randOrQueueToggle: document.getElementById("randomOrQueueToggle").checked,
+			sumOrMaxToggle: document.getElementById("sumOrMaxToggle").checked,
+			geneLifeToggle: document.getElementById("geneLifeToggle").checked,
+			geneBreedSpeedToggle: document.getElementById("geneBreedSpeedToggle").checked,
+			geneFoodCarryToggle: document.getElementById("geneFoodCarryToggle").checked,
+			geneEnergyToggle: document.getElementById("geneEnergyToggle").checked,
 			breedStandby: document.getElementById("breedStandby").checked,
-			initPop: document.getElementById("initPop").value,
-			maxEnergy: document.getElementById("maxEnergy").value,
-			minEnergy: document.getElementById("minEnergy").value,
-			maxEggLayTime: document.getElementById("maxEggLayTime").value,
-			minEggLayTime: document.getElementById("minEggLayTime").value,
 			forageWeight: document.getElementById("forageWeight").value,
-			breedWeight: document.getElementById("breedWeight").value,
-			minDeathChance: document.getElementById("minDeathChance").value,
-			maxDeathChance: document.getElementById("maxDeathChance").value,
-			minAge: document.getElementById("minAge").value,
-			hungerThreshold: document.getElementById("hungerThreshold").value,
-			foodIntake: document.getElementById("foodIntake").value,
-			mutationRate: document.getElementById("mutationRate").value,
-			maxDev: document.getElementById("maxDev").value,
-			maxCarryingCapacity: document.getElementById("maxCarryingCapacity").value,
-			minCarryingCapacity: document.getElementById("minCarryingCapacity").value,
-			energyDecay: document.getElementById("energyDecay").value,
-			matureTime: document.getElementById("matureTime").value
+			breedWeight: document.getElementById("breedWeight").value
 		},
 		ants: graph1.antData,
 		larva: graph1.larvaData,
