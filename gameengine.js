@@ -43,6 +43,8 @@ GameEngine.prototype.init = function (ctx) {
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
 	this.timer = new Timer();
+	this.settings = this.setSettings();
+	this.currentSetting = 0;
 	document.getElementById("seasonDiv").innerHTML = "Season 1<br />" +
 	"<input type='text' id='seasonLength1' value='1000'/>Length<br />" +
 	"<input type='text' id='foodRegenRate1' value='0'/>Food Regen Rate<br />" +
@@ -255,69 +257,110 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	var setting = {
-		sparseOrDense: true,
-		breedSpeed: false, 
-		foodCarry: false, 
-		energy: false};
-
-	var setting2 = {
-		sparseOrDense: false,
-		breedSpeed: false, 
-		foodCarry: false, 
-		energy: false};
-
 	for (var i = 0; i < 8; i++) {
-		settings.push(setting);
+		settings.push({
+			scatteredOrDense: true,
+			breedSpeed: true, 
+			foodCarry: true, 
+			energy: true,
+			fWeight: 2,
+			bWeight: 5
+		});
 	}
 
 	for (var i = 0; i < 8; i++) {
-		settings.push(setting2);
+		settings.push({
+			scatteredOrDense: false,
+			breedSpeed: true, 
+			foodCarry: true, 
+			energy: true,
+			fWeight: 1,
+			bWeight: 5
+		});
 	}
 
-	settings[1].breedSpeed = true;
+	settings[1].breedSpeed = false;
+	settings[2].foodCarry = false;
 
-	settings[2].foodCarry = true;
+	settings[3].energy = false;
 
-	settings[3].energy = true;
+	settings[4].breedSpeed = false;
+	settings[4].foodCarry = false;
 
-	settings[4].breedSpeed = true;
-	settings[4].foodCarry = true;
+	settings[5].breedSpeed = false;
+	settings[5].energy = false;
 
-	settings[5].breedSpeed = true;
-	settings[5].energy = true;
+	settings[6].foodCarry = false;
+	settings[6].energy = false;
 
-	settings[6].foodCarry = true;
-	settings[6].energy = true;
+	settings[7].breedSpeed = false;
+	settings[7].foodCarry = false;
+	settings[7].energy = false;
 
-	settings[7].breedSpeed = true;
-	settings[7].foodCarry = true;
-	settings[7].energy = true;
+	settings[9].breedSpeed = false;
 
-	settings[9].breedSpeed = true;
+	settings[10].foodCarry = false;
 
-	settings[10].foodCarry = true;
+	settings[11].energy = false;
 
-	settings[11].energy = true;
+	settings[12].breedSpeed = false;
+	settings[12].foodCarry = false;
 
-	settings[12].breedSpeed = true;
-	settings[12].foodCarry = true;
+	settings[13].breedSpeed = false;
+	settings[13].energy = false;
 
-	settings[13].breedSpeed = true;
-	settings[13].energy = true;
+	settings[14].foodCarry = false;
+	settings[14].energy = false;
 
-	settings[14].foodCarry = true;
-	settings[14].energy = true;
-
-	settings[15].breedSpeed = true;
-	settings[15].foodCarry = true;
-	settings[15].energy = true;
+	settings[15].breedSpeed = false;
+	settings[15].foodCarry = false;
+	settings[15].energy = false;
 
 	return settings;
 }
 
 GameEngine.prototype.runNextSetting = function() {
+	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
+		this.mound.roleHistogramData, this.mound.forageHistogramData);
+	his.download(document.getElementById("runName").textContent+".csv", str);
 
+	this.currentSetting = (this.currentSetting + 1) % this.settings.length;
+	if (this.settings[this.currentSetting].scatteredOrDense) {
+		document.getElementById("maxFood").value = 200;
+		document.getElementById("foodRegenRate1").value = 0.01;
+		document.getElementById("foodRegenAmount1").value = 200;
+		document.getElementById("foodReplenishRate1").value = 0;
+		document.getElementById("foodReplenishAmount1").value = 0;
+		document.getElementById("foodDensity1").value = 3;
+		document.getElementById("forageWeight").value = 2;
+	} else {
+		document.getElementById("maxFood").value = 5000;
+		document.getElementById("foodRegenRate1").value = 0.005;
+		document.getElementById("foodRegenAmount1").value = 5000;
+		document.getElementById("foodReplenishRate1").value = 1;
+		document.getElementById("foodReplenishAmount1").value = 5000;
+		document.getElementById("foodDensity1").value = 25;
+		document.getElementById("forageWeight").value = 1;
+	}
+	document.getElementById("geneBreedSpeedToggle").checked = this.settings[this.currentSetting].breedSpeed;
+	document.getElementById("geneFoodCarryToggle").checked = this.settings[this.currentSetting].foodCarry;
+	document.getElementById("geneEnergyToggle").checked = this.settings[this.currentSetting].energy;
+	var str = this.settings[this.currentSetting].scatteredOrDense
+		? "s"
+		: "d";
+	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-ftt-f";
+	str = document.getElementById("geneBreedSpeedToggle").checked 
+		? str + "t" 
+		: str + "f";
+	str = document.getElementById("geneFoodCarryToggle").checked 
+		? str + "t" 
+		: str + "f";
+	str = document.getElementById("geneEnergyToggle").checked 
+		? str + "t" 
+		: str + "f";
+
+	document.getElementById("runName").innerText = str;
+	this.newGame();
 }
 
 GameEngine.prototype.newGame = function() {
