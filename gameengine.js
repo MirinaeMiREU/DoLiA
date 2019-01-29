@@ -32,7 +32,7 @@ function GameEngine() {
 
 GameEngine.prototype.init = function (ctx) {
 	this.ctx = ctx;
-	//this.socket = io.connect("http://24.16.255.56:8888");
+	this.socket = io.connect("http://24.16.255.56:8888");
 	this.play = document.getElementById("play");
 	this.pause = document.getElementById("pause");
 	this.step = document.getElementById("step");
@@ -55,11 +55,9 @@ GameEngine.prototype.init = function (ctx) {
 	this.setParameters();
 	this.setup();
 	this.startInput();
-	/*
 	this.socket.on("connect", function () {
         console.log("Socket connected.")
 	});
-	*/
     console.log('sim initialized');
 }
 
@@ -622,8 +620,6 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 			run: document.getElementById("filename").textContent,
 			maxFood: document.getElementById("maxFood").value,
 			maxTotalFood: document.getElementById("maxTotalFood").value,
-			seasonNum: seasonNum,
-			seasons: seasons,
 			geneToggle: document.getElementById("geneToggle").checked,
 			breedToggle: document.getElementById("breedToggle").checked,
 			randOrQueueToggle: document.getElementById("randomOrQueueToggle").checked,
@@ -643,7 +639,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		forageHistogram: hist2.data
 	};
 
-	//this.socket.emit('saveAnts', {statename: dataObj.params, state: dataObj});
+	this.socket.emit('saveAnts', dataObj);
 	
 	var str = ",Ant,Larva,Food\n";
 	for (var i = 1; i <= listNum; i++) {
