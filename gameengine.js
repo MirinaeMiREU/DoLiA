@@ -368,6 +368,7 @@ GameEngine.prototype.newGame = function() {
 	foodTotal = 0;
     this.setParameters();
 	this.setup();
+	this.resumeGame();
 }
 
 GameEngine.prototype.download = function(filename, text) {
@@ -473,10 +474,6 @@ GameEngine.prototype.startInput = function () {
 	
 	this.newMap.addEventListener("click", function(e) {
 		that.newGame();
-	})
-	
-	this.newAnt.addEventListener("click", function(e) {
-		that.restart();
 	})
 	
 
