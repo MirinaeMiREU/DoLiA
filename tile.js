@@ -211,7 +211,7 @@ Tile.prototype.setHome = function() {
 						  Math.round(YSIZE/2)-1);
 	this.isHome = true;
 	this.foodLevel = 0;
-	this.game.addEntity(mound);
+	//this.game.addEntity(mound);
 	
 	return mound;
 }

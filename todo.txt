@@ -70,4 +70,28 @@ penalize waiting - toggle, parameter
 lengthening lifespan of breeders - toggle
 breed from pool of breeders - toggle
 
+
+
 second page for analyzing data
+-------------------------------
+min-max chance to die
+decouple benefits toggle
+dense&sparse
+not dense&many
+fast breed - on,off
+more energy - on,off
+carry more - on,off
+live longer - on,off
+quad toggle - on,off
+x5 on all runs
+32 x 5 = 160
+------------------------------
+queue - random breeder
+different way of fitness function
+max of forage/breed as fitness
+toggle min age to breed
+
+-----------------------------
+climbinggiants.com/gs/analyze.html
+normalize
+different environment
