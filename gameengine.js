@@ -614,7 +614,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 	var dataObj = {
 		mode: "test",
 		params: {
-			run: document.getElementById("filename").textContent,
+			run: document.getElementById("runName").textContent,
 			maxFood: document.getElementById("maxFood").value,
 			maxTotalFood: document.getElementById("maxTotalFood").value,
 			geneToggle: document.getElementById("geneToggle").checked,
