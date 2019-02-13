@@ -616,7 +616,7 @@ GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, 
 		seasons.push(season);
 	}
 	var dataObj = {
-		mode: "test",
+		mode: "explore",
 		run: document.getElementById("runName").textContent,
 		params: {
 			maxFood: document.getElementById("maxFood").value,

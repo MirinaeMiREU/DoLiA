@@ -154,7 +154,7 @@ Mound.prototype.spawnAnt = function() {
 					  this.tiles,
 					  this,
 					  0.5,
-					  0.5,
+					  1,
 					  0);
 	} else if (Math.random() < MUTATION_RATE) {
 		ant = new Ant(this.game, 
