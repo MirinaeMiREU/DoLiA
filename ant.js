@@ -290,15 +290,18 @@ Ant.prototype.decide = function() {
 	var curTile = this.tiles[this.yPos][this.xPos];
 	var tileFood = curTile.foodLevel;
 	
+	// if hungry or tired, go home
 	if ((this.hunger > HUNGER_THRESHHOLD || this.energy <= 0) && 
 		this.action === OUTBOUND) {
 		this.energy = 0;
 		this.action = INBOUND;
 		this.turnAround();
 	}
+	// if home, decide to eat if hungry and choose role
 	if (curTile.isHome && this.action === INBOUND) {
 		this.mound.foodStorage += this.food;
 		this.totalFood += this.food;
+		this.mound.foragePeriod += this.food;
 		if (this.hunger > HUNGER_THRESHHOLD) {
 			this.eat();
 		} else {
@@ -318,21 +321,17 @@ Ant.prototype.decide = function() {
 			if ((this.food + this.foodCollection) <= this.maxFood) {
 				curTile.foodLevel -= this.foodCollection;
 				this.food += this.foodCollection;
-				//foods -= this.foodCollection;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
-				//foods -= this.maxFood - this.food;
 			}
 		} else {
 			if ((this.food + tileFood) <= this.maxFood) {
-				//foods -= curTile.foodLevel;
 				curTile.foodLevel = 0;
 				this.food += tileFood;
 			} else {
 				curTile.foodLevel -= this.maxFood - this.food;
 				this.food = this.maxFood;
-				//foods -= this.maxFood - this.food;
 			}
 		}
 		if (tileFood <= 0) { // if food tile depleted

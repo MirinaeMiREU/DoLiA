@@ -21,6 +21,10 @@ function Mound(game, xPos, yPos) {
 	this.graph2 = new Graph2(game, this);
 	this.roleHistogramData = new Histogram(game, this, 810, 200, 0);
 	this.forageHistogramData = new Histogram(game, this, 810, 400, 1);
+	this.larvaPeriod = 0;
+	this.larvaPeriodData = [];
+	this.foragePeriod = 0;
+	this.foragePeriodData = [];
 	Entity.call(this, game, xPos * CELL_SIZE, yPos * CELL_SIZE);
 }
 
@@ -90,19 +94,22 @@ Mound.prototype.updatePeriod = function() {
 				" Max Gen:" + this.maxGen);
 	console.log("Food Total: " + foods);
 	console.log("Standby Total: " + this.standby.length);
-	var cd = 0;
-	for (var i = 0; i < this.colony.length; i++) {
-		if (this.colony[i].role === EGG_DOWN_TIME) {
-			cd++;
-		}
-	}
-	console.log(cd);
+	console.log("Food Foraged: " + this.foragePeriod);
+	console.log("Larva Created: " + this.larvaPeriod);
 	
 	this.tick++;
+	this.larvaPeriodData.push(this.larvaPeriod);
+	this.larvaPeriod = 0;
+	this.foragePeriodData.push(this.foragePeriod);
+	this.foragePeriod = 0;
 	this.updateRoleHistogram();
 	this.updateForageHistogram();
 	this.updateBreedableAnts();
 	this.updateGeneration();
+	this.graph1.updatePeriod();
+	this.graph2.updatePeriod();
+	this.roleHistogramData.updatePeriod();
+	this.forageHistogramData.updatePeriod();
 }
 
 Mound.prototype.draw = function() {
@@ -122,6 +129,10 @@ Mound.prototype.drawPeriod = function() {
 	this.ctx.fillText("Max Gen:" + this.maxGen,600, 670);
 	this.ctx.fillText("Cycle# :" + this.lifeTimeCount,600, 690);
 	this.ctx.font = "10px sans-serif";
+	this.graph1.drawPeriod();
+	this.graph2.drawPeriod();
+	this.roleHistogramData.drawPeriod();
+	this.forageHistogramData.drawPeriod();
 }
 
 Mound.prototype.setTiles = function(tiles) {
@@ -143,7 +154,7 @@ Mound.prototype.spawnAnt = function() {
 					  this.tiles,
 					  this,
 					  0.5,
-					  0.5,
+					  1,
 					  0);
 	} else if (Math.random() < MUTATION_RATE) {
 		ant = new Ant(this.game, 
@@ -184,6 +195,7 @@ Mound.prototype.spawnLarva = function(parent) {
 	this.larvae.push(larva);
 	this.game.addEntity(larva);
 	this.larvaCount++;
+	this.larvaPeriod++;
 }
 Mound.prototype.removeLarva = function(larva) {
 	var colIndex = this.colony.indexOf(larva);

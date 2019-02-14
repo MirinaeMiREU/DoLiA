@@ -55,9 +55,11 @@ GameEngine.prototype.init = function (ctx) {
 	this.setParameters();
 	this.setup();
 	this.startInput();
+	
 	this.socket.on("connect", function () {
         console.log("Socket connected.")
 	});
+	
     console.log('sim initialized');
 }
 
@@ -218,10 +220,12 @@ GameEngine.prototype.setup = function() {
 	}
 	this.mound = squares[Math.round(YSIZE/2)-1][Math.round(XSIZE/2)-1].setHome();
 	this.mound.setTiles(squares);
+	/*
 	this.addEntity(this.mound.roleHistogramData);
 	this.addEntity(this.mound.forageHistogramData);
 	this.addEntity(this.mound.graph1);
 	this.addEntity(this.mound.graph2);
+	*/
 	
 	for (var i = 0; i < INIT_ANTS; i++) {
 		this.mound.spawnAnt();
@@ -239,8 +243,8 @@ GameEngine.prototype.start = function () {
 }
 
 GameEngine.prototype.restart = function() {
-	console.clear();
-	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
+	//console.clear();
+	var str = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
 									 this.mound.roleHistogramData, this.mound.forageHistogramData);
 	this.download(document.getElementById("filename").textContent+".csv", str);
 	var runNum = Number(document.getElementById("runNum").innerHTML);
@@ -318,7 +322,7 @@ GameEngine.prototype.setSettings = function() {
 }
 
 GameEngine.prototype.runNextSetting = function() {
-	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
+	var str = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
 		this.mound.roleHistogramData, this.mound.forageHistogramData);
 	this.download(document.getElementById("runName").textContent+".csv", str);
 
@@ -389,7 +393,7 @@ GameEngine.prototype.pauseGame = function() {
 GameEngine.prototype.endGame = function() {
 	console.log("ending sim");
 	this.isPaused = true;
-	var str = this.buildDownloadData(this.mound.graph1, this.mound.graph2, 
+	var str = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
 									 this.mound.roleHistogramData, this.mound.forageHistogramData);
 	this.download(document.getElementById("filename").textContent+".csv", str);
 	/*
@@ -599,7 +603,7 @@ GameEngine.prototype.loop = function () {
 	
 }
 
-GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) {
+GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, hist2) {
 	var listNum = GAME_LIFE_TIME/UPDATE_PERIOD;
 	var seasonNum = document.getElementById("seasons").value;
 	var seasons = [];
@@ -612,9 +616,9 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		seasons.push(season);
 	}
 	var dataObj = {
-		mode: "test",
+		mode: "explore",
+		run: document.getElementById("runName").textContent,
 		params: {
-			run: document.getElementById("filename").textContent,
 			maxFood: document.getElementById("maxFood").value,
 			maxTotalFood: document.getElementById("maxTotalFood").value,
 			geneToggle: document.getElementById("geneToggle").checked,
@@ -633,10 +637,13 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		larva: graph1.larvaData,
 		food: graph1.foodData,
 		roleHistogram: hist1.data,
-		forageHistogram: hist2.data
+		forageHistogram: hist2.data,
+		foragePeriod: mound.foragePeriodData,
+		larvaPeriod: mound.larvaPeriodData
 	};
 
 	this.socket.emit('saveAnts', dataObj);
+	
 	
 	var str = ",Ant,Larva,Food\n";
 	for (var i = 1; i <= listNum; i++) {
@@ -671,6 +678,7 @@ GameEngine.prototype.buildDownloadData = function(graph1, graph2, hist1, hist2) 
 		str += "\n";
 	}
 	
+	console.log(dataObj);
 	return str;
 }
 
