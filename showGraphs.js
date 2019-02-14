@@ -1,4 +1,4 @@
-var socket = io.connect("https://24.16.255.56:8888");
+var socket = io.connect("http://24.16.255.56:8888");
 var context;
 
 socket.on("connect", function() {
@@ -280,6 +280,10 @@ function fill(ctx, color, start, x, y) {
 
 function label(ctx) {
     ctx.fillStyle = "#000000";
+    ctx.fillText("Forager", 1010, 2260);
+    ctx.fillText("Breeder", 1010, 2640);
+    ctx.fillText("Explorer", 1010, 2710);
+    ctx.fillText("Exploiter", 1010, 3090);
     ctx.textAlign = "center";
     ctx.fillText("Ants", 500, 430);
     ctx.fillText("Food", 500, 880);
