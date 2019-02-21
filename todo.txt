@@ -95,3 +95,9 @@ toggle min age to breed
 climbinggiants.com/gs/analyze.html
 normalize
 different environment
+
+------------------------------
+
+extreme genes
+breeder live longer sparse
+work on sparse to dense environment.
