@@ -229,7 +229,6 @@ if (window.io !== undefined) {
 
 var canvas;
 
-
 function getMousePos(ctx, evt) {
     var rect = ctx.getBoundingClientRect();
     return {
