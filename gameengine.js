@@ -259,9 +259,10 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 8; i++) {
+	for (var i = 0; i < 9; i++) {
 		settings.push({
 			scatteredOrDense: true,
+			extremeGenes: false,
 			breedSpeed: true, 
 			foodCarry: true, 
 			energy: true,
@@ -269,7 +270,7 @@ GameEngine.prototype.setSettings = function() {
 			bWeight: 5
 		});
 	}
-
+/*
 	for (var i = 0; i < 8; i++) {
 		settings.push({
 			scatteredOrDense: false,
@@ -280,8 +281,9 @@ GameEngine.prototype.setSettings = function() {
 			bWeight: 5
 		});
 	}
-
+*/
 	settings[1].breedSpeed = false;
+
 	settings[2].foodCarry = false;
 
 	settings[3].energy = false;
@@ -299,6 +301,12 @@ GameEngine.prototype.setSettings = function() {
 	settings[7].foodCarry = false;
 	settings[7].energy = false;
 
+	settings[8].breedSpeed = false;
+	settings[8].foodCarry = false;
+	settings[8].energy = false;
+	settings[8].extremeGenes = true;
+
+/*
 	settings[9].breedSpeed = false;
 
 	settings[10].foodCarry = false;
@@ -317,14 +325,14 @@ GameEngine.prototype.setSettings = function() {
 	settings[15].breedSpeed = false;
 	settings[15].foodCarry = false;
 	settings[15].energy = false;
-
+*/
 	return settings;
 }
 
 GameEngine.prototype.runNextSetting = function() {
-	var str = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
+	var er = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
 		this.mound.roleHistogramData, this.mound.forageHistogramData);
-	this.download(document.getElementById("runName").textContent+".csv", str);
+	//this.download(document.getElementById("runName").textContent+".csv", str);
 
 	this.currentSetting = (this.currentSetting + 1) % this.settings.length;
 	if (this.settings[this.currentSetting].scatteredOrDense) {
@@ -347,10 +355,15 @@ GameEngine.prototype.runNextSetting = function() {
 	document.getElementById("geneBreedSpeedToggle").checked = this.settings[this.currentSetting].breedSpeed;
 	document.getElementById("geneFoodCarryToggle").checked = this.settings[this.currentSetting].foodCarry;
 	document.getElementById("geneEnergyToggle").checked = this.settings[this.currentSetting].energy;
+	document.getElementById("geneToggle").checked = this.settings[this.currentSetting].extremeGenes;
+	var tf = document.getElementById("geneToggle").checked 
+		? "t" 
+		: "f";
+
 	var str = this.settings[this.currentSetting].scatteredOrDense
 		? "s"
 		: "d";
-	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-ftt-f";
+	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-" + tf + "tt-t";
 	str = document.getElementById("geneBreedSpeedToggle").checked 
 		? str + "t" 
 		: str + "f";

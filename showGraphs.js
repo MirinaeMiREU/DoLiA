@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 socket.on("loadAnts", function(e) {
     var finishedOnlyToggle = document.getElementById("finishedOnlyToggle").checked;
-    var array = e.slice(0,100);
+    var array = e;
     var completed = [];
     for (var i = 0; i < array.length; i++) {
         if (array[i].ants.length >= 1999) {
@@ -198,78 +198,19 @@ function drawGraph(ctx, color, start, obj, maxVal) {
 function drawHistogram(ctx, start, obj) {
     for (var i = 0; i < 2000; i += 2) {
         for (var j = 0; j < 20; j++) {
-            var val = Math.ceil(obj[i/2][j] * 20);
+            var val = 255 - Math.ceil(obj[i/2][j] * 255);
             fill(ctx, val, start, i/2, 19-j);
         }
     }
 }
 
 function fill(ctx, color, start, x, y) {
-    switch(color) {
-		case 0:
-			ctx.fillStyle = "#FFFFFF";
-			break;
-		case 1:
-			ctx.fillStyle = "#F0F0F0";
-			break;
-		case 2:
-			ctx.fillStyle = "#E4E4E4";
-			break;
-		case 3:
-			ctx.fillStyle = "#D8D8D8";
-			break;
-		case 4:
-			ctx.fillStyle = "#CCCCCC";
-			break;
-		case 5:
-			ctx.fillStyle = "#C0C0C0";
-			break;
-		case 6:
-			ctx.fillStyle = "#B4B4B4";
-			break;
-		case 7:
-			ctx.fillStyle = "#A8A8A8";
-			break;
-		case 8:
-			ctx.fillStyle = "#9C9C9C";
-			break;
-		case 9:
-			ctx.fillStyle = "#909090";
-			break;
-		case 10:
-			ctx.fillStyle = "#848484";
-			break;
-		case 11:
-			ctx.fillStyle = "#787878";
-			break;
-		case 12:
-			ctx.fillStyle = "#6C6C6C";
-			break;
-		case 13:
-			ctx.fillStyle = "#606060";
-			break;
-		case 14:
-			ctx.fillStyle = "#545454";
-			break;
-		case 15:
-			ctx.fillStyle = "#484848";
-			break;
-		case 16:
-			ctx.fillStyle = "#3C3C3C";
-			break;
-		case 17:
-			ctx.fillStyle = "#303030";
-			break;
-		case 18:
-			ctx.fillStyle = "#242424";
-			break;
-		case 19:
-			ctx.fillStyle = "#181818";
-			break;
-		case 20:
-			ctx.fillStyle = "#0C0C0C";
-			break;
-	}
+    var hex = color.toString(16);
+    if (hex.length === 1) {
+        hex = "0" + hex;
+    }
+    var hexed = "#" + hex + hex + hex;
+    ctx.fillStyle = hexed;
 	var width = 1;
 	var height = 20;
 	ctx.fillRect(x*width, 
