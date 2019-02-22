@@ -98,6 +98,6 @@ different environment
 
 ------------------------------
 
-extreme genes
+extreme genes all false
 breeder live longer sparse
 work on sparse to dense environment.

@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 socket.on("loadAnts", function(e) {
     var finishedOnlyToggle = document.getElementById("finishedOnlyToggle").checked;
-    var array = e.slice(0,100);
+    var array = e;
     var completed = [];
     for (var i = 0; i < array.length; i++) {
         if (array[i].ants.length >= 1999) {
