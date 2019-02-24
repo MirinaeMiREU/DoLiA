@@ -259,10 +259,11 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 9; i++) {
+	for (var i = 0; i < 11; i++) {
 		settings.push({
 			scatteredOrDense: true,
 			extremeGenes: false,
+			breedLife: true,
 			breedSpeed: true, 
 			foodCarry: true, 
 			energy: true,
@@ -306,6 +307,20 @@ GameEngine.prototype.setSettings = function() {
 	settings[8].energy = false;
 	settings[8].extremeGenes = true;
 
+	settings[9].breedLife = false;
+	settings[9].breedSpeed = false;
+	settings[9].foodCarry = false;
+	settings[9].energy = false;
+	settings[9].extremeGenes = true;
+
+	settings[10].breedLife = false;
+	settings[10].breedSpeed = false;
+	settings[10].foodCarry = true;
+	settings[10].energy = false;
+	settings[10].extremeGenes = false;
+	settings[10].fWeight = 1;
+	settings[10].bWeight = 3;
+
 /*
 	settings[9].breedSpeed = false;
 
@@ -342,7 +357,6 @@ GameEngine.prototype.runNextSetting = function() {
 		document.getElementById("foodReplenishRate1").value = 0;
 		document.getElementById("foodReplenishAmount1").value = 0;
 		document.getElementById("foodDensity1").value = 3;
-		document.getElementById("forageWeight").value = 2;
 	} else {
 		document.getElementById("maxFood").value = 5000;
 		document.getElementById("foodRegenRate1").value = 0.005;
@@ -350,8 +364,10 @@ GameEngine.prototype.runNextSetting = function() {
 		document.getElementById("foodReplenishRate1").value = 1;
 		document.getElementById("foodReplenishAmount1").value = 5000;
 		document.getElementById("foodDensity1").value = 25;
-		document.getElementById("forageWeight").value = 1;
 	}
+	document.getElementById("forageWeight").value = this.settings[this.currentSetting].fWeight;
+	document.getElementById("breedWeight").value = this.settings[this.currentSetting].bWeight;
+	document.getElementById("geneLifeToggle").checked = this.settings[this.currentSetting].breedLife;
 	document.getElementById("geneBreedSpeedToggle").checked = this.settings[this.currentSetting].breedSpeed;
 	document.getElementById("geneFoodCarryToggle").checked = this.settings[this.currentSetting].foodCarry;
 	document.getElementById("geneEnergyToggle").checked = this.settings[this.currentSetting].energy;
@@ -363,7 +379,10 @@ GameEngine.prototype.runNextSetting = function() {
 	var str = this.settings[this.currentSetting].scatteredOrDense
 		? "s"
 		: "d";
-	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-" + tf + "tt-t";
+	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-" + tf + "tt-";
+	str = document.getElementById("geneLifeToggle").checked 
+		? str + "t" 
+		: str + "f";
 	str = document.getElementById("geneBreedSpeedToggle").checked 
 		? str + "t" 
 		: str + "f";
