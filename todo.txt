@@ -101,3 +101,14 @@ different environment
 extreme genes all false
 breeder live longer sparse
 work on sparse to dense environment.
+
+dump file to download
+python to draw graphs
+tttt 1 - 3
+fftt 2 - 7
+
+dense
+tttt
+ffff
+
+500x? picture pixel
