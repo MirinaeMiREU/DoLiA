@@ -132,6 +132,7 @@ function parseData(data) {
         histogramForage: histogramForage
     };
     
+    console.log(obj);
     console.log(data);
     drawData(obj, context);
 }
@@ -200,6 +201,7 @@ function drawHistogram(ctx, start, obj) {
         for (var j = 0; j < 20; j++) {
             var val = 255 - Math.ceil(obj[i/2][j] * 255);
             fill(ctx, val, start, i/2, 19-j);
+            console.log(val);
         }
     }
 }
@@ -209,7 +211,7 @@ function fill(ctx, color, start, x, y) {
     if (hex.length === 1) {
         hex = "0" + hex;
     }
-    var hexed = "#" + hex + hex + hex;
+    var hexed = "#00" + hex + hex;
     ctx.fillStyle = hexed;
 	var width = 1;
 	var height = 20;
