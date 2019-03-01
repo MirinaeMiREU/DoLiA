@@ -26,6 +26,7 @@ function GameEngine() {
 	this.save = null;
 	this.load = null;
 	this.newMap = null;
+	this.new = null;
 	this.newAnt = null;
 	this.mound = null;
 }
@@ -39,12 +40,13 @@ GameEngine.prototype.init = function (ctx) {
 	this.save = document.getElementById("save");
 	this.load = document.getElementById("load");
 	this.newMap = document.getElementById("newMap");
+	this.new = document.getElementById("new");
 	this.newAnt = document.getElementById("newAnt");
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
 	this.timer = new Timer();
 	this.settings = this.setSettings();
-	this.currentSetting = 0;
+	this.currentSetting = -1;
 	document.getElementById("seasonDiv").innerHTML = "Season 1<br />" +
 	"<input type='text' id='seasonLength1' value='1000'/>Length<br />" +
 	"<input type='text' id='foodRegenRate1' value='0'/>Food Regen Rate<br />" +
@@ -267,8 +269,8 @@ GameEngine.prototype.setSettings = function() {
 			breedSpeed: true, 
 			foodCarry: true, 
 			energy: true,
-			fWeight: 2,
-			bWeight: 7
+			fWeight: 1,
+			bWeight: 2
 		});
 	}
 /*
@@ -285,6 +287,8 @@ GameEngine.prototype.setSettings = function() {
 */
 	settings[1].breedSpeed = false;
 	settings[1].breedLife = false;
+	settings[1].fWeight = 2;
+	settings[1].bWeight = 7;
 
 	/*
 	settings[2].foodCarry = false;
@@ -347,8 +351,10 @@ GameEngine.prototype.setSettings = function() {
 }
 
 GameEngine.prototype.runNextSetting = function() {
-	var er = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
-		this.mound.roleHistogramData, this.mound.forageHistogramData);
+	if (this.currentSetting !== -1) {
+		var er = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
+			this.mound.roleHistogramData, this.mound.forageHistogramData);
+	}
 	//this.download(document.getElementById("runName").textContent+".csv", str);
 
 	this.currentSetting = (this.currentSetting + 1) % this.settings.length;
@@ -401,7 +407,7 @@ GameEngine.prototype.runNextSetting = function() {
 
 GameEngine.prototype.newGame = function() {
 	console.clear();
-	document.getElementById("runNum").innerHTML = "1";
+	//document.getElementById("runNum").innerHTML = "1";
 	console.log("starting new sim");
 	foodTotal = 0;
     this.setParameters();
@@ -508,11 +514,15 @@ GameEngine.prototype.startInput = function () {
 	
 	this.load.addEventListener("click", function (e) {
 		console.log("Doesn't do anything yet");
-    }, false);
+	}, false);
+
+	this.new.addEventListener("click", function(e) {
+		that.runNextSetting();
+	});
 	
 	this.newMap.addEventListener("click", function(e) {
 		that.newGame();
-	})
+	});
 	
 
     console.log('Input started');

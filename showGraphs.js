@@ -35,7 +35,7 @@ socket.on("loadAnts", function(e) {
         }
     }
     
-    
+    console.log("finish percent: " + (Math.round(completed.length/array.length*1000)/10));
     if (finishedOnlyToggle) {
         parseData(completed);
     } else {
@@ -201,7 +201,7 @@ function drawHistogram(ctx, start, obj) {
         for (var j = 0; j < 20; j++) {
             var val = 255 - Math.ceil(obj[i/2][j] * 255);
             fill(ctx, val, start, i/2, 19-j);
-            console.log(val);
+            //console.log(val);
         }
     }
 }
