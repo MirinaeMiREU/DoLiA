@@ -8,15 +8,15 @@ from matplotlib.mlab import bivariate_normal
 
 # import data
 inFiles = []
-inFiles.append('s-f2-b5-ft-ftt-tfff')
-inFiles.append('s-f2-b5-ft-ftt-ftff')
-inFiles.append('s-f1-b3-ft-ftt-fftf')
-inFiles.append('s-f2-b5-ft-ftt-ffft')
+##inFiles.append('s-f2-b5-ft-ftt-tfff')
+##inFiles.append('s-f2-b5-ft-ftt-ftff')
+##inFiles.append('s-f1-b3-ft-ftt-fftf')
+##inFiles.append('s-f2-b5-ft-ftt-ffft')
 
-##inFiles.append('s-f2-b3-ft-ftt-tttt')
-##inFiles.append('s-f2-b5-ft-ftt-ttff')
-##inFiles.append('s-f2-b7-ft-ftt-fftt')
-##inFiles.append('s-f2-b5-ft-ftt-ffff')
+inFiles.append('s-f2-b3-ft-ftt-tttt')
+inFiles.append('s-f2-b5-ft-ftt-ttff')
+inFiles.append('s-f2-b7-ft-ftt-fftt')
+inFiles.append('s-f2-b5-ft-ftt-ffff')
 c=1
 
 # A low hump with a spike coming out of the top right.  Needs to have
