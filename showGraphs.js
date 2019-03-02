@@ -135,6 +135,24 @@ function parseData(data) {
     console.log(obj);
     console.log(data);
     drawData(obj, context);
+    var str = formatObj(obj);
+    download(document.getElementById("runToQuery").value, str);
+}
+
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+    pom.click();
+}
+
+function formatObj(obj) {
+    var str = "";
+    for (var i = 0; i < 2000; i++) {
+        str += obj.histogramRole[i] + "\n";
+    }
+
+    return str;
 }
 
 function drawData(obj, ctx) {
@@ -200,8 +218,12 @@ function drawHistogram(ctx, start, obj) {
     for (var i = 0; i < 2000; i += 2) {
         for (var j = 0; j < 20; j++) {
             var val = 255 - Math.ceil(obj[i/2][j] * 255);
+            /*
+            if (j == 19) {
+                console.log(obj[i/2][j]);
+            }
+            */
             fill(ctx, val, start, i/2, 19-j);
-            //console.log(val);
         }
     }
 }
@@ -211,7 +233,7 @@ function fill(ctx, color, start, x, y) {
     if (hex.length === 1) {
         hex = "0" + hex;
     }
-    var hexed = "#00" + hex + hex;
+    var hexed = "#" + hex + hex + hex;
     ctx.fillStyle = hexed;
 	var width = 1;
 	var height = 20;
