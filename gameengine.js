@@ -261,16 +261,16 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 4; i++) {
+	for (var i = 0; i < 1; i++) {
 		settings.push({
-			scatteredOrDense: true,
-			extremeGenes: true,
-			breedLife: true,
-			breedSpeed: true, 
-			foodCarry: false, 
-			energy: false,
+			scatteredOrDense: false,
+			extremeGenes: false,
+			breedLife: false,
+			breedSpeed: false, 
+			foodCarry: true, 
+			energy: true,
 			fWeight: 2,
-			bWeight: 3
+			bWeight: 5
 		});
 	}
 /*
@@ -285,6 +285,7 @@ GameEngine.prototype.setSettings = function() {
 		});
 	}
 */
+	/*
 	settings[1].breedSpeed = false;
 
 	settings[2].fWeight = 1;
@@ -294,7 +295,6 @@ GameEngine.prototype.setSettings = function() {
 	settings[3].fWeight = 1;
 	settings[3].bWeight = 1;
 
-	/*
 	settings[4].breedSpeed = false;
 	settings[4].foodCarry = false;
 
@@ -367,11 +367,28 @@ GameEngine.prototype.runNextSetting = function() {
 		document.getElementById("foodDensity1").value = 3;
 	} else {
 		document.getElementById("maxFood").value = 5000;
-		document.getElementById("foodRegenRate1").value = 0.005;
-		document.getElementById("foodRegenAmount1").value = 5000;
-		document.getElementById("foodReplenishRate1").value = 1;
-		document.getElementById("foodReplenishAmount1").value = 5000;
-		document.getElementById("foodDensity1").value = 25;
+		document.getElementById("seasons").value = 3;
+
+		document.getElementById("seasonLength1").value = 40000;
+		document.getElementById("foodRegenRate1").value = 0.01;
+		document.getElementById("foodRegenAmount1").value = 200;
+		document.getElementById("foodReplenishRate1").value = 0;
+		document.getElementById("foodReplenishAmount1").value = 0;
+		document.getElementById("foodDensity1").value = 3;
+
+		document.getElementById("seasonLength2").value = 20000;
+		document.getElementById("foodRegenRate2").value = 0.005;
+		document.getElementById("foodRegenAmount2").value = 1000;
+		document.getElementById("foodReplenishRate2").value = 0.5;
+		document.getElementById("foodReplenishAmount2").value = 500;
+		document.getElementById("foodDensity2").value = 14;
+
+		document.getElementById("seasonLength3").value = 40000;
+		document.getElementById("foodRegenRate3").value = 0.005;
+		document.getElementById("foodRegenAmount3").value = 5000;
+		document.getElementById("foodReplenishRate3").value = 1;
+		document.getElementById("foodReplenishAmount3").value = 5000;
+		document.getElementById("foodDensity3").value = 25;
 	}
 	document.getElementById("forageWeight").value = this.settings[this.currentSetting].fWeight;
 	document.getElementById("breedWeight").value = this.settings[this.currentSetting].bWeight;
@@ -386,7 +403,7 @@ GameEngine.prototype.runNextSetting = function() {
 
 	var str = this.settings[this.currentSetting].scatteredOrDense
 		? "s"
-		: "d";
+		: "d2";
 	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-" + tf + "tt-";
 	str = document.getElementById("geneLifeToggle").checked 
 		? str + "t" 
