@@ -369,7 +369,7 @@ GameEngine.prototype.runNextSetting = function() {
 		document.getElementById("maxFood").value = 5000;
 		document.getElementById("seasons").value = 3;
 
-		document.getElementById("seasonLength1").value = 40000;
+		document.getElementById("seasonLength1").value = 20000;
 		document.getElementById("foodRegenRate1").value = 0.01;
 		document.getElementById("foodRegenAmount1").value = 200;
 		document.getElementById("foodReplenishRate1").value = 0;
@@ -383,7 +383,7 @@ GameEngine.prototype.runNextSetting = function() {
 		document.getElementById("foodReplenishAmount2").value = 500;
 		document.getElementById("foodDensity2").value = 14;
 
-		document.getElementById("seasonLength3").value = 40000;
+		document.getElementById("seasonLength3").value = 60000;
 		document.getElementById("foodRegenRate3").value = 0.005;
 		document.getElementById("foodRegenAmount3").value = 5000;
 		document.getElementById("foodReplenishRate3").value = 1;
@@ -403,7 +403,7 @@ GameEngine.prototype.runNextSetting = function() {
 
 	var str = this.settings[this.currentSetting].scatteredOrDense
 		? "s"
-		: "d2";
+		: "d3";
 	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-" + tf + "tt-";
 	str = document.getElementById("geneLifeToggle").checked 
 		? str + "t" 
