@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
+<head> 
     <meta charset="utf-8">
 	<title>Division of Labor in Ants</title>
 	<script type="text/javascript" src="http://24.16.255.56:8888/socket.io/socket.io.js"></script>
@@ -42,6 +42,7 @@
     <canvas id="gameWorld" tabindex="1" width="1200" height="800" style="border: 1px solid brown; background: white"></canvas>
 	<br>
 	<div id="sim">
+		<button id="new">New Sim</button>
 		<button id="play">Play</button>
 		<button id="pause">Pause</button>
 		<button id="step">Step</button>
@@ -51,7 +52,7 @@
 		
         <input type="text" id="cellSize" value="10"/>Cell Size<br />
 		<input type="text" id="runCount" value="10"/>Max Run Count<br />
-        <input type="text" id="simDuration" value="100000"/>Simulation Duration<br />
+        <input type="text" id="simDuration" value="200000"/>Simulation Duration<br />
 		<input type="text" id="updatePeriod" value="50"/>Cycles Per Tick<br />
 		<input type="text" id="drawPeriod" value="100"/>Cycles Per Simulation Draw<br />
         <input type="text" id="maxFood" value="200"/>Max Food Value<br />
@@ -86,7 +87,7 @@
         <input type="text" id="maxEggLayTime" value="100" />Max Egg Laying Time<br />
 		<input type="text" id="minEggLayTime" value="1" />Min Egg Laying Time<br />
 		<input type="text" id="forageWeight" value="2" />Forage Weight<br />
-		<input type="text" id="breedWeight" value="5" />Breed Weight<br />
+		<input type="text" id="breedWeight" value="7" />Breed Weight<br />
 		<input type="text" id="breedAge" value="100" />Age requirement To Breed <input type="checkbox" id="breedAgeToggle" /><br />
 		
 		<input type="text" id="standbyPenalty" value="0.1" />Breeder Standby Penalty

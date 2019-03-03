@@ -26,6 +26,7 @@ function GameEngine() {
 	this.save = null;
 	this.load = null;
 	this.newMap = null;
+	this.new = null;
 	this.newAnt = null;
 	this.mound = null;
 }
@@ -39,12 +40,13 @@ GameEngine.prototype.init = function (ctx) {
 	this.save = document.getElementById("save");
 	this.load = document.getElementById("load");
 	this.newMap = document.getElementById("newMap");
+	this.new = document.getElementById("new");
 	this.newAnt = document.getElementById("newAnt");
     this.surfaceWidth = this.ctx.canvas.width;
     this.surfaceHeight = this.ctx.canvas.height;
 	this.timer = new Timer();
 	this.settings = this.setSettings();
-	this.currentSetting = 0;
+	this.currentSetting = -1;
 	document.getElementById("seasonDiv").innerHTML = "Season 1<br />" +
 	"<input type='text' id='seasonLength1' value='1000'/>Length<br />" +
 	"<input type='text' id='foodRegenRate1' value='0'/>Food Regen Rate<br />" +
@@ -259,15 +261,15 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 11; i++) {
+	for (var i = 0; i < 2; i++) {
 		settings.push({
-			scatteredOrDense: true,
+			scatteredOrDense: false,
 			extremeGenes: false,
-			breedLife: true,
-			breedSpeed: true, 
+			breedLife: false,
+			breedSpeed: false, 
 			foodCarry: true, 
 			energy: true,
-			fWeight: 2,
+			fWeight: 1,
 			bWeight: 5
 		});
 	}
@@ -283,11 +285,15 @@ GameEngine.prototype.setSettings = function() {
 		});
 	}
 */
-	settings[1].breedSpeed = false;
+	
+	settings[1].bWeight = 6;
+	/*
+	settings[2].fWeight = 1;
+	settings[2].bWeight = 1;
 
-	settings[2].foodCarry = false;
-
-	settings[3].energy = false;
+	settings[3].breedSpeed = false;
+	settings[3].fWeight = 1;
+	settings[3].bWeight = 1;
 
 	settings[4].breedSpeed = false;
 	settings[4].foodCarry = false;
@@ -321,7 +327,7 @@ GameEngine.prototype.setSettings = function() {
 	settings[10].fWeight = 1;
 	settings[10].bWeight = 3;
 
-/*
+
 	settings[9].breedSpeed = false;
 
 	settings[10].foodCarry = false;
@@ -345,8 +351,10 @@ GameEngine.prototype.setSettings = function() {
 }
 
 GameEngine.prototype.runNextSetting = function() {
-	var er = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
-		this.mound.roleHistogramData, this.mound.forageHistogramData);
+	if (this.currentSetting !== -1) {
+		var er = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
+			this.mound.roleHistogramData, this.mound.forageHistogramData);
+	}
 	//this.download(document.getElementById("runName").textContent+".csv", str);
 
 	this.currentSetting = (this.currentSetting + 1) % this.settings.length;
@@ -359,11 +367,28 @@ GameEngine.prototype.runNextSetting = function() {
 		document.getElementById("foodDensity1").value = 3;
 	} else {
 		document.getElementById("maxFood").value = 5000;
-		document.getElementById("foodRegenRate1").value = 0.005;
-		document.getElementById("foodRegenAmount1").value = 5000;
-		document.getElementById("foodReplenishRate1").value = 1;
-		document.getElementById("foodReplenishAmount1").value = 5000;
-		document.getElementById("foodDensity1").value = 25;
+		document.getElementById("seasons").value = 3;
+
+		document.getElementById("seasonLength1").value = 50000;
+		document.getElementById("foodRegenRate1").value = 0.01;
+		document.getElementById("foodRegenAmount1").value = 200;
+		document.getElementById("foodReplenishRate1").value = 0;
+		document.getElementById("foodReplenishAmount1").value = 0;
+		document.getElementById("foodDensity1").value = 3;
+
+		document.getElementById("seasonLength2").value = 50000;
+		document.getElementById("foodRegenRate2").value = 0.005;
+		document.getElementById("foodRegenAmount2").value = 1000;
+		document.getElementById("foodReplenishRate2").value = 0.5;
+		document.getElementById("foodReplenishAmount2").value = 500;
+		document.getElementById("foodDensity2").value = 14;
+
+		document.getElementById("seasonLength3").value = 100000;
+		document.getElementById("foodRegenRate3").value = 0.005;
+		document.getElementById("foodRegenAmount3").value = 5000;
+		document.getElementById("foodReplenishRate3").value = 1;
+		document.getElementById("foodReplenishAmount3").value = 5000;
+		document.getElementById("foodDensity3").value = 25;
 	}
 	document.getElementById("forageWeight").value = this.settings[this.currentSetting].fWeight;
 	document.getElementById("breedWeight").value = this.settings[this.currentSetting].bWeight;
@@ -378,7 +403,7 @@ GameEngine.prototype.runNextSetting = function() {
 
 	var str = this.settings[this.currentSetting].scatteredOrDense
 		? "s"
-		: "d";
+		: "d4";
 	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-" + tf + "tt-";
 	str = document.getElementById("geneLifeToggle").checked 
 		? str + "t" 
@@ -399,7 +424,7 @@ GameEngine.prototype.runNextSetting = function() {
 
 GameEngine.prototype.newGame = function() {
 	console.clear();
-	document.getElementById("runNum").innerHTML = "1";
+	//document.getElementById("runNum").innerHTML = "1";
 	console.log("starting new sim");
 	foodTotal = 0;
     this.setParameters();
@@ -506,11 +531,15 @@ GameEngine.prototype.startInput = function () {
 	
 	this.load.addEventListener("click", function (e) {
 		console.log("Doesn't do anything yet");
-    }, false);
+	}, false);
+
+	this.new.addEventListener("click", function(e) {
+		that.runNextSetting();
+	});
 	
 	this.newMap.addEventListener("click", function(e) {
 		that.newGame();
-	})
+	});
 	
 
     console.log('Input started');
