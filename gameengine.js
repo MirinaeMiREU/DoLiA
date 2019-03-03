@@ -285,9 +285,9 @@ GameEngine.prototype.setSettings = function() {
 		});
 	}
 */
+	
+	settings[1].bWeight = 6;
 	/*
-	settings[1].breedSpeed = false;
-
 	settings[2].fWeight = 1;
 	settings[2].bWeight = 1;
 
