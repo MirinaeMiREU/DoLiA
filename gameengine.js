@@ -270,7 +270,7 @@ GameEngine.prototype.setSettings = function() {
 			foodCarry: true, 
 			energy: true,
 			fWeight: 2,
-			bWeight: 7
+			bWeight: 5
 		});
 	}
 /*
