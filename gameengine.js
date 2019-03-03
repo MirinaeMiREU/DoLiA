@@ -269,7 +269,7 @@ GameEngine.prototype.setSettings = function() {
 			breedSpeed: false, 
 			foodCarry: true, 
 			energy: true,
-			fWeight: 2,
+			fWeight: 1,
 			bWeight: 5
 		});
 	}
