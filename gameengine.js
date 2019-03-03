@@ -264,7 +264,7 @@ GameEngine.prototype.setSettings = function() {
 	for (var i = 0; i < 4; i++) {
 		settings.push({
 			scatteredOrDense: true,
-			extremeGenes: false,
+			extremeGenes: true,
 			breedLife: true,
 			breedSpeed: true, 
 			foodCarry: false, 
