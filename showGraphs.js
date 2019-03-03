@@ -204,9 +204,9 @@ function drawGraph(ctx, color, start, obj, maxVal) {
     ctx.beginPath();
     var initAnt = 400 + start - Math.floor(obj[0]/maxVal*400);
     ctx.moveTo(0,initAnt);
-    for (var i = 2; i < RUN; i += RUN/1000) {
+    for (var i = RUN/1000; i < RUN; i += RUN/1000) {
         var yPos = 400 + start - Math.floor(obj[i]/maxVal*400);
-        ctx.lineTo(i/2, yPos);
+        ctx.lineTo(i/4, yPos);
     }
     ctx.stroke();
     ctx.closePath();
@@ -223,13 +223,13 @@ function drawGraph(ctx, color, start, obj, maxVal) {
 function drawHistogram(ctx, start, obj) {
     for (var i = 0; i < RUN; i += RUN/1000) {
         for (var j = 0; j < 20; j++) {
-            var val = 255 - Math.ceil(obj[i/2][j] * 255);
+            var val = 255 - Math.ceil(obj[i][j] * 255);
             /*
             if (j == 19) {
                 console.log(obj[i/2][j]);
             }
             */
-            fill(ctx, val, start, i/2, 19-j);
+            fill(ctx, val, start, i/(RUN/1000), 19-j);
         }
     }
 }

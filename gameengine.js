@@ -269,8 +269,8 @@ GameEngine.prototype.setSettings = function() {
 			breedSpeed: false, 
 			foodCarry: true, 
 			energy: true,
-			fWeight: 1,
-			bWeight: 4
+			fWeight: 2,
+			bWeight: 7
 		});
 	}
 /*
