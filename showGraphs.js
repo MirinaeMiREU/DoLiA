@@ -1,6 +1,6 @@
 var socket = io.connect("http://24.16.255.56:8888");
 var context;
-
+var RUN = 4000;
 socket.on("connect", function() {
     console.log("connected on output");
 });
@@ -27,17 +27,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 socket.on("loadAnts", function(e) {
     var finishedOnlyToggle = document.getElementById("finishedOnlyToggle").checked;
+    var prematureOnlyToggle = document.getElementById("prematureOnlyToggle").checked;
     var array = e;
     var completed = [];
+    var premature = [];
     for (var i = 0; i < array.length; i++) {
-        if (array[i].ants.length >= 1999) {
+        if (array[i].ants.length >= RUN-1) {
             completed.push(array[i]);
+        } else {
+            premature.push(array[i]);
         }
     }
     
     console.log("finish percent: " + (Math.round(completed.length/array.length*1000)/10));
     if (finishedOnlyToggle) {
         parseData(completed);
+    } else if (prematureOnlyToggle) {
+        parseData(premature);
     } else {
         parseData(array);
     }
@@ -50,7 +56,7 @@ function parseData(data) {
     var arrFoodPeriod = [];
     var arrLarvaPeriod = [];
 
-    for (var i = 0; i < 2000; i++) {
+    for (var i = 0; i < RUN; i++) {
         arrAnt.push(0);
         arrFood.push(0);
         arrLarva.push(0);
@@ -95,7 +101,7 @@ function parseData(data) {
     var histogramRole = [];
     var histogramForage = [];
 
-    for (var i = 0; i < 2000; i++) {
+    for (var i = 0; i < RUN; i++) {
         var slice = [];
         var slice2 = [];
         for (var j = 0; j < 20; j++) {
@@ -107,7 +113,7 @@ function parseData(data) {
     }
    
     for (var i = 0; i < data.length; i++) {
-        for (var j = 0; j < 2000; j++) {
+        for (var j = 0; j < RUN; j++) {
             for (var k = 0; k < 20; k++) {
                 if (data[i].roleHistogram[j] !== undefined && data[i].forageHistogram[j] !== undefined) {
                     histogramRole[j][k] += data[i].roleHistogram[j][k]/data[i].ants[j]/data.length;
@@ -148,7 +154,7 @@ function download(filename, text) {
 
 function formatObj(obj) {
     var str = "";
-    for (var i = 0; i < 2000; i++) {
+    for (var i = 0; i < RUN; i++) {
         str += obj.histogramRole[i] + "\n";
     }
 
@@ -198,7 +204,7 @@ function drawGraph(ctx, color, start, obj, maxVal) {
     ctx.beginPath();
     var initAnt = 400 + start - Math.floor(obj[0]/maxVal*400);
     ctx.moveTo(0,initAnt);
-    for (var i = 2; i < obj.length; i += 2) {
+    for (var i = 2; i < RUN; i += RUN/1000) {
         var yPos = 400 + start - Math.floor(obj[i]/maxVal*400);
         ctx.lineTo(i/2, yPos);
     }
@@ -215,7 +221,7 @@ function drawGraph(ctx, color, start, obj, maxVal) {
 }
 
 function drawHistogram(ctx, start, obj) {
-    for (var i = 0; i < 2000; i += 2) {
+    for (var i = 0; i < RUN; i += RUN/1000) {
         for (var j = 0; j < 20; j++) {
             var val = 255 - Math.ceil(obj[i/2][j] * 255);
             /*
