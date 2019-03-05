@@ -261,12 +261,12 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 2; i++) {
+	for (var i = 0; i < 3; i++) {
 		settings.push({
 			scatteredOrDense: false,
 			extremeGenes: false,
-			breedLife: false,
-			breedSpeed: false, 
+			breedLife: true,
+			breedSpeed: true, 
 			foodCarry: true, 
 			energy: true,
 			fWeight: 1,
@@ -286,11 +286,14 @@ GameEngine.prototype.setSettings = function() {
 	}
 */
 	
-	settings[1].bWeight = 6;
+	settings[1].foodCarry = false;
+	settings[1].energy = false;
+	
+	settings[2].breedLife = false;
+	settings[2].breedSpeed = false;
+	settings[2].foodCarry = false;
+	settings[2].energy = false;
 	/*
-	settings[2].fWeight = 1;
-	settings[2].bWeight = 1;
-
 	settings[3].breedSpeed = false;
 	settings[3].fWeight = 1;
 	settings[3].bWeight = 1;
