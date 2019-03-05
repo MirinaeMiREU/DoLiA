@@ -262,7 +262,7 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 4; i++) {
+	for (var i = 0; i < 5; i++) {
 		settings.push({
 			roleToggle: true,
 			scatteredOrDense: false,
