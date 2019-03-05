@@ -85,6 +85,7 @@ GameEngine.prototype.setParameters = function() {
 	EXTREME_GENE_TOGGLE = document.getElementById("geneToggle").checked;
 	RANDOM_OR_QUEUE_TOGGLE = document.getElementById("randomOrQueueToggle").checked;
 	SUM_OR_MAX_FITNESS_TOGGLE = document.getElementById("sumOrMaxToggle").checked;
+	ROLE_GENE_TOGGLE = document.getElementById("geneRoleToggle").checked;
 
 	GENE_LIFE_TOGGLE = document.getElementById("geneLifeToggle").checked;
 	MIN_AGE = parseInt(document.getElementById("minAge").value);
@@ -261,16 +262,17 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 3; i++) {
+	for (var i = 0; i < 4; i++) {
 		settings.push({
+			roleToggle: true,
 			scatteredOrDense: false,
 			extremeGenes: false,
 			breedLife: true,
 			breedSpeed: true, 
 			foodCarry: true, 
 			energy: true,
-			fWeight: 1,
-			bWeight: 5
+			fWeight: 2,
+			bWeight: 3
 		});
 	}
 /*
@@ -293,14 +295,22 @@ GameEngine.prototype.setSettings = function() {
 	settings[2].breedSpeed = false;
 	settings[2].foodCarry = false;
 	settings[2].energy = false;
-	/*
-	settings[3].breedSpeed = false;
+	
+	settings[3].roleToggle = false;
+	settings[3].scatteredOrDense = true;
 	settings[3].fWeight = 1;
 	settings[3].bWeight = 1;
 
+	settings[4].roleToggle = false;
+	settings[4].scatteredOrDense = true;
+	settings[4].breedLife = false;
 	settings[4].breedSpeed = false;
 	settings[4].foodCarry = false;
+	settings[4].energy = false;
+	settings[4].fWeight = 1;
+	settings[4].bWeight = 1;
 
+	/*
 	settings[5].breedSpeed = false;
 	settings[5].energy = false;
 
@@ -362,13 +372,17 @@ GameEngine.prototype.runNextSetting = function() {
 
 	this.currentSetting = (this.currentSetting + 1) % this.settings.length;
 	if (this.settings[this.currentSetting].scatteredOrDense) {
+		document.getElementById("simDuration").value = 100000;
 		document.getElementById("maxFood").value = 200;
 		document.getElementById("foodRegenRate1").value = 0.01;
 		document.getElementById("foodRegenAmount1").value = 200;
 		document.getElementById("foodReplenishRate1").value = 0;
 		document.getElementById("foodReplenishAmount1").value = 0;
 		document.getElementById("foodDensity1").value = 3;
+
+		document.getElementById("seasonLength1").value = 100000;
 	} else {
+		document.getElementById("simDuration").value = 200000;
 		document.getElementById("maxFood").value = 5000;
 		document.getElementById("seasons").value = 3;
 
@@ -400,6 +414,7 @@ GameEngine.prototype.runNextSetting = function() {
 	document.getElementById("geneFoodCarryToggle").checked = this.settings[this.currentSetting].foodCarry;
 	document.getElementById("geneEnergyToggle").checked = this.settings[this.currentSetting].energy;
 	document.getElementById("geneToggle").checked = this.settings[this.currentSetting].extremeGenes;
+	document.getElementById("geneRoleToggle").checked = this.settings[this.currentSetting].roleToggle;
 	var tf = document.getElementById("geneToggle").checked 
 		? "t" 
 		: "f";
@@ -420,6 +435,9 @@ GameEngine.prototype.runNextSetting = function() {
 	str = document.getElementById("geneEnergyToggle").checked 
 		? str + "t" 
 		: str + "f";
+	str = document.getElementById("geneRoleToggle").checked
+		? str
+		: str + "-c";
 
 	document.getElementById("runName").innerText = str;
 	this.newGame();

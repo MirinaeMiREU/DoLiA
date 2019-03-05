@@ -34,6 +34,9 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 							  Math.pow(this.geneForage,2)*2:
 							  1-(Math.pow(1-this.geneForage,2)*2);
 	}	
+	if (!ROLE_GENE_TOGGLE) {
+		this.geneRoleActual = 0.5;
+	}
 
 	this.deathChance = GENE_LIFE_TOGGLE
 						? ((MAX_CHANCE_TO_DIE - MIN_CHANCE_TO_DIE) * this.geneRoleActual) + MIN_CHANCE_TO_DIE
