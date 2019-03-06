@@ -384,7 +384,8 @@ GameEngine.prototype.runNextSetting = function() {
 	} else {
 		document.getElementById("simDuration").value = 200000;
 		document.getElementById("maxFood").value = 5000;
-		document.getElementById("seasons").value = 3;
+		document.getElementById("seasons").value = 4;
+		setupSeasons(4);
 
 		document.getElementById("seasonLength1").value = 50000;
 		document.getElementById("foodRegenRate1").value = 0.01;
@@ -393,19 +394,26 @@ GameEngine.prototype.runNextSetting = function() {
 		document.getElementById("foodReplenishAmount1").value = 0;
 		document.getElementById("foodDensity1").value = 3;
 
-		document.getElementById("seasonLength2").value = 50000;
+		document.getElementById("seasonLength2").value = 30000;
 		document.getElementById("foodRegenRate2").value = 0.005;
 		document.getElementById("foodRegenAmount2").value = 1000;
-		document.getElementById("foodReplenishRate2").value = 0.5;
-		document.getElementById("foodReplenishAmount2").value = 500;
-		document.getElementById("foodDensity2").value = 14;
+		document.getElementById("foodReplenishRate2").value = 0;
+		document.getElementById("foodReplenishAmount2").value = 0;
+		document.getElementById("foodDensity2").value = 10;
 
-		document.getElementById("seasonLength3").value = 100000;
+		document.getElementById("seasonLength3").value = 30000;
 		document.getElementById("foodRegenRate3").value = 0.005;
-		document.getElementById("foodRegenAmount3").value = 5000;
-		document.getElementById("foodReplenishRate3").value = 1;
-		document.getElementById("foodReplenishAmount3").value = 5000;
-		document.getElementById("foodDensity3").value = 25;
+		document.getElementById("foodRegenAmount3").value = 2500;
+		document.getElementById("foodReplenishRate3").value = 0.75;
+		document.getElementById("foodReplenishAmount3").value = 1500;
+		document.getElementById("foodDensity3").value = 18;
+
+		document.getElementById("seasonLength4").value = 90000;
+		document.getElementById("foodRegenRate4").value = 0.005;
+		document.getElementById("foodRegenAmount4").value = 5000;
+		document.getElementById("foodReplenishRate4").value = 1;
+		document.getElementById("foodReplenishAmount4").value = 5000;
+		document.getElementById("foodDensity4").value = 25;
 	}
 	document.getElementById("forageWeight").value = this.settings[this.currentSetting].fWeight;
 	document.getElementById("breedWeight").value = this.settings[this.currentSetting].bWeight;
@@ -698,7 +706,7 @@ GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, 
 		seasons.push(season);
 	}
 	var dataObj = {
-		mode: "explore",
+		mode: "test", //explore
 		run: document.getElementById("runName").textContent,
 		params: {
 			maxFood: document.getElementById("maxFood").value,
@@ -778,4 +786,22 @@ Timer.prototype.tick = function () {
     var simDelta = Math.min(wallDelta, this.maxStep);
     this.simTime += simDelta;
     return simDelta;
+}
+
+function setupSeasons(num) {
+	if (num < 1) {
+		num = 1;
+	}
+	var str = "";
+	for (var i = 1; i <= num; i++) {
+		str += "Season " + i + "<br />" +
+			"<input type='text' id='seasonLength" + i +"' value='1000'/>Length<br />" +
+			"<input type='text' id='foodRegenRate" + i +"' value='0.01'/>Food Regen Rate<br />" +
+			"<input type='text' id='foodRegenAmount" + i +"' value='200'/>Food Regen Amount<br />" +
+			"<input type='text' id='foodReplenishRate" + i +"' value='0'/>Food Replenish Rate<br />" +
+			"<input type='text' id='foodReplenishAmount" + i +"' value='0'/>Food Replenish Amount<br />" +
+			"<input type='text' id='foodDensity" + i + "' value='3'/>Food Density<br />";
+	}
+
+	document.getElementById("seasonDiv").innerHTML = str;
 }
