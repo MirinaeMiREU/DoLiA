@@ -267,7 +267,7 @@ GameEngine.prototype.restart = function() {
 GameEngine.prototype.setSettings = function() {
 	var settings = [];
 
-	for (var i = 0; i < 5; i++) {
+	for (var i = 0; i < 4; i++) {
 		settings.push({
 			roleToggle: true,
 			scatteredOrDense: false,
@@ -277,7 +277,7 @@ GameEngine.prototype.setSettings = function() {
 			foodCarry: true, 
 			energy: true,
 			fWeight: 1,
-			bWeight: 2
+			bWeight: 4
 		});
 	}
 /*
@@ -295,11 +295,17 @@ GameEngine.prototype.setSettings = function() {
 	
 	settings[1].foodCarry = false;
 	settings[1].energy = false;
+	settings[2].bWeight = 3;
 	
-	settings[2].breedLife = false;
 	settings[2].breedSpeed = false;
 	settings[2].foodCarry = false;
 	settings[2].energy = false;
+	settings[2].bWeight = 3;
+
+	settings[3].roleToggle = false;
+	settings[3].scatteredOrDense = true;
+	settings[3].breedLife = true;
+	settings[3].bWeight = 1;
 
 	/*
 	settings[5].breedSpeed = false;
@@ -427,7 +433,7 @@ GameEngine.prototype.runNextSetting = function() {
 
 	var str = this.settings[this.currentSetting].scatteredOrDense
 		? "s"
-		: "d5";
+		: "d6";
 	str += "-f" + document.getElementById("forageWeight").value + "-b" + document.getElementById("breedWeight").value + "-ft-" + tf + "tt-";
 	str = document.getElementById("geneLifeToggle").checked 
 		? str + "t" 
@@ -443,7 +449,7 @@ GameEngine.prototype.runNextSetting = function() {
 		: str + "f";
 	str = document.getElementById("geneRoleToggle").checked
 		? str
-		: str + "-c";
+		: str + "-c2";
 
 	document.getElementById("runName").innerText = str;
 	this.newGame();
