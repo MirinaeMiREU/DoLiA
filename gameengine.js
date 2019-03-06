@@ -272,7 +272,7 @@ GameEngine.prototype.setSettings = function() {
 			roleToggle: true,
 			scatteredOrDense: false,
 			extremeGenes: false,
-			breedLife: true,
+			breedLife: false,
 			breedSpeed: true, 
 			foodCarry: true, 
 			energy: true,
@@ -707,7 +707,7 @@ GameEngine.prototype.buildDownloadData = function(mound, graph1, graph2, hist1, 
 		seasons.push(season);
 	}
 	var dataObj = {
-		mode: "test", //explore
+		mode: "explore", //explore
 		run: document.getElementById("runName").textContent,
 		params: {
 			maxFood: document.getElementById("maxFood").value,

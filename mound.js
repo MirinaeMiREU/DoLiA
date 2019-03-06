@@ -35,7 +35,7 @@ Mound.prototype.update = function() {
 	this.tiles[this.yPos][this.xPos].outPheromone=MAX_PHEROMONE;
 	this.lifeTimeCount++;
 	if (this.colony.length <= 0) {
-		this.game.pauseGame();
+		this.game.runNextSetting();
 	}
 	if (this.lifeTimeCount >= GAME_LIFE_TIME) {
 		/*
