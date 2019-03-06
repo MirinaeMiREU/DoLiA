@@ -35,7 +35,7 @@ function Ant(game, xPos, yPos, peers, tiles, mound, geneRole, geneForage, genera
 							  1-(Math.pow(1-this.geneForage,2)*2);
 	}	
 	if (!ROLE_GENE_TOGGLE) {
-		this.geneRoleActual = 0.5;
+		this.geneRole = 0.5;
 	}
 
 	this.deathChance = GENE_LIFE_TOGGLE
@@ -459,7 +459,9 @@ Ant.prototype.die = function(reason) {
 
 Ant.prototype.chooseRole = function() {
 	// if over threshold for egg laying, attempt to lay egg
-	if (Math.random() >= this.geneRoleActual) {
+	if (ROLE_GENE_TOGGLE && Math.random() >= this.geneRoleActual) {
+		this.attemptBreed();
+	} else if (!ROLE_GENE_TOGGLE && Math.random() >= this.geneRole) {
 		this.attemptBreed();
 	} else { // forage otherwise
 		this.forage();
