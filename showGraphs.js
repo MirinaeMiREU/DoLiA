@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     document.getElementById("queryButton").addEventListener("click", function (e) {
         var query = document.getElementById("runToQuery").value;
+        if (query[0] == 's') {
+            RUN = 2000;
+        } else {
+            RUN = 4000;
+        }
         if (query !== "" && query !== null) {
                 socket.emit("loadAnts", {run: query, mode: "explore"});
         } else {
@@ -206,7 +211,7 @@ function drawGraph(ctx, color, start, obj, maxVal) {
     ctx.moveTo(0,initAnt);
     for (var i = RUN/1000; i < RUN; i += RUN/1000) {
         var yPos = 400 + start - Math.floor(obj[i]/maxVal*400);
-        ctx.lineTo(i/4, yPos);
+        ctx.lineTo(i/(RUN/1000), yPos);
     }
     ctx.stroke();
     ctx.closePath();
