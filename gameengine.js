@@ -13,7 +13,8 @@ window.requestAnimationFrame ||
 */
 
 function GameEngine() {
-    this.entities = [];
+	this.entities = [];
+	this.tiles = null;
     this.ctx = null;
     this.surfaceWidth = null;
     this.surfaceHeight = null;
@@ -149,15 +150,19 @@ GameEngine.prototype.setParameters = function() {
 
 GameEngine.prototype.setup = function() {
 	var squares = [];
+	var tiles = [];
 	
 	for (var i = 0; i < YSIZE; i++) {
 		squares.push([]);
 		for (var j = 0; j < XSIZE; j++) {
 			var tile = new Tile(this, j, i);
 			squares[i].push(tile);
+			tiles.push(tile);
 			this.addEntity(tile);
 		}
 	}
+
+	this.tiles = tiles;
 	
 	/*
 	for (var i = 0; i < YSIZE; i++) {
@@ -272,7 +277,7 @@ GameEngine.prototype.setSettings = function() {
 			foodCarry: true, 
 			energy: true,
 			fWeight: 2,
-			bWeight: 3
+			bWeight: 5
 		});
 	}
 /*
@@ -404,8 +409,8 @@ GameEngine.prototype.runNextSetting = function() {
 		document.getElementById("seasonLength3").value = 30000;
 		document.getElementById("foodRegenRate3").value = 0.005;
 		document.getElementById("foodRegenAmount3").value = 2500;
-		document.getElementById("foodReplenishRate3").value = 0.75;
-		document.getElementById("foodReplenishAmount3").value = 1500;
+		document.getElementById("foodReplenishRate3").value = 0;
+		document.getElementById("foodReplenishAmount3").value = 0;
 		document.getElementById("foodDensity3").value = 18;
 
 		document.getElementById("seasonLength4").value = 90000;
@@ -646,6 +651,9 @@ GameEngine.prototype.changeSeason = function () {
 	FOOD_REGEN_RATE = Number(document.getElementById(regR).value);
 	FOOD_REPLENISH_RATE = Number(document.getElementById(repR).value);
 	FOOD_DENSITY = Number(document.getElementById(foodD).value);
+	for (var i = 0; i < this.tiles.length; i++) {
+		this.tiles[i].foodLevel = 0;
+	}
 }
 
 GameEngine.prototype.updatePeriod = function () {
