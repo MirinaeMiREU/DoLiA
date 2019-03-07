@@ -272,7 +272,7 @@ GameEngine.prototype.setSettings = function() {
 			roleToggle: true,
 			scatteredOrDense: false,
 			extremeGenes: false,
-			breedLife: false,
+			breedLife: true,
 			breedSpeed: true, 
 			foodCarry: true, 
 			energy: true,
@@ -295,7 +295,7 @@ GameEngine.prototype.setSettings = function() {
 	
 	settings[1].foodCarry = false;
 	settings[1].energy = false;
-	settings[2].bWeight = 3;
+	settings[1].bWeight = 3;
 	
 	settings[2].breedSpeed = false;
 	settings[2].foodCarry = false;
