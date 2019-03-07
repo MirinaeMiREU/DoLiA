@@ -449,7 +449,7 @@ GameEngine.prototype.runNextSetting = function() {
 		: str + "f";
 	str = document.getElementById("geneRoleToggle").checked
 		? str
-		: str + "-c2";
+		: str + "-c3";
 
 	document.getElementById("runName").innerText = str;
 	this.newGame();
