@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 socket.on("loadAnts", function(e) {
     var finishedOnlyToggle = document.getElementById("finishedOnlyToggle").checked;
     var prematureOnlyToggle = document.getElementById("prematureOnlyToggle").checked;
-    var array = e;
+    var array = e.slice(0, 200);
     var completed = [];
     var premature = [];
     for (var i = 0; i < array.length; i++) {
@@ -146,8 +146,10 @@ function parseData(data) {
     console.log(obj);
     console.log(data);
     drawData(obj, context);
-    var str = formatObj(obj);
+    var str = formatRole(obj);
     download(document.getElementById("runToQuery").value, str);
+    str = formatForage(obj);
+    download(document.getElementById("runToQuery").value+"-f", str);
 }
 
 function download(filename, text) {
@@ -157,10 +159,19 @@ function download(filename, text) {
     pom.click();
 }
 
-function formatObj(obj) {
+function formatRole(obj) {
     var str = "";
     for (var i = 0; i < RUN; i++) {
         str += obj.histogramRole[i] + "\n";
+    }
+
+    return str;
+}
+
+function formatForage(obj) {
+    var str = "";
+    for (var i = 0; i < RUN; i++) {
+        str += obj.histogramForage[i] + "\n";
     }
 
     return str;

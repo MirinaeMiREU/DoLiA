@@ -10,9 +10,7 @@ from matplotlib.mlab import bivariate_normal
 inFiles = []
 inTitle = []
 inFiles.append('s-f1-b1-ft-ftt-ffff-c')
-inFiles.append('s-f1-b1-ft-ftt-tttt-c')
 inTitle.append('No Benefit Control')
-inTitle.append('All Benefit Control')
 
 ##inFiles.append('s-f2-b5-ft-ftt-ffff')
 ##inFiles.append('s-f2-b5-ft-ftt-ttff')
@@ -23,11 +21,11 @@ inTitle.append('All Benefit Control')
 ##inTitle.append('Workers Benefit')
 ##inTitle.append('Both Benefit')
 
-c=1
-fig, axn = plt.subplots(1,2,sharey=True)
-#fig, axn = plt.subplots(2,1,sharey=True)
+c=2
+fig, axn = plt.subplots(2,2,sharey=True)
 
-cbar_ax = fig.add_axes([.905, .2, .01, .6])
+#cbar_ax = fig.add_axes([.905, .2, .01, .6])
+cbar_ax = fig.add_axes([.905, .555, .01, .3])
 
 # A low hump with a spike coming out of the top right.  Needs to have
 # z/colour axis on a log scale so we see both hump and spike.  linear
@@ -63,8 +61,7 @@ for x in range(len(inFiles)):
     row[14] = 'Queen'
     # Create a dataset
     df = pd.DataFrame(hist,index=row)
-    plt.subplot(1,2,c)
-    #plt.subplot(2,1,c)
+    plt.subplot(2,2,c)
     sns.heatmap(df, center=1,
                 norm=colors.LogNorm(),
                 vmin = 0.025,
@@ -74,7 +71,7 @@ for x in range(len(inFiles)):
                 cbar_kws={'ticks': [1,0.1,0.025]})
     plt.title(inTitle[x])
     plt.gca().axes.get_xaxis().set_visible(False)
-    c += 1
+    c += 2
     
  
 # Default heatmap: just a visualization of this square matrix

@@ -9,14 +9,14 @@ from matplotlib.mlab import bivariate_normal
 # import data
 inFiles = []
 inTitle = []
-inFiles.append('s-f2-b5-ft-ftt-tfff')
-inFiles.append('s-f2-b5-ft-ftt-ftff')
-inFiles.append('s-f1-b3-ft-ftt-fftf')
-inFiles.append('s-f2-b5-ft-ftt-ffft')
-inTitle.append('Queens Live Longer')
-inTitle.append('Queens Breed Faster')
-inTitle.append('Workers Carry More')
-inTitle.append('Workers Travel Further')
+##inFiles.append('s-f2-b5-ft-ftt-tfff')
+##inFiles.append('s-f2-b5-ft-ftt-ftff')
+##inFiles.append('s-f1-b3-ft-ftt-fftf')
+##inFiles.append('s-f2-b5-ft-ftt-ffft')
+##inTitle.append('Queens Live Longer')
+##inTitle.append('Queens Breed Faster')
+##inTitle.append('Workers Carry More')
+##inTitle.append('Workers Travel Further')
 
 ##inFiles.append('s-f2-b5-ft-ftt-ffff')
 ##inFiles.append('s-f2-b5-ft-ftt-ttff')
@@ -26,6 +26,15 @@ inTitle.append('Workers Travel Further')
 ##inTitle.append('Queens Benefit')
 ##inTitle.append('Workers Benefit')
 ##inTitle.append('Both Benefit')
+
+inFiles.append('d6-f1-b3-ft-ftt-ffff-f')
+inFiles.append('d6-f1-b1-ft-ftt-ttff-f')
+inFiles.append('d6-f1-b5-ft-ftt-fftt-f')
+inFiles.append('d6-f3-b5-ft-ftt-tttt-f')
+inTitle.append('No Benefit')
+inTitle.append('Queens Benefit')
+inTitle.append('Workers Benefit')
+inTitle.append('Both Benefit')
 
 c=1
 fig, axn = plt.subplots(2,2,sharey=True)
@@ -61,8 +70,10 @@ for x in range(len(inFiles)):
     row = []
     for i in range(20):
         row.append('')
-    row[0] = 'Worker'
-    row[14] = 'Queen'
+##    row[0] = 'Worker'
+##    row[14] = 'Queen'
+    row[0] = 'Explore'
+    row[14] = 'Exploit'
     # Create a dataset
     df = pd.DataFrame(hist,index=row)
     plt.subplot(2,2,c)
