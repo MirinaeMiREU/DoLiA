@@ -14,6 +14,17 @@ function Mound(game, xPos, yPos) {
 	this.larvae = [];
 	this.roleHistogram = [];
 	this.forageHistogram = [];
+	this.deathAges = {
+		breeders: [],
+		generalists: [],
+		foragers: [],
+	};
+	this.averageAges = {
+		breeders: 0,
+		generalists: 0,
+		foragers: 0,
+		total: 0,
+	};
 	this.averageGen = 0;
 	this.minGen = 0;
 	this.maxGen = 0;
@@ -86,20 +97,7 @@ Mound.prototype.update = function() {
 	}
 }
 
-Mound.prototype.updatePeriod = function() {
-	console.log("Tick #:" + this.tick +
-				" Cycle #:" + this.lifeTimeCount +
-				" Ant:" + this.antCount + 
-				" Larva:" + this.larvaCount + 
-				" Food:" + this.foodStorage);
-	console.log("Min Gen:" + this.minGen +
-				" Avg Gen:" + this.averageGen + 
-				" Max Gen:" + this.maxGen);
-	console.log("Food Total: " + foods);
-	console.log("Standby Total: " + this.standby.length);
-	console.log("Food Foraged: " + this.foragePeriod);
-	console.log("Larva Created: " + this.larvaPeriod);
-	
+Mound.prototype.updatePeriod = function() {	
 	this.tick++;
 	this.larvaPeriodData.push(this.larvaPeriod);
 	this.larvaPeriod = 0;
@@ -113,6 +111,26 @@ Mound.prototype.updatePeriod = function() {
 	this.graph2.updatePeriod();
 	this.roleHistogramData.updatePeriod();
 	this.forageHistogramData.updatePeriod();
+	this.calculateAvgAges();
+
+	console.log("Tick #:" + this.tick +
+				" Cycle #:" + this.lifeTimeCount +
+				" Ant:" + this.antCount + 
+				" Larva:" + this.larvaCount + 
+				" Food:" + this.foodStorage);
+	console.log("Min Gen:" + this.minGen +
+				" Avg Gen:" + this.averageGen + 
+				" Max Gen:" + this.maxGen);
+	console.log(`Avg Breeder Age: ${this.averageAges.breeders}`);
+	console.log(`Avg Generalist Age: ${this.averageAges.generalists}`);
+	console.log(`Avg Forager Age: ${this.averageAges.foragers}`);
+	console.log(`Avg Age: ${this.averageAges.total}`);
+	/*
+	console.log("Food Total: " + foods);
+	console.log("Standby Total: " + this.standby.length);
+	console.log("Food Foraged: " + this.foragePeriod);
+	console.log("Larva Created: " + this.larvaPeriod);
+	*/
 }
 
 Mound.prototype.draw = function() {
@@ -140,6 +158,26 @@ Mound.prototype.drawPeriod = function() {
 
 Mound.prototype.setTiles = function(tiles) {
 	this.tiles = tiles;
+}
+
+Mound.prototype.calculateAvgAges = function() {
+	var breedAvg = this.deathAges.breeders.length === 0 ? 0 :
+		this.deathAges.breeders.reduce((a,b) => (a+b))/this.deathAges.breeders.length;
+	var genAvg = this.deathAges.generalists.length === 0 ? 0 :
+		this.deathAges.generalists.reduce((a,b) => (a+b))/this.deathAges.generalists.length;
+	var forageAvg = this.deathAges.foragers.length === 0 ? 0 :
+		this.deathAges.foragers.reduce((a,b) => (a+b))/this.deathAges.foragers.length;
+
+	var totalLen = this.deathAges.breeders.length + this.deathAges.generalists.length + this.deathAges.foragers.length;
+	var avg = totalLen === 0 ? 0 :
+	this.deathAges.breeders.concat(this.deathAges.generalists.concat(this.deathAges.foragers)).reduce((a,b) => (a+b))/totalLen;
+
+	this.averageAges = {
+		breeders: breedAvg,
+		generalists: genAvg,
+		foragers: forageAvg,
+		total: avg,
+	}
 }
 
 Mound.prototype.spawnAnt = function() {

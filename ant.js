@@ -451,6 +451,14 @@ Ant.prototype.eggLay = function() {
 }
 
 Ant.prototype.die = function(reason) {
+	if (this.geneRole > (2/3)) {
+		this.mound.deathAges.foragers.push(this.age);
+	} else if (this.geneRole > (1/3)) {
+		this.mound.deathAges.generalists.push(this.age);
+	} else {
+		this.mound.deathAges.breeders.push(this.age);
+	}
+	
 	this.mound.removeAnt(this, reason);
 }
 
