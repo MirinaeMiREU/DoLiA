@@ -408,41 +408,41 @@ GameEngine.prototype.setSettings = function() {
 */
 	settings[0].roleToggle = false;
 
-	settings[1].bWeight = 2;
-	settings[1].fWeight = 5;
+	settings[1].bWeight = 5;
+	settings[1].fWeight = 2;
 
 	settings[2].foodCarry = true;
 	settings[2].energy = true;
-	settings[2].bWeight = 2;
-	settings[2].fWeight = 7;
+	settings[2].bWeight = 7;
+	settings[2].fWeight = 2;
 
 	settings[3].breedLife = true;
 	settings[3].breedSpeed = true;
-	settings[3].bWeight = 2;
-	settings[3].fWeight = 5;
+	settings[3].bWeight = 5;
+	settings[3].fWeight = 2;
 
 	settings[4].breedLife = true;
 	settings[4].breedSpeed = true;
 	settings[4].foodCarry = true;
 	settings[4].energy = true;
-	settings[4].bWeight = 2;
-	settings[4].fWeight = 3;
+	settings[4].bWeight = 3;
+	settings[4].fWeight = 2;
 
 	settings[5].energy = true;
-	settings[5].bWeight = 2;
-	settings[5].fWeight = 5;
+	settings[5].bWeight = 5;
+	settings[5].fWeight = 2;
 
 	settings[6].foodCarry = true;
-	settings[6].bWeight = 2;
-	settings[6].fWeight = 6;
+	settings[6].bWeight = 6;
+	settings[6].fWeight = 2;
 
 	settings[7].breedSpeed = true;
-	settings[7].bWeight = 2;
-	settings[7].fWeight = 5;
+	settings[7].bWeight = 5;
+	settings[7].fWeight = 2;
 
 	settings[8].breedLife = true;
-	settings[8].bWeight = 2;
-	settings[8].fWeight = 5;
+	settings[8].bWeight = 5;
+	settings[8].fWeight = 2;
 
 	/*
 	settings[5].breedSpeed = false;
@@ -501,16 +501,20 @@ GameEngine.prototype.runNextSetting = function() {
 	var limit = this.settings.length * 5;
 	if(this.runNum < limit) {
 		if (this.currentSetting !== -1) {
+			/*
 			var er = this.buildDownloadData(this.mound, this.mound.graph1, this.mound.graph2, 
 				this.mound.roleHistogramData, this.mound.forageHistogramData);
+				*/
+			this.avgAges[this.currentSetting].breeders.push(this.mound.averageAges.breeders);
+			this.avgAges[this.currentSetting].generalists.push(this.mound.averageAges.generalists);
+			this.avgAges[this.currentSetting].foragers.push(this.mound.averageAges.foragers);
+			this.avgAges[this.currentSetting].total.push(this.mound.averageAges.total);
+			var avgObj = JSON.stringify(this.avgAges);
+			this.download(document.getElementById("runName").textContent+".txt", avgObj);
 		}
-		//this.download(document.getElementById("runName").textContent+".csv", str);
-	
+		
 		this.currentSetting = (this.currentSetting + 1) % this.settings.length;
-		this.avgAges[this.currentSetting].breeders.push(this.mound.averageAges.breeders);
-		this.avgAges[this.currentSetting].generalists.push(this.mound.averageAges.generalists);
-		this.avgAges[this.currentSetting].foragers.push(this.mound.averageAges.foragers);
-		this.avgAges[this.currentSetting].total.push(this.mound.averageAges.total);
+		
 		if (this.settings[this.currentSetting].scatteredOrDense) {
 			document.getElementById("simDuration").value = 100000;
 			document.getElementById("maxFood").value = 200;
